@@ -1,12 +1,25 @@
 package com.neuralnetwork;
 
 public class NetworkLayer {
-	public enum LayerType {I, H1, H2, O}
+	public enum LayerType {UNKNOWN, I, H1, H2, O}
 	
 	LayerType layerType;
 	private Neuron[] neurons;
 	private NetworkLayer priorLayer;
 	private NetworkLayer nextLayer;
+	
+	public NetworkLayer() {
+		this.layerType = LayerType.UNKNOWN;
+		this.neurons = new Neuron[1];
+			double[] weights = new double[] {0.0};
+			double threshold = 0.0;
+			double output = 0.0;
+			neurons[0] = new Neuron(weights, threshold, output);
+			
+		this.priorLayer = null;
+		this.nextLayer  = null;
+		
+	}
 	
 	public NetworkLayer(LayerType layerType, 
 						int numberInputs,
@@ -33,11 +46,11 @@ public class NetworkLayer {
 	public void     setNeurons(Neuron[] neurons) {this.neurons = neurons;}
 	public Neuron[] getNeurons() {return this.neurons;}
 	
-	public void         setPriorLayor(NetworkLayer priorLayor) {this.priorLayer = priorLayor;}
-	public NetworkLayer getPriorLayor() {return this.priorLayer;}
+	public void         setPriorLayer(NetworkLayer priorLayer) {this.priorLayer = priorLayer;}
+	public NetworkLayer getPriorLayer() {return this.priorLayer;}
 	
-	public void         setNextLayor(NetworkLayer nextLayor) {this.nextLayer = nextLayor;}
-	public NetworkLayer getNextLayor() {return this.nextLayer;}
+	public void         setNextLayer(NetworkLayer nextLayer) {this.nextLayer = nextLayer;}
+	public NetworkLayer getNextLayer() {return this.nextLayer;}
 	
 	public int getNeuronCountInLayer(NetworkLayer networkLayer) { 
 		return this.getNeurons().length; 
@@ -47,8 +60,8 @@ public class NetworkLayer {
 		return this.getNeurons()[0].getWeights().length; 
 		}
 	
-	public double[] getLayerOutputs(NetworkLayer networkLayer) {
-		int numberNeurons = networkLayer.getNeurons().length;
+	public double[] getLayerOutputs() {
+		int numberNeurons = this.getNeurons().length;
 		double[] outputs = new double[numberNeurons];
 		for (int i = 0; i < numberNeurons; i++) {
 			outputs[i] = neurons[i].getOutput();
