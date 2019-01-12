@@ -71,7 +71,7 @@ public class Neuron {
 	}
 	
 	
-	public double applyActivationFunction(double weightedSum) {
+	public static double applyActivationFunction(double weightedSum) {
 		if (weightedSum < 0) weightedSum=0;
 		//if(weightedSum > 1) weightedSum=1;
 		return weightedSum;
