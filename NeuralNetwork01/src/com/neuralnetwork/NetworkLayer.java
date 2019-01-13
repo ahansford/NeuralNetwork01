@@ -1,7 +1,7 @@
 package com.neuralnetwork;
 
 public class NetworkLayer {
-	public enum LayerType {UNKNOWN, I, H1, H2, O}
+	public enum LayerType {UNKNOWN, I, H, O}
 	
 	LayerType layerType;
 	private Neuron[] neurons;
@@ -52,11 +52,11 @@ public class NetworkLayer {
 	public void         setNextLayer(NetworkLayer nextLayer) {this.nextLayer = nextLayer;}
 	public NetworkLayer getNextLayer() {return this.nextLayer;}
 	
-	public int getNeuronCountInLayer(NetworkLayer networkLayer) { 
+	public int getNeuronCountInLayer() { 
 		return this.getNeurons().length; 
 		}
 	
-	public int getInputCountIntoLayer(NetworkLayer networkLayer) { 
+	public int getInputCountIntoLayer() { 
 		return this.getNeurons()[0].getWeights().length; 
 		}
 	
@@ -86,6 +86,22 @@ public class NetworkLayer {
 			neurons[n].setOutput(weightedSum);
 		}
 		return;
+	}
+	
+	public boolean equals(NetworkLayer networkLayer) {
+		boolean equalsFlag = true;
+		Neuron[] neurons = this.getNeurons();
+		Neuron[] otherNeurons = networkLayer.getNeurons();
+		
+		if (this.layerType != networkLayer.getLayerType())   { equalsFlag = false; }
+		if (neurons.length != otherNeurons.length)           { equalsFlag = false; }
+		else { for (int i=0; i < neurons.length; i++) {
+					if (!neurons[i].equals(otherNeurons[i]))  { equalsFlag = false; }
+				}
+		}
+		if (this.priorLayer != networkLayer.getPriorLayer()) { equalsFlag = false; }
+		if (this.nextLayer != networkLayer.getNextLayer())   { equalsFlag = false; }
+		return equalsFlag;
 	}
 
 }

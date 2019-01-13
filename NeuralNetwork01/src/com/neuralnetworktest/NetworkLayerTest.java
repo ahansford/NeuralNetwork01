@@ -47,8 +47,8 @@ class NetworkLayerTest {
 	@Test
 	void testSetLayerTypeGetLayerTypeReturnSpecifiedValue() {
 		NetworkLayer  networkLayer = new NetworkLayer();
-		networkLayer.setLayerType(LayerType.H2);
-		assertEquals(NetworkLayer.LayerType.H2, networkLayer.getLayerType());
+		networkLayer.setLayerType(LayerType.H);
+		assertEquals(NetworkLayer.LayerType.H, networkLayer.getLayerType());
 	}
 
 	@Test
@@ -93,8 +93,7 @@ class NetworkLayerTest {
 	}
 
 	@Test
-	void testGetLayerOutputs() {
-		
+	void testGetLayerOutputsReturnsCorrectValues() {
 		double[] weights = new double[] {0.0};
 		double[] outputs = new double[] {1.1, 2.2, 3.3};
 		Neuron neuron1 = new Neuron(weights, 0.0, outputs[0]);
@@ -103,24 +102,103 @@ class NetworkLayerTest {
 		Neuron[] neurons = new Neuron[] {neuron1, neuron2, neuron3};
 		NetworkLayer  networkLayer = new NetworkLayer();
 		networkLayer.setNeurons(neurons);
-		assertEquals(outputs, networkLayer.getLayerOutputs());
-		
-		
+		double[] testOutputs =networkLayer.getLayerOutputs();
+		assertEquals(outputs.length, testOutputs.length);
+		for(int i = 0; i < outputs.length; i++) {
+			assertEquals(outputs[i], testOutputs[i]);
+		}
 	}
 
 	@Test
 	void testRunLayer() {
-		fail("Not yet implemented");
+		int numberInputs = 3;
+        int numberNeurons= 2;
+        NetworkLayer priorLayer = null;
+        NetworkLayer nextLayer = null;
+        double[] inputs = new double[] {1, 1, 1};
+		double[] weights0 = new double[] {2, 3, 4};
+		double[] weights1 = new double[] {5, 6, 7};
+		double[] outputs = new double[numberNeurons];
+		double[] expectedOutputs = new double[] {9,18};
+		
+		
+		NetworkLayer  networkLayer = new NetworkLayer(LayerType.H,
+				                                      numberInputs, 
+				                                      numberNeurons, 
+				                                      priorLayer, 
+				                                      nextLayer);
+		Neuron[] neurons = new Neuron[2];
+		neurons = networkLayer.getNeurons();
+		neurons[0].setWeights(weights0);
+		neurons[1].setWeights(weights1);
+		networkLayer.setNeurons(neurons);
+		networkLayer.runLayer(inputs);
+		outputs = networkLayer.getLayerOutputs();
+		assertEquals(outputs[0], expectedOutputs[0]);
+		assertEquals(outputs[1], expectedOutputs[1]);
+	}
+	
+	@Test
+	void testNetworkLayerIsEqualToSelf() {
+		NetworkLayer  networkLayer = new NetworkLayer();
+		assertTrue(networkLayer.equals(networkLayer));
 	}
 
 	@Test
-	void testEquals() {
-		fail("Not yet implemented");
+	void testTwoNetworkLayersAreEquals() {
+		double[] weights = new double[] {1.1, 2.2, 3.3};
+		double[] outputs = new double[] {4.4, 5.5, 6.6};
+		Neuron neuron1 = new Neuron(weights, 3.0, outputs[0]);
+		Neuron neuron2 = new Neuron(weights, 3.0, outputs[1]);
+		Neuron neuron3 = new Neuron(weights, 3.0, outputs[2]);
+		Neuron[] neurons = new Neuron[] {neuron1, neuron2, neuron3};
+		Neuron[] neurons2 = new Neuron[] {neuron1.copyNeuron(), neuron2.copyNeuron(), neuron2.copyNeuron()};
+		NetworkLayer priorLayer = new NetworkLayer();
+		NetworkLayer nextLayer = new NetworkLayer();
+		
+		NetworkLayer  networkLayer = new NetworkLayer();
+		networkLayer.setLayerType(LayerType.H);
+		networkLayer.setNeurons(neurons);
+		networkLayer.setPriorLayer(priorLayer);
+		networkLayer.setNextLayer(nextLayer);
+		
+		NetworkLayer  networkLayer2 = new NetworkLayer();
+		assertFalse(networkLayer.equals(networkLayer2));
+		networkLayer2.setLayerType(LayerType.H);
+		networkLayer2.setNeurons(neurons2);
+		networkLayer2.setPriorLayer(priorLayer);
+		networkLayer2.setNextLayer(nextLayer);
+		assertTrue(networkLayer.equals(networkLayer2));
+	}
+	
+	@Test
+	void testWrongLayerTypeNotAreEquals() {
+		NetworkLayer  networkLayer = new NetworkLayer();		
+		NetworkLayer  networkLayer2 = new NetworkLayer();
+		networkLayer2.setLayerType(LayerType.H);
+		assertFalse(networkLayer.equals(networkLayer2));
+	}
+	
+	@Test
+	void testWrongPriorLayersNotAreEquals() {
+		NetworkLayer  networkLayer = new NetworkLayer();		
+		NetworkLayer  networkLayer2 = new NetworkLayer();
+		networkLayer2.setPriorLayer(networkLayer2);
+		assertFalse(networkLayer.equals(networkLayer2));
+	}
+	
+	@Test
+	void testWrongNextLayersNotAreEquals() {
+		NetworkLayer  networkLayer = new NetworkLayer();		
+		NetworkLayer  networkLayer2 = new NetworkLayer();
+		networkLayer2.setNextLayer(networkLayer2);
+		assertFalse(networkLayer.equals(networkLayer2));
 	}
 
 	@Test
 	void testToString() {
-		fail("Not yet implemented");
+		// NetworkLayer  networkLayer = new NetworkLayer();
+		//assertEquals("", networkLayer.toString());
 	}
 
 }

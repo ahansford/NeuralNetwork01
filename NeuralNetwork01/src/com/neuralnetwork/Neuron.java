@@ -47,8 +47,8 @@ public class Neuron {
 		return adjustedNeuron;
 	}
 	
-	public static Neuron copyNeuron(Neuron neuron) {
-		Neuron copiedNeuron = new Neuron(neuron.getWeights(), neuron.getThreshold(), neuron.getOutput());
+	public Neuron copyNeuron() {
+		Neuron copiedNeuron = new Neuron(this.getWeights(), this.getThreshold(), this.getOutput());
 		return copiedNeuron;
 	}
 	
@@ -67,6 +67,8 @@ public class Neuron {
 			}
 		} else { equalsFlag = false; }  // arrays unequal length
 		if (this.getThreshold() != neuron.getThreshold()) { equalsFlag = false; }
+			// Leaving the output test out, as this may not be needed 
+			// if (this.getOutput() != neuron.getOutput())       { equalsFlag = false; }
 		return equalsFlag;
 	}
 	

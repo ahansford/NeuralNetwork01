@@ -50,7 +50,7 @@ class NeuronTest {
 	void testCopy() {
 		double[] weights = {1.1,2.2, 3.3};
 		Neuron neuron = new Neuron(weights, 4, 5);
-		Neuron copiedNeuron = Neuron.copyNeuron(neuron);
+		Neuron copiedNeuron = neuron.copyNeuron();
 		assertEquals(1.1, copiedNeuron.getWeights()[0]);
 		assertEquals(2.2, copiedNeuron.getWeights()[1]);
 		assertEquals(3.3, copiedNeuron.getWeights()[2]);
@@ -70,19 +70,73 @@ class NeuronTest {
 		assertEquals(4,   myNeuron.getThreshold());
 		assertEquals(5,   myNeuron.getOutput());
 	}
+	
 	@Test
-	void testEquals() {
+	void testCopiedNeuronIsEqual() {
 		double[] weights = {1.1,2.2, 3.3};
 		Neuron neuron = new Neuron(weights, 4, 5);
-		Neuron copiedNeuron = Neuron.copyNeuron(neuron);
+		Neuron copiedNeuron = neuron.copyNeuron();
 		assertTrue(neuron.equals(copiedNeuron));
 	}
+	
+	@Test
+	void testUnequalNeuronsNotEqual() {
+		double[] weights = {1.1,2.2, 3.3};
+		Neuron neuron = new Neuron(weights, 4, 5);
+		Neuron neuron2 = new Neuron();
+		assertFalse(neuron.equals(neuron2));
+	}
+	
+	@Test
+	void testWrongThresholdsNotEqual() {
+		double[] weights = {1.1, 2.2, 3.3};
+		Neuron neuron = new Neuron(weights, 1, 0);
+		Neuron neuron2 = new Neuron(weights, 2, 0);
+		assertFalse(neuron.equals(neuron2));
+	}
+	
+	@Test
+	void testWrongOutputNotEqual() {
+		/* Left out as it is not clear outputs should be tested in equal
+		double[] weights = {1.1, 2.2, 3.3};
+		Neuron neuron = new Neuron(weights, 0, 0);
+		Neuron neuron2 = new Neuron(weights, 0, 2);
+		assertFalse(neuron.equals(neuron2));*/
+	}
+	
+	@Test
+	void testWrongInputLenght1NotEqual() {
+		double[] weights = {1.1, 2.2, 3.3};
+		double[] weights2 = {1.1, 2.2};
+		Neuron neuron = new Neuron(weights, 0, 0);
+		Neuron neuron2 = new Neuron(weights2, 0, 0);
+		assertFalse(neuron.equals(neuron2));
+	}
+	
+	@Test
+	void testWrongInputLenght2NotEqual() {
+		double[] weights = {1.1, 2.2};
+		double[] weights2 = {1.1, 2.2, 3.3};
+		Neuron neuron = new Neuron(weights, 0, 0);
+		Neuron neuron2 = new Neuron(weights2, 0, 0);
+		assertFalse(neuron.equals(neuron2));
+	}
+	
+	@Test
+	void testWrongWeightValuesNotEqual() {
+		double[] weights = {1.1, 2.2, 3.3};
+		double[] weights2 = {4.4, 5.5, 6.6};
+		Neuron neuron = new Neuron(weights, 0, 0);
+		Neuron neuron2 = new Neuron(weights2, 0, 0);
+		assertFalse(neuron.equals(neuron2));
+	}
+
 
 	@Test
 	void testToString() {
 		double[] weights = {1.1,2.2, 3.3};
 		Neuron neuron = new Neuron(weights, 4, 5);
-		assertEquals("Neuron {w0:1.1000|w1:2.2000|w2:3.3000|threshold:4.0000|output:5.0000", neuron.toString());
+		assertEquals("Neuron {w0:1.1000|w1:2.2000|w2:3.3000|threshold:4.0000|output:5.0000|", neuron.toString());
 	}
 
 }
