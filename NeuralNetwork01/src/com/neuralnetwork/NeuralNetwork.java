@@ -7,10 +7,10 @@ public class NeuralNetwork {
 	
 	private NetworkLayer[] layers;
 	
-	NeuralNetwork(int inputsCount, 
-			      int hiddenLayerCount, 
-			      int hiddenLayerNeuronCount,
-			      int outputsCount) {
+	public NeuralNetwork(int inputsCount, 
+			             int hiddenLayerCount, 
+			             int hiddenLayerNeuronCount,
+			             int outputsCount) {
 		
 		int layerCount = 1 + hiddenLayerCount + 1;
 		layers = new NetworkLayer[layerCount];
@@ -62,6 +62,11 @@ public class NeuralNetwork {
 	
 	public int getNetworkLayerCount() { return this.layers.length; }
 	
+	
+	public int getNetworkInputCount() {
+		return this.layers[0].getInputCountIntoLayer(); 
+		}
+	
 	public void runNetwork(double[] inputs) {
 		int layerCount = this.layers.length;
 		int inputCount;
@@ -69,7 +74,7 @@ public class NeuralNetwork {
 			inputCount = this.layers[i].getInputCountIntoLayer();
 			double[] inputSet = new double[inputCount];
 			if (i == 0) { inputSet = inputs; }
-			else { inputSet = layers[i-1].getLayerOutputs(); }
+			else { inputSet = layers[i-1].getLayerOutputs(); } //TODO: put into a for loop
 			this.layers[i].runLayer(inputSet);
 		}
 		return;

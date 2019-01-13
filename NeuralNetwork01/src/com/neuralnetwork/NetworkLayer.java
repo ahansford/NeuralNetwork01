@@ -11,8 +11,8 @@ public class NetworkLayer {
 	public NetworkLayer() {
 		this.layerType = LayerType.UNKNOWN;
 		this.neurons = new Neuron[1];
-			double[] weights = new double[] {0.0};
-			double threshold = 0.0;
+			double[] weights = new double[] {Math.random() - 0.5,Math.random() - 0.5};
+			double threshold = Math.random() - 0.5;
 			double output = 0.0;
 			neurons[0] = new Neuron(weights, threshold, output);
 			
@@ -30,8 +30,8 @@ public class NetworkLayer {
 		this.layerType = layerType;
 		this.neurons = new Neuron[numberNeurons];
 			double[] weights = new double[numberInputs];
-			for (int i = 0; i < numberInputs; i++) weights[i]=0.0;
-			double threshold = 0.0;
+			for (int i = 0; i < numberInputs; i++) weights[i]=Math.random() - 0.5;
+			double threshold = Math.random() - 0.5;
 			double output = 0.0;
 			for (int n = 0; n < numberNeurons; n++) {
 				neurons[n] = new Neuron(weights, threshold, output);

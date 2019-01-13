@@ -14,9 +14,9 @@ public class Neuron {
 	//private NeuralNetwork.LayerType layerType;
 
 	public Neuron() { 
-		double[] weights = {0.0};
+		double[] weights = {Math.random() - 0.5};
 		this.weights = weights;
-		this.threshold = 0.0;
+		this.threshold = Math.random() - 0.5;
 		this.output = 0.0;
 	}
 	
