@@ -75,6 +75,28 @@ class NeuralNetworkTest {
 		// show that at lease one neuron is present
 		assertTrue( 0 < networkLayers[0].getNeurons().length);
 	}
+	
+	@Test
+	void testNeuralNetworkEqualsSelf() {
+		NeuralNetwork neuralNetwork = new NeuralNetwork(1,1,1,1);
+		assertTrue( neuralNetwork.equals(neuralNetwork) );
+	}
+	
+	@Test
+	void testCopiedNeuralNetworkEqualsSelf() {
+		NeuralNetwork neuralNetwork = new NeuralNetwork(1,1,1,1);
+		NeuralNetwork copiedNetwork = neuralNetwork.copyNeuralNetwork();
+		assertTrue( neuralNetwork.equals(copiedNetwork) );
+	}
+	
+	@Test
+	void testAdjustedNeuralNetworkDoesNotEqualSelf() {
+		NeuralNetwork neuralNetwork = new NeuralNetwork(1,1,1,1);
+		NeuralNetwork adjustedNetwork = neuralNetwork.adjustNeuralNetwork();
+		assertFalse( neuralNetwork.equals(adjustedNetwork) );
+		
+		assertEquals(neuralNetwork.getNetworkLayerCount(), adjustedNetwork.getNetworkLayerCount());
+	}
 
 	@Test
 	void testRunNetwork() {
