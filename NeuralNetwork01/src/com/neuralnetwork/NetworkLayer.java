@@ -98,8 +98,8 @@ public class NetworkLayer {
     @Override
     public String toString() { 
     	StringBuffer sB = new StringBuffer();
-    	sB.append(String.format("NetworkLayer {"));
-    	sB.append("LayerType:" + String.format("%s", layerType));
+    	sB.append(String.format("\n NetworkLayer {"));
+    	sB.append("  LayerType:" + String.format("%s", layerType));
     	int numberNeurons = this.getNeuronCountInLayer();
     	//System.out.println("Layer:toString:neuronCountneuronCount before loop: " + numberNeurons + " " + this.getNeurons().length);
     	Neuron neuron;
@@ -108,7 +108,7 @@ public class NetworkLayer {
     		//System.out.println("Layer:toString:neuronCount: " + this.getNeurons().length + " index: " + i);
     		if (true) { neuron = this.getNeurons()[i];}
     		//System.out.println("neuron: " + i);
-    		sB.append(neuron.toString());
+    		sB.append("\n     " + neuron.toString());
     	}
     	sB.append(" }");
         return String.format("%s", sB); 

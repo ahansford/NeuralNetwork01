@@ -11,7 +11,6 @@ public class Neuron {
 	private double[] weights = new double[] {0.0};
 	private double threshold = 0;
 	private double output = 0;
-	//private NeuralNetwork.LayerType layerType;
 
 	public Neuron() { 
 		double[] weights = {Math.random() - 0.5};
@@ -35,15 +34,17 @@ public class Neuron {
 	public double getOutput() { return output; }
 	public void   setOutput(double output) { this.output = output; }
 	
-	public Neuron getAdjustedNeuron(Neuron neuron) {
-		Neuron adjustedNeuron = new Neuron(neuron.getWeights(), neuron.getThreshold(), 0);
-		double[] adjustedWeights;
-		adjustedWeights = neuron.getWeights();
+	public Neuron getAdjustedNeuron() {
+		double[] originalWeights = this.getWeights();
+		double[] adjustedWeights = new double[originalWeights.length];
 		for (int i = 0; i < adjustedWeights.length; i++) {
-			adjustedWeights[i] += (Math.random() - 0.5) * LEARNING_RATE; 
+			adjustedWeights[i] = originalWeights[i] + (Math.random() - 0.5) * LEARNING_RATE; 
 		}
-		adjustedNeuron.setWeights(adjustedWeights);
-		adjustedNeuron.setThreshold( adjustedNeuron.getThreshold() + (Math.random() - 0.5) * LEARNING_RATE);
+		
+		double originalThreshold = this.getThreshold();
+		double adjustedThreshold = originalThreshold + (Math.random() - 0.5) * LEARNING_RATE;  
+		
+		Neuron adjustedNeuron = new Neuron(adjustedWeights, adjustedThreshold, 0);
 		return adjustedNeuron;
 	}
 	
@@ -88,7 +89,7 @@ public class Neuron {
 		if (inputs.length != this.weights.length) return; // input mismatch
 		double weightedSum = -this.getThreshold();
 		for (int i = 0; i < this.weights.length; i++) {
-			weightedSum += inputs[i] * this.weights[i] * LEARNING_RATE;
+			weightedSum += inputs[i] * this.weights[i];
 			//System.out.println("input: " + inputs[i] + " " + weightedSum);
 		}
 		//System.out.println("\n");

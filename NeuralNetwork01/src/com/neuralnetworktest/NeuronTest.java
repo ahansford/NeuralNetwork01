@@ -136,7 +136,26 @@ class NeuronTest {
 		assertFalse(neuron.equals(neuron2));
 	}
 
-
+	@Test
+	void testAdjustedNeuronDoesNotEqualOriginal() {
+		double[] weights = {1.0, 1.0, 1.0};
+		Neuron neuron = new Neuron(weights, 1, 0);
+		Neuron adjustedNeuron = neuron.getAdjustedNeuron();
+		assertFalse(neuron.equals(adjustedNeuron));
+		//System.out.println("testAdjustedNeuronDoesNotEqualOriginal: Original " + neuron.toString());
+		//System.out.println("testAdjustedNeuronDoesNotEqualOriginal: Adjusted " + adjustedNeuron.toString());
+		adjustedNeuron = adjustedNeuron.getAdjustedNeuron();
+		adjustedNeuron = adjustedNeuron.getAdjustedNeuron();
+		adjustedNeuron = adjustedNeuron.getAdjustedNeuron();
+		adjustedNeuron = adjustedNeuron.getAdjustedNeuron();
+		adjustedNeuron = adjustedNeuron.getAdjustedNeuron();
+		adjustedNeuron = adjustedNeuron.getAdjustedNeuron();
+		adjustedNeuron = adjustedNeuron.getAdjustedNeuron();
+		adjustedNeuron = adjustedNeuron.getAdjustedNeuron();
+		//System.out.println("testAdjustedNeuronDoesNotEqualOriginal: Adjusted " + adjustedNeuron.toString());
+	}
+	
+	
 	@Test
 	void testToString() {
 		//double[] weights = {1.1,2.2, 3.3};
