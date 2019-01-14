@@ -5,39 +5,31 @@ public class NetworkLayer {
 	
 	LayerType layerType;
 	private Neuron[] neurons;
-	private NetworkLayer priorLayer;
-	private NetworkLayer nextLayer;
 	
 	public NetworkLayer() {
 		this.layerType = LayerType.UNKNOWN;
 		this.neurons = new Neuron[1];
-			double[] weights = new double[] {Math.random() - 0.5,Math.random() - 0.5};
+			double[] weights = new double[] {Math.random() - 0.5};
 			double threshold = Math.random() - 0.5;
 			double output = 0.0;
 			neurons[0] = new Neuron(weights, threshold, output);
-			
-		this.priorLayer = null;
-		this.nextLayer  = null;
-		
 	}
 	
 	public NetworkLayer(LayerType layerType, 
 						int numberInputs,
-			            int numberNeurons, 
-			            NetworkLayer priorLayer,
-			            NetworkLayer nextLayer) {
-		
+			            int numberNeurons) {
+		int inputCount = numberInputs;
+		int neuronCount = numberNeurons;
 		this.layerType = layerType;
-		this.neurons = new Neuron[numberNeurons];
-			double[] weights = new double[numberInputs];
-			for (int i = 0; i < numberInputs; i++) weights[i]=Math.random() - 0.5;
-			double threshold = Math.random() - 0.5;
-			double output = 0.0;
-			for (int n = 0; n < numberNeurons; n++) {
+		if (layerType == LayerType.I) inputCount = 1;
+		this.neurons = new Neuron[neuronCount];
+			double[] weights = new double[inputCount];
+			for (int n = 0; n < neuronCount; n++) {
+				for (int i = 0; i < inputCount; i++) weights[i]=Math.random() - 0.5;
+				double threshold = Math.random() - 0.5;
+				double output = 0.0;
 				neurons[n] = new Neuron(weights, threshold, output);
 			}
-		this.priorLayer = priorLayer;
-		this.nextLayer  = nextLayer;
 	}
 	
 	public void      setLayerType(LayerType layerType) {this.layerType = layerType;}
@@ -46,19 +38,17 @@ public class NetworkLayer {
 	public void     setNeurons(Neuron[] neurons) {this.neurons = neurons;}
 	public Neuron[] getNeurons() {return this.neurons;}
 	
-	public void         setPriorLayer(NetworkLayer priorLayer) {this.priorLayer = priorLayer;}
-	public NetworkLayer getPriorLayer() {return this.priorLayer;}
-	
-	public void         setNextLayer(NetworkLayer nextLayer) {this.nextLayer = nextLayer;}
-	public NetworkLayer getNextLayer() {return this.nextLayer;}
-	
 	public int getNeuronCountInLayer() { 
 		return this.getNeurons().length; 
-		}
+	}
 	
 	public int getInputCountIntoLayer() { 
-		return this.getNeurons()[0].getWeights().length; 
+		if (this.getLayerType() == LayerType.I) {
+			return this.getNeuronCountInLayer(); 
+		} else {
+			return this.getNeurons()[0].getWeights().length; 
 		}
+	}
 	
 	public double[] getLayerOutputs() {
 		int numberNeurons = this.getNeurons().length;
@@ -70,21 +60,24 @@ public class NetworkLayer {
 	}
 	
 	public void runLayer(double[] inputs) {
-		int numberInputs  = inputs.length;
-		int numberNeurons = this.getNeurons().length;
-		double weightedSum;
-		int maxMultiplyCount;
-		int neuronWeightCount;
+		//if (this.getInputCountIntoLayer() != inputs.length) { return; }
+		//System.out.println("RunningLayer: " + this.toString());
+		int numberNeurons = this.getNeuronCountInLayer();
 		for (int n = 0; n < numberNeurons; n++) {
-			neuronWeightCount=neurons[n].getWeights().length;
-			weightedSum = 0.0;
-			maxMultiplyCount = (numberInputs > neuronWeightCount ? neuronWeightCount : numberInputs);  // minimum
-			for (int i = 0; i < maxMultiplyCount; i++) {
-				weightedSum += neurons[n].getWeights()[i] * inputs[i];
+			//System.out.println("Layer: " + n);
+			if (this.layerType == LayerType.I) {
+				// This is an input class neuron
+				if (this.getNeuronCountInLayer() != inputs.length) { 
+					//System.out.println("ERROR: input layer neuron count and inputs[] mismatch");
+					return; 
+					}
+				this.neurons[n].setOutput(inputs[n]);
+			} else {
+				// This is a hidden or output neuron
+				this.neurons[n].runNeuron(inputs);
 			}
-			weightedSum = Neuron.applyActivationFunction(weightedSum);
-			neurons[n].setOutput(weightedSum);
 		}
+		//System.out.println("RunningLayer: " + this.toString());
 		return;
 	}
 	
@@ -99,9 +92,26 @@ public class NetworkLayer {
 					if (!neurons[i].equals(otherNeurons[i]))  { equalsFlag = false; }
 				}
 		}
-		if (this.priorLayer != networkLayer.getPriorLayer()) { equalsFlag = false; }
-		if (this.nextLayer != networkLayer.getNextLayer())   { equalsFlag = false; }
 		return equalsFlag;
 	}
 
+    @Override
+    public String toString() { 
+    	StringBuffer sB = new StringBuffer();
+    	sB.append(String.format("NetworkLayer {"));
+    	sB.append("LayerType:" + String.format("%s", layerType));
+    	int numberNeurons = this.getNeuronCountInLayer();
+    	//System.out.println("Layer:toString:neuronCountneuronCount before loop: " + numberNeurons + " " + this.getNeurons().length);
+    	Neuron neuron;
+    	for(int i = 0; i < numberNeurons; i++) {
+    		sB.append("; ");
+    		//System.out.println("Layer:toString:neuronCount: " + this.getNeurons().length + " index: " + i);
+    		if (true) { neuron = this.getNeurons()[i];}
+    		//System.out.println("neuron: " + i);
+    		sB.append(neuron.toString());
+    	}
+    	sB.append(" }");
+        return String.format("%s", sB); 
+    }
+    
 }

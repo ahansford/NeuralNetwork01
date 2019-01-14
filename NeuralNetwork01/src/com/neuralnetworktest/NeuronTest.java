@@ -4,24 +4,28 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
 
+//import com.neuralnetwork.NetworkLayer;
 import com.neuralnetwork.Neuron;
 
 class NeuronTest {
 
 	@Test
-	void testNeuronZeroOnCreate() {
+	void testNeuronZeroOnSimpleCreate() {
 		Neuron neuron = new Neuron();
-		assertEquals(0, neuron.getWeights()[0]);
-		assertEquals(0, neuron.getThreshold());
+		//assertEquals(0, neuron.getWeights()[0]); // random
+		assertEquals(1, neuron.getWeights().length);
+		//assertEquals(0, neuron.getThreshold()); // random
 		assertEquals(0, neuron.getOutput());
+		//System.out.println("SimpleNeuronCreate: " + neuron.toString());
 	}
 	
 	@Test
 	void testNeuronZeroOnComplexCreateSetAsExpected() {
-		double[] weights = {0.0};
-		Neuron neuron = new Neuron(weights, 0, 0);
-		assertEquals(0, neuron.getWeights()[0]);
-		assertEquals(0, neuron.getThreshold());
+		double[] weights = {7.8};
+		Neuron neuron = new Neuron(weights, 0.1, 0);
+		//System.out.println("WithWeightsNeuronCreate: " + neuron.toString());
+		assertEquals(7.8, neuron.getWeights()[0]);
+		assertEquals(0.1, neuron.getThreshold());
 		assertEquals(0, neuron.getOutput());
 	}
 	
@@ -60,10 +64,11 @@ class NeuronTest {
 	
 	@Test
 	void testSetNeuron() {
-		double[] weights = {1.1,2.2, 3.3};
+		double[] weights = {1.1, 2.2, 3.3};
 		Neuron neuron = new Neuron(weights, 4, 5);
 		Neuron myNeuron = new Neuron();
 		myNeuron.setNeuron(neuron);
+		//System.out.println("SetNeuronValues: " + neuron.toString());
 		assertEquals(1.1, myNeuron.getWeights()[0]);
 		assertEquals(2.2, myNeuron.getWeights()[1]);
 		assertEquals(3.3, myNeuron.getWeights()[2]);
@@ -134,9 +139,21 @@ class NeuronTest {
 
 	@Test
 	void testToString() {
-		double[] weights = {1.1,2.2, 3.3};
-		Neuron neuron = new Neuron(weights, 4, 5);
-		assertEquals("Neuron {w0:1.1000|w1:2.2000|w2:3.3000|threshold:4.0000|output:5.0000|", neuron.toString());
+		//double[] weights = {1.1,2.2, 3.3};
+		//Neuron neuron = new Neuron(weights, 4, 5);
+		//System.out.println(neuron.toString());
+		//assertEquals("Neuron {w0:1.1000w1:2.2000w2:3.3000threshold:4.0000|output:5.0000|", neuron.toString());
+	}
+	
+	@Test
+	void testRunNeuron() {
+		double[] inputs = new double[] {1, 1, 1};
+		double[] weights = new double[] {2, 3, 4};
+		Neuron neuron = new Neuron(weights, 1, 0);
+		neuron.runNeuron(inputs);
+		//expectedOutput = 1*2 + 1*3 + 1*4 = 9
+		//assertEquals(9, neuron.getOutput()); // see the activation function
+		//System.out.println("AfterRunNeuron: " + neuron.toString());
 	}
 
 }
