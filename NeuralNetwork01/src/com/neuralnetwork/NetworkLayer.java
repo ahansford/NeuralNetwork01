@@ -81,20 +81,45 @@ public class NetworkLayer {
 		return;
 	}
 	
+	
 	public boolean equals(NetworkLayer networkLayer) {
 		boolean equalsFlag = true;
 		Neuron[] neurons = this.getNeurons();
 		Neuron[] otherNeurons = networkLayer.getNeurons();
 		
-		if (this.layerType != networkLayer.getLayerType())   { equalsFlag = false; }
-		if (neurons.length != otherNeurons.length)           { equalsFlag = false; }
+		if (this.layerType != networkLayer.getLayerType())   {equalsFlag = false; }
+		else if (neurons.length != otherNeurons.length)      {equalsFlag = false; }
 		else { for (int i=0; i < neurons.length; i++) {
-					if (!neurons[i].equals(otherNeurons[i]))  { equalsFlag = false; }
+					if (!neurons[i].equals(otherNeurons[i])) {equalsFlag = false; }
 				}
 		}
 		return equalsFlag;
 	}
 
+	public NetworkLayer copyNetworkLayer() {
+		int originalNeuronCount = this.getInputCountIntoLayer();
+		Neuron[] originalNeurons = this.getNeurons();
+		Neuron[] copiedNeurons = new Neuron[originalNeuronCount];
+		NetworkLayer copiedLayer = new NetworkLayer();
+		for (int i = 0; i < originalNeuronCount; i++) {
+			copiedNeurons[i] = originalNeurons[i]; }
+		copiedLayer.setNeurons(copiedNeurons);
+		copiedLayer.setLayerType(this.getLayerType());
+		return copiedLayer;
+	}
+	
+	public NetworkLayer adjustNetworkLayer() {
+		Neuron[] originalNeurons = this.getNeurons();
+		int neuronCount = this.getInputCountIntoLayer();
+		NetworkLayer adjustedLayer = this.copyNetworkLayer();
+		Neuron[] adjustedNeurons = new Neuron[neuronCount];
+		for (int i = 0; i < neuronCount; i++) {
+			adjustedNeurons[i] = originalNeurons[i].getAdjustedNeuron(); }
+		adjustedLayer.setNeurons(adjustedNeurons);
+		adjustedLayer.setLayerType(this.getLayerType());
+		return adjustedLayer;
+	}
+	
     @Override
     public String toString() { 
     	StringBuffer sB = new StringBuffer();
