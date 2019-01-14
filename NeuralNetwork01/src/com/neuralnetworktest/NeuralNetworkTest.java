@@ -12,6 +12,11 @@ import com.neuralnetwork.NetworkLayer;
 import com.neuralnetwork.NeuralNetwork;
 
 class NeuralNetworkTest {
+	
+	public static double[][][] TEST_TRAINING_SET = new double[][][] {{{0, 0}, {0}},
+																     {{0, 1}, {1}},
+																     {{1, 0}, {1}},
+																     {{1, 1}, {0}}};
 
 	@BeforeAll
 	static void setUpBeforeClass() throws Exception {
@@ -117,5 +122,29 @@ class NeuralNetworkTest {
 		//assertEquals(1, neuralNetwork.getNetworkOutputs()[0]);
 	}
 
+	@Test
+	void testRMSValueCalculatedCorrectly() {
+		int inputsCount = 2; 
+        int hiddenLayerCount = 1; 
+        int hiddenLayerNeuronCount = 1;
+        int outputsCount = 1;
+		NeuralNetwork neuralNetwork = new NeuralNetwork(inputsCount,
+														hiddenLayerCount,
+														hiddenLayerNeuronCount,
+														outputsCount );
+		int trainingSetLength = TEST_TRAINING_SET.length;
+		double[] inputs = new double[TEST_TRAINING_SET[0][0].length];
+		inputs = TEST_TRAINING_SET[1][0];
+		double result = 0;
+		neuralNetwork.runNetwork(inputs);
+		double runSquaresTotal = 0;
+		for(int i = 0; i < trainingSetLength; i++) {
+			neuralNetwork.runNetwork(inputs);
+			result = neuralNetwork.getNetworkOutputs()[0];
+			runSquaresTotal += (result - TEST_TRAINING_SET[i][1][0]) * (result - TEST_TRAINING_SET[i][1][0]);
+		}
+		double goalRMSerror = Math.sqrt(runSquaresTotal/trainingSetLength);
+		assertTrue(goalRMSerror-neuralNetwork.calculateRMSerror(TEST_TRAINING_SET) < 0.001);
+	}
 
 }

@@ -2,6 +2,7 @@ package com.neuralnetwork;
 
 import com.neuralnetwork.NetworkLayer.*;
 
+
 public class NeuralNetwork {
 	
 	
@@ -123,6 +124,19 @@ public class NeuralNetwork {
 	public double[] getNetworkOutputs() {
 		return this.getNetworkLayers()[this.getNetworkLayerCount() - 1].getLayerOutputs();
 	}
+	
+	public double calculateRMSerror(double[][][] trainingData) {
+		double runningTotals = 0;
+		double result;
+		for ( int i = 0; i < trainingData.length; i++) {
+			this.runNetwork(trainingData[i][0]);
+			result = this.getNetworkOutputs()[0];
+			runningTotals += (trainingData[i][1][0] - result) * (trainingData[i][1][0] - result);
+		}
+		double meanSqrError = runningTotals / trainingData.length; 
+		double RMSerror = Math.sqrt(meanSqrError);
+		return RMSerror;
+	} 
 	
     @Override
     public String toString() { 
