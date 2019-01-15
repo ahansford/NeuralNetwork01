@@ -83,21 +83,21 @@ public class NetworkLayer {
 	
 	
 	public boolean equals(NetworkLayer networkLayer) {
-		boolean equalsFlag = true;
+		if (networkLayer == null) return false; // missing network
 		Neuron[] neurons = this.getNeurons();
 		Neuron[] otherNeurons = networkLayer.getNeurons();
 		
-		if (this.layerType != networkLayer.getLayerType())   {equalsFlag = false; }
-		else if (neurons.length != otherNeurons.length)      {equalsFlag = false; }
+		if (this.layerType != networkLayer.getLayerType())   {return false; }  // layers
+		else if (neurons.length != otherNeurons.length)      {return false; }  // neuron count
 		else { for (int i=0; i < neurons.length; i++) {
-					if (!neurons[i].equals(otherNeurons[i])) {equalsFlag = false; }
+					if (!neurons[i].equals(otherNeurons[i])) {return false; }  // neuron weights
 				}
 		}
-		return equalsFlag;
+		return true;   // SUCCESS no issues found 
 	}
 
 	public NetworkLayer copyNetworkLayer() {
-		int originalNeuronCount = this.getInputCountIntoLayer();
+		int originalNeuronCount = this.getNeuronCountInLayer();
 		Neuron[] originalNeurons = this.getNeurons();
 		Neuron[] copiedNeurons = new Neuron[originalNeuronCount];
 		NetworkLayer copiedLayer = new NetworkLayer();
@@ -109,12 +109,14 @@ public class NetworkLayer {
 	}
 	
 	public NetworkLayer adjustNetworkLayer() {
-		Neuron[] originalNeurons = this.getNeurons();
-		int neuronCount = this.getInputCountIntoLayer();
 		NetworkLayer adjustedLayer = this.copyNetworkLayer();
-		Neuron[] adjustedNeurons = new Neuron[neuronCount];
+		Neuron[] originalNeurons = this.getNeurons();
+		int neuronCount = this.getNeuronCountInLayer();
+		Neuron[] adjustedNeurons = new Neuron[neuronCount]; 
+
 		for (int i = 0; i < neuronCount; i++) {
-			adjustedNeurons[i] = originalNeurons[i].getAdjustedNeuron(); }
+			adjustedNeurons[i] = originalNeurons[i].getAdjustedNeuron(); 
+		}
 		adjustedLayer.setNeurons(adjustedNeurons);
 		adjustedLayer.setLayerType(this.getLayerType());
 		return adjustedLayer;

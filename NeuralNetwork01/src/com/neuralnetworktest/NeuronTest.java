@@ -77,6 +77,21 @@ class NeuronTest {
 	}
 	
 	@Test
+	void testNeuronEqualsSelf() {
+		double[] weights = {1.1,2.2, 3.3};
+		Neuron neuron = new Neuron(weights, 4, 5);
+		assertTrue(neuron.equals(neuron));
+	}
+	
+	@Test
+	void testNeuronNotEqualToNullNeuron() {
+		double[] weights = {1.1,2.2, 3.3};
+		Neuron neuron = new Neuron(weights, 4, 5);
+		Neuron neuron2 = null;
+		assertFalse(neuron.equals(neuron2));
+	}
+	
+	@Test
 	void testCopiedNeuronIsEqual() {
 		double[] weights = {1.1,2.2, 3.3};
 		Neuron neuron = new Neuron(weights, 4, 5);

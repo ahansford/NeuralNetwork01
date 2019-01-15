@@ -60,17 +60,17 @@ public class Neuron {
 	}
 	
 	public boolean equals(Neuron neuron) {
-		boolean equalsFlag = true;
+		if (neuron == null)                                         {return false; } // FAIL missing neuron
 		if (neuron.getWeights().length == this.getWeights().length) {
 			//weight arrays are equal length and can be compared
 			for (int i = 0; i < neuron.getWeights().length; i++) {
-				if (this.getWeights()[i] != neuron.getWeights()[i]) { equalsFlag = false; }
+				if (this.getWeights()[i] != neuron.getWeights()[i]) { return false; } // FAIL weights mismatch
 			}
-		} else { equalsFlag = false; }  // arrays unequal length
-		if (this.getThreshold() != neuron.getThreshold()) { equalsFlag = false; }
+		} else                                                      { return false; } // unequal weights length
+		if (this.getThreshold() != neuron.getThreshold())           { return false; } // FAIL threshold mismatch
 			// Leaving the output test out, as this may not be needed 
-			// if (this.getOutput() != neuron.getOutput())       { equalsFlag = false; }
-		return equalsFlag;
+			// if (this.getOutput() != neuron.getOutput())          { return false; }
+		return true;
 	}
 	
 	

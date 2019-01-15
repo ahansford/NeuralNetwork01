@@ -88,19 +88,52 @@ class NeuralNetworkTest {
 	}
 	
 	@Test
-	void testCopiedNeuralNetworkEqualsSelf() {
+	void testConfiguredNetworkCanBeCopiedOverUninitializedNetwork() {
 		NeuralNetwork neuralNetwork = new NeuralNetwork(1,1,1,1);
-		NeuralNetwork copiedNetwork = neuralNetwork.copyNeuralNetwork();
-		assertTrue( neuralNetwork.equals(copiedNetwork) );
+		NeuralNetwork simpleNeuralNetwork; // uninitialized
+		simpleNeuralNetwork = neuralNetwork.copyNeuralNetwork();
+		assertTrue( neuralNetwork.equals(simpleNeuralNetwork) );
 	}
 	
 	@Test
-	void testAdjustedNeuralNetworkDoesNotEqualSelf() {
+	void testConfiguredNetworkCanBeCopiedOverSimpleNetwork() {
 		NeuralNetwork neuralNetwork = new NeuralNetwork(1,1,1,1);
+		NeuralNetwork simpleNeuralNetwork = new NeuralNetwork(1);
+		simpleNeuralNetwork = neuralNetwork.copyNeuralNetwork();
+		assertTrue( neuralNetwork.equals(simpleNeuralNetwork) );
+		
+		neuralNetwork = neuralNetwork.adjustNeuralNetwork();
+		assertFalse( neuralNetwork.equals(simpleNeuralNetwork) );
+	}
+	
+	@Test
+	void testCopiedNeuralNetworkEqualsSelf() {
+		NeuralNetwork neuralNetwork = new NeuralNetwork(1,1,1,1);
+		NeuralNetwork copiedNetwork = new NeuralNetwork(1);
+		copiedNetwork = neuralNetwork.copyNeuralNetwork();
+		assertTrue( neuralNetwork.equals(copiedNetwork) );
+		assertTrue( copiedNetwork.equals(neuralNetwork) );
+		
+		
+		NeuralNetwork uninitializedNetwork = new NeuralNetwork(1);
+		uninitializedNetwork = copiedNetwork.copyNeuralNetwork();
+		assertTrue( copiedNetwork.equals(uninitializedNetwork) );
+	}
+	
+	@Test
+	void testCanCopyMinimallyInitializedNetwork() {
+		NeuralNetwork neuralNetwork = new NeuralNetwork(1);
+		NeuralNetwork copiedNetwork = neuralNetwork.copyNeuralNetwork();
+		assertTrue(copiedNetwork.equals(neuralNetwork));
+	}
+	
+	@Test
+	void testAdjustedNeuralNetworkDoesAffectOriginal() {
+		NeuralNetwork neuralNetwork = new NeuralNetwork(1,1,1,1);
+		NeuralNetwork originalNetwork = neuralNetwork.copyNeuralNetwork();
 		NeuralNetwork adjustedNetwork = neuralNetwork.adjustNeuralNetwork();
 		assertFalse( neuralNetwork.equals(adjustedNetwork) );
-		
-		assertEquals(neuralNetwork.getNetworkLayerCount(), adjustedNetwork.getNetworkLayerCount());
+		assertTrue(originalNetwork.equals(neuralNetwork));;
 	}
 
 	@Test
@@ -136,8 +169,9 @@ class NeuralNetworkTest {
 		double[] inputs = new double[TEST_TRAINING_SET[0][0].length];
 		inputs = TEST_TRAINING_SET[1][0];
 		double result = 0;
-		neuralNetwork.runNetwork(inputs);
 		double runSquaresTotal = 0;
+		
+		neuralNetwork.runNetwork(inputs);
 		for(int i = 0; i < trainingSetLength; i++) {
 			neuralNetwork.runNetwork(inputs);
 			result = neuralNetwork.getNetworkOutputs()[0];

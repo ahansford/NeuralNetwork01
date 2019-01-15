@@ -216,6 +216,23 @@ class NetworkLayerTest {
 		assertEquals(networkLayer.getLayerType(),          adjustedLayer.getLayerType());
 		assertEquals(networkLayer.getNeuronCountInLayer(), adjustedLayer.getNeuronCountInLayer());
 	}
+	
+	@Test
+	void testEqualTestOfNullLayerReturnsFalse() {
+		double[] weights = new double[] {1.1, 2.2, 3.3};
+		double[] outputs = new double[] {4.4, 5.5, 6.6};
+		Neuron neuron1 = new Neuron(weights, 3.0, outputs[0]);
+		Neuron neuron2 = new Neuron(weights, 3.0, outputs[1]);
+		Neuron neuron3 = new Neuron(weights, 3.0, outputs[2]);
+		Neuron[] neurons = new Neuron[] {neuron1, neuron2, neuron3};
+		NetworkLayer  networkLayer = new NetworkLayer();
+		networkLayer.setLayerType(LayerType.I);
+		networkLayer.setNeurons(neurons);
+		
+		// Proper operation of equals() proves the new layer was modified
+		NetworkLayer nullLayer =null;
+		assertFalse(networkLayer.equals(nullLayer));
+	}
 
 	@Test
 	void testToString() {

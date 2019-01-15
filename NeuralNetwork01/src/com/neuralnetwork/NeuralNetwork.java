@@ -10,6 +10,8 @@ public class NeuralNetwork {
 	
 	public NeuralNetwork(int layerCount) {
 		this.layers = new NetworkLayer[layerCount];
+		for (int i = 0; i < layerCount; i++)
+			this.layers[i]= new NetworkLayer();
 	}
 	
 	public NeuralNetwork(int inputsCount, 
@@ -59,7 +61,10 @@ public class NeuralNetwork {
 	
 	public NetworkLayer[] getNetworkLayers() { return this.layers; }
 	
-	public int getNetworkLayerCount() { return this.layers.length; }
+	public int getNetworkLayerCount() { 
+		if (this.layers != null) { return this.layers.length; } // 
+		else {return 0; }
+	}
 	
 	
 	public int getNetworkInputCount() {
@@ -67,13 +72,6 @@ public class NeuralNetwork {
 		}
 	
 	public void runNetwork(double[] inputs) {
-		/*
-		 * if (inputs.length != this.layers[0].getInputCountIntoLayer()) {
-		 
-			System.out.print("InputsToLayer: " + this.layers[0].getInputCountIntoLayer());
-			System.out.println("ERROR: inputs into network mismatch");
-			for (int x =0; x < inputs.length;x++) System.out.print(" in:" + x + " " + inputs[x]);
-		}*/
 		int layerCount = this.getNetworkLayerCount();
 		NetworkLayer currentLayer;
 		for (int index = 0; index < layerCount; index++) {
@@ -86,7 +84,6 @@ public class NeuralNetwork {
 			} else {
 				// This is not the input layer
 				// Use outputs from the prior layer to pass as inputs
-				//System.out.println( "NeuralNetwork h or o layer Just before RunningNetwork: " + index);
 				currentLayer.runLayer(this.getNetworkLayers()[index - 1].getLayerOutputs());
 			}
 			//System.out.println( "RunningNetwork: " + index + " "+ currentLayer.toString());
@@ -95,28 +92,40 @@ public class NeuralNetwork {
 	}
 	
 	public boolean equals(NeuralNetwork otherNetwork) {
-		int layerCount = this.getNetworkLayerCount();
-		boolean equalsFlag = true;
+		int layerCount = this.getNetworkLayerCount(); 
+		int otherLayerCount = otherNetwork.getNetworkLayerCount();
+		if (otherLayerCount != layerCount) return false; // size mismatch
 		for (int i = 0; i< layerCount; i++) {
-			if( !this.getNetworkLayers()[i].equals(otherNetwork.getNetworkLayers()[i]) ) equalsFlag = false;
+			if (this.getNetworkLayers()[i]==null)         return false;  //empty layer
+			if (otherNetwork.getNetworkLayers()[i]==null) return false;  //empty layer
+			if( !this.getNetworkLayers()[i].equals(otherNetwork.getNetworkLayers()[i]) ) {
+				return false;
+			}
 		}
-		return equalsFlag;
+		return true;  // SUCCESS no defect found
 	}
 	
 	public NeuralNetwork copyNeuralNetwork() {
 		int layerCount = this.getNetworkLayerCount();
 		NeuralNetwork copiedNeuralNetwork = new NeuralNetwork(layerCount);
+		
 		for (int index = 0; index < layerCount; index++) {
-			copiedNeuralNetwork.getNetworkLayers()[index] = this.getNetworkLayers()[index].copyNetworkLayer();
+			if (this.getNetworkLayers()[index] == null) return null;
+			if (copiedNeuralNetwork.getNetworkLayers()[index] == null) return null;
+			copiedNeuralNetwork.layers[index] = this.getNetworkLayers()[index].copyNetworkLayer();
 		}
 		return copiedNeuralNetwork;
 	}
 	
 	public NeuralNetwork adjustNeuralNetwork() {
+		NeuralNetwork adjustedNeuralNetwork = this.copyNeuralNetwork();
+		
 		int layerCount = this.getNetworkLayerCount();
-		NeuralNetwork adjustedNeuralNetwork = new NeuralNetwork(layerCount);
+		NetworkLayer adjustementLayer = new NetworkLayer();
 		for (int index = 0; index < layerCount; index++) {
-			adjustedNeuralNetwork.getNetworkLayers()[index] = this.getNetworkLayers()[index].adjustNetworkLayer();
+			adjustementLayer = this.getNetworkLayers()[index];
+			adjustementLayer = adjustementLayer.adjustNetworkLayer();
+			adjustedNeuralNetwork.layers[index] = adjustementLayer;
 		}
 		return adjustedNeuralNetwork;
 	}

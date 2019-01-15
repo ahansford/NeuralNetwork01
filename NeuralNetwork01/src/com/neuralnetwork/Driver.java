@@ -33,16 +33,24 @@ public class Driver {
 										  hiddenLayerNeuronCount,
 										  outputsCount );
 		
-		//System.out.println(neuralNetwork.getNetworkLayers()[0]);
-		//double[] inputs = new double[] {2, 3};
-        printTrainingHeading(TRAINING_SET);
-		for (int i = 0; i < trainingSetCount; i++) {
-			neuralNetwork.runNetwork(TRAINING_SET[i][0]);
-			printTrainingRow(TRAINING_SET, i);
-		}
-		//neuralNetwork.runNetwork(inputs);
-		System.out.println("After runNetoworkTest" + neuralNetwork.toString());
-		//assertEquals(1, neuralNetwork.getNetworkOutputs()[0]);
+        NeuralNetwork adjustedNetwork = new NeuralNetwork(neuralNetwork.getNetworkLayerCount());
+        for (int j = 0; j< 20; j++) {
+        	adjustedNetwork = neuralNetwork.copyNeuralNetwork();
+        	adjustedNetwork = adjustedNetwork.adjustNeuralNetwork();
+        	if (adjustedNetwork.calculateRMSerror(TRAINING_SET) < neuralNetwork.calculateRMSerror(TRAINING_SET)) {
+        		// adjusted is better
+        		neuralNetwork = adjustedNetwork; //reassign network
+        	}
+        	printTrainingHeading(TRAINING_SET);
+			for (int i = 0; i < trainingSetCount; i++) {
+				neuralNetwork.runNetwork(TRAINING_SET[i][0]);
+				printTrainingRow(TRAINING_SET, i);
+			}
+			//neuralNetwork.runNetwork(inputs);
+			System.out.println("\nAfter runNetoworkTest: " + j + "      "+ neuralNetwork.toString());
+			//assertEquals(1, neuralNetwork.getNetworkOutputs()[0]);
+        }
+  
 
 	}
 	
@@ -60,6 +68,7 @@ public class Driver {
 		for (int i = 0; i < neuralNetwork.getNetworkOutputs().length; i++) {
 			sB.append("O" + i + "    |  ");
 		}
+		sB.append("RMS" +  "   |  ");
 		System.out.println(sB);
 	}
 	
@@ -77,7 +86,7 @@ public class Driver {
 		}
 		//System.out.println("Index: " + index);
 		sB.append(String.format("%.2f", neuralNetwork.getNetworkOutputs()[0]) + "  |  ");
-		
+		sB.append(String.format("%.2f", neuralNetwork.calculateRMSerror(TRAINING_SET)) + "  |  ");
 		System.out.println(sB);
 	}
 
