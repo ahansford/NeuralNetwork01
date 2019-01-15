@@ -3,15 +3,13 @@
  */
 package com.neuralnetwork;
 
-
-
-
 /**
  * @author RedSpectre
  *
  */
 public class Driver {
 	
+	public static int MAX_ITTERATIONS = 200;
 	public static double[][][] TRAINING_SET = new double[][][] {{{0, 0}, {0}},
 															    {{0, 1}, {1}},
 															    {{1, 0}, {1}},
@@ -34,31 +32,44 @@ public class Driver {
 										  outputsCount );
 		
         NeuralNetwork adjustedNetwork = new NeuralNetwork(neuralNetwork.getNetworkLayerCount());
-        for (int j = 0; j< 20; j++) {
-        	adjustedNetwork = neuralNetwork.copyNeuralNetwork();
-        	adjustedNetwork = adjustedNetwork.adjustNeuralNetwork();
-        	if (adjustedNetwork.calculateRMSerror(TRAINING_SET) < neuralNetwork.calculateRMSerror(TRAINING_SET)) {
+        double originalRMSerror = 0;
+        double adjustedRMSerror = 0;
+        int k =0;
+        boolean runFlag = true;
+        while (runFlag) {
+        	adjustedNetwork = neuralNetwork.copyNeuralNetwork().adjustNeuralNetwork();
+        	adjustedRMSerror = adjustedNetwork.calculateRMSerror(TRAINING_SET);
+        	originalRMSerror = neuralNetwork.calculateRMSerror(TRAINING_SET);
+        	System.out.print("| " + originalRMSerror + " | " + adjustedRMSerror + " | ");
+        	if (adjustedRMSerror < originalRMSerror) {
         		// adjusted is better
         		neuralNetwork = adjustedNetwork; //reassign network
+        		System.out.println("climb | ");
+        		k =1;
+        	} else {
+        		System.out.println("stay  | "+k);
+        		k++;
+        		if (k> MAX_ITTERATIONS) runFlag = false; // stop looping
         	}
-        	printTrainingHeading(TRAINING_SET);
-			for (int i = 0; i < trainingSetCount; i++) {
+        	for (int i = 0; i < trainingSetCount; i++) {
 				neuralNetwork.runNetwork(TRAINING_SET[i][0]);
-				printTrainingRow(TRAINING_SET, i);
+				//printTrainingRow(TRAINING_SET, i);
 			}
-			//neuralNetwork.runNetwork(inputs);
-			System.out.println("\nAfter runNetoworkTest: " + j + "      "+ neuralNetwork.toString());
-			//assertEquals(1, neuralNetwork.getNetworkOutputs()[0]);
+        	//System.out.println("\n");
         }
-  
-
+        printTrainingHeading(TRAINING_SET);
+        for (int i = 0; i < trainingSetCount; i++) {
+        	printTrainingRow(TRAINING_SET, i);
+        }
+        System.out.println("\n" + neuralNetwork.toString());
 	}
 	
 	public static void printTrainingHeading(double[][][] trainingSet) {
 		int inputsCount = TRAINING_SET[0][0].length; 
 		int outputCount = TRAINING_SET[0][1].length; 
 		
-		StringBuffer sB = new StringBuffer("| ");
+		StringBuffer sB = new StringBuffer("\n++++++++++++++++++++++++++++++++++++++++++++++\n");
+		sB.append("| ");
 		for (int i = 0; i < inputsCount; i++) {
 			sB.append("w" + i + " |  ");
 		}
@@ -66,9 +77,9 @@ public class Driver {
 			sB.append("o" + i + " |  ");
 		}
 		for (int i = 0; i < neuralNetwork.getNetworkOutputs().length; i++) {
-			sB.append("O" + i + "    |  ");
+			sB.append("     O" + i + "      |  ");
 		}
-		sB.append("RMS" +  "   |  ");
+		sB.append("RMS" +  "      |  ");
 		System.out.println(sB);
 	}
 	
@@ -85,8 +96,9 @@ public class Driver {
 			sB.append(String.format("%.0f", trainingSet[index][1][i]) + "  |  ");
 		}
 		//System.out.println("Index: " + index);
-		sB.append(String.format("%.2f", neuralNetwork.getNetworkOutputs()[0]) + "  |  ");
-		sB.append(String.format("%.2f", neuralNetwork.calculateRMSerror(TRAINING_SET)) + "  |  ");
+		neuralNetwork.runNetwork(TRAINING_SET[index][0]);
+		sB.append(String.format("%.9f", neuralNetwork.getNetworkOutputs()[0]) + "  |  ");
+		sB.append(String.format("%.5f", neuralNetwork.calculateRMSerror(TRAINING_SET)) + "  |  ");
 		System.out.println(sB);
 	}
 

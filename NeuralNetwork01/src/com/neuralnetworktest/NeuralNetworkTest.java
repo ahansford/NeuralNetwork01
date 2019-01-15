@@ -147,12 +147,8 @@ class NeuralNetworkTest {
 														hiddenLayerNeuronCount,
 														outputsCount );
 		
-		//System.out.println(neuralNetwork.getNetworkLayers()[0]);
 		double[] inputs = new double[] {2, 3};
-		//System.out.println("Before runNetoworkTest" + neuralNetwork.toString());
 		neuralNetwork.runNetwork(inputs);
-		//System.out.println("After runNetoworkTest" + neuralNetwork.toString());
-		//assertEquals(1, neuralNetwork.getNetworkOutputs()[0]);
 	}
 
 	@Test

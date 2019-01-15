@@ -150,10 +150,10 @@ public class NeuralNetwork {
     @Override
     public String toString() { 
     	StringBuffer sB = new StringBuffer();
-    	sB.append("{ Network");
+    	sB.append("Network:{");
     	int numberLayers = this.getNetworkLayerCount();
     	for(int i=0; i < numberLayers; i++) {
-    		sB.append("; ");
+    		sB.append(" ");
     		sB.append(this.getNetworkLayers()[i].toString());
     	}
     	sB.append(" }");

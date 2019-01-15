@@ -1,12 +1,8 @@
 package com.neuralnetwork;
 
-//import java.util.stream.IntStream;
-
-//import com.za.neuralnetwork.Neuron;
-
 public class Neuron {
 	
-	private double  LEARNING_RATE = 1;
+	private double  LEARNING_RATE = 0.05;
 	
 	private double[] weights = new double[] {0.0};
 	private double threshold = 0;
@@ -90,11 +86,8 @@ public class Neuron {
 		double weightedSum = -this.getThreshold();
 		for (int i = 0; i < this.weights.length; i++) {
 			weightedSum += inputs[i] * this.weights[i];
-			//System.out.println("input: " + inputs[i] + " " + weightedSum);
 		}
-		//System.out.println("\n");
 		double adjustedSum = applyActivationFunction2(weightedSum);
-		//System.out.println("RunningNeuron: "+ weightedSum + ", "+ adjustedSum ); 
 		this.setOutput(adjustedSum);
 	}
 	
