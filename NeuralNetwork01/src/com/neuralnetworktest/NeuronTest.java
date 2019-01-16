@@ -187,7 +187,6 @@ class NeuronTest {
 		double inputValue = 7;
 		assertEquals(7, Neuron.applyActivationFunction(inputValue));
 	}
-
 	
 	@Test
 	void testRunNeuron() {
