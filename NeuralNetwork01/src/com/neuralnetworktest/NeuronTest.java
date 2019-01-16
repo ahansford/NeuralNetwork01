@@ -3,6 +3,9 @@ package com.neuralnetworktest;
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Disabled;
+
+
 
 //import com.neuralnetwork.NetworkLayer;
 import com.neuralnetwork.Neuron;
@@ -20,10 +23,9 @@ class NeuronTest {
 	}
 	
 	@Test
-	void testNeuronZeroOnComplexCreateSetAsExpected() {
+	void testAllNeuronValuesOnComplexCreateSetAsExpected() {
 		double[] weights = {7.8};
 		Neuron neuron = new Neuron(weights, 0.1, 0);
-		//System.out.println("WithWeightsNeuronCreate: " + neuron.toString());
 		assertEquals(7.8, neuron.getWeights()[0]);
 		assertEquals(0.1, neuron.getThreshold());
 		assertEquals(0, neuron.getOutput());
@@ -51,7 +53,16 @@ class NeuronTest {
 	}
 	
 	@Test
-	void testCopy() {
+	void testAllNeuronValuesAsExpectedOnComplexCreateSet() {
+		double[] weights = {7.8};
+		Neuron neuron = new Neuron(weights, 0.1, 0);
+		assertEquals(7.8, neuron.getWeights()[0]);
+		assertEquals(0.1, neuron.getThreshold());
+		assertEquals(0, neuron.getOutput());
+	}
+	
+	@Test
+	void testCopiedNeuronHasExpectedValues() {
 		double[] weights = {1.1,2.2, 3.3};
 		Neuron neuron = new Neuron(weights, 4, 5);
 		Neuron copiedNeuron = neuron.copyNeuron();
@@ -63,19 +74,16 @@ class NeuronTest {
 	}
 	
 	@Test
-	void testSetNeuron() {
-		double[] weights = {1.1, 2.2, 3.3};
+	void testNeuronCopyHasExpectedValues() {
+		double[] weights = {1.1,2.2, 3.3};
 		Neuron neuron = new Neuron(weights, 4, 5);
-		Neuron myNeuron = new Neuron();
-		myNeuron.setNeuron(neuron);
-		//System.out.println("SetNeuronValues: " + neuron.toString());
-		assertEquals(1.1, myNeuron.getWeights()[0]);
-		assertEquals(2.2, myNeuron.getWeights()[1]);
-		assertEquals(3.3, myNeuron.getWeights()[2]);
-		assertEquals(4,   myNeuron.getThreshold());
-		assertEquals(5,   myNeuron.getOutput());
+		assertEquals(1.1, neuron.copyNeuron().getWeights()[0]);
+		assertEquals(2.2, neuron.copyNeuron().getWeights()[1]);
+		assertEquals(3.3, neuron.copyNeuron().getWeights()[2]);
+		assertEquals(4,   neuron.copyNeuron().getThreshold());
+		assertEquals(5,   neuron.copyNeuron().getOutput());
 	}
-	
+
 	@Test
 	void testNeuronEqualsSelf() {
 		double[] weights = {1.1,2.2, 3.3};
@@ -87,16 +95,7 @@ class NeuronTest {
 	void testNeuronNotEqualToNullNeuron() {
 		double[] weights = {1.1,2.2, 3.3};
 		Neuron neuron = new Neuron(weights, 4, 5);
-		Neuron neuron2 = null;
-		assertFalse(neuron.equals(neuron2));
-	}
-	
-	@Test
-	void testCopiedNeuronIsEqual() {
-		double[] weights = {1.1,2.2, 3.3};
-		Neuron neuron = new Neuron(weights, 4, 5);
-		Neuron copiedNeuron = neuron.copyNeuron();
-		assertTrue(neuron.equals(copiedNeuron));
+		assertFalse(neuron.equals((Neuron)null));
 	}
 	
 	@Test
@@ -110,19 +109,23 @@ class NeuronTest {
 	@Test
 	void testWrongThresholdsNotEqual() {
 		double[] weights = {1.1, 2.2, 3.3};
-		Neuron neuron = new Neuron(weights, 1, 0);
-		Neuron neuron2 = new Neuron(weights, 2, 0);
-		assertFalse(neuron.equals(neuron2));
+		double threshold = 5;
+		Neuron neuron = new Neuron(weights, threshold, 0);
+		Neuron copiedNeuron = neuron.copyNeuron();
+		copiedNeuron.setThreshold(threshold + 1);
+		assertFalse(neuron.equals(copiedNeuron));
 	}
 	
+	@Disabled  // TODO:  REMOVE?
 	@Test
 	void testWrongOutputNotEqual() {
-		/* Left out as it is not clear outputs should be tested in equal
+		// Left out as it is not clear outputs should be tested in equal
 		double[] weights = {1.1, 2.2, 3.3};
-		Neuron neuron = new Neuron(weights, 0, 0);
-		Neuron neuron2 = new Neuron(weights, 0, 2);
-		assertFalse(neuron.equals(neuron2));*/
-	}
+		double output = 7;
+		Neuron neuron = new Neuron(weights, 0, output);
+		Neuron neuron2 = new Neuron(weights, 0, output+1);
+		assertFalse(neuron.equals(neuron2));
+	} 
 	
 	@Test
 	void testWrongInputLenght1NotEqual() {
@@ -152,32 +155,39 @@ class NeuronTest {
 	}
 
 	@Test
+	void testCopiedNeuronIsEqual() {
+		double[] weights = {1.1,2.2, 3.3};
+		Neuron neuron = new Neuron(weights, 4, 5);
+		Neuron copiedNeuron = neuron.copyNeuron();
+		assertTrue(neuron.equals(copiedNeuron));
+	}
+	
+	@Test
 	void testAdjustedNeuronDoesNotEqualOriginal() {
 		double[] weights = {1.0, 1.0, 1.0};
 		Neuron neuron = new Neuron(weights, 1, 0);
 		Neuron adjustedNeuron = neuron.getAdjustedNeuron();
 		assertFalse(neuron.equals(adjustedNeuron));
-		//System.out.println("testAdjustedNeuronDoesNotEqualOriginal: Original " + neuron.toString());
-		//System.out.println("testAdjustedNeuronDoesNotEqualOriginal: Adjusted " + adjustedNeuron.toString());
-		adjustedNeuron = adjustedNeuron.getAdjustedNeuron();
-		adjustedNeuron = adjustedNeuron.getAdjustedNeuron();
-		adjustedNeuron = adjustedNeuron.getAdjustedNeuron();
-		adjustedNeuron = adjustedNeuron.getAdjustedNeuron();
-		adjustedNeuron = adjustedNeuron.getAdjustedNeuron();
-		adjustedNeuron = adjustedNeuron.getAdjustedNeuron();
-		adjustedNeuron = adjustedNeuron.getAdjustedNeuron();
-		adjustedNeuron = adjustedNeuron.getAdjustedNeuron();
-		//System.out.println("testAdjustedNeuronDoesNotEqualOriginal: Adjusted " + adjustedNeuron.toString());
 	}
-	
 	
 	@Test
-	void testToString() {
-		//double[] weights = {1.1,2.2, 3.3};
-		//Neuron neuron = new Neuron(weights, 4, 5);
-		//System.out.println(neuron.toString());
-		//assertEquals("Neuron {w0:1.1000w1:2.2000w2:3.3000threshold:4.0000|output:5.0000|", neuron.toString());
+	void testAdjustedNeuron2ReturnsZeroForNegativeNumbers() {
+		double inputValue = -1.5;
+		assertEquals(0.0, Neuron.applyActivationFunction(inputValue));
 	}
+	
+	@Test
+	void testAdjustedNeuron2ReturnsPointFiveForPointFive() {
+		double inputValue = 0.5;
+		assertEquals(0.5, Neuron.applyActivationFunction(inputValue));
+	}
+	
+	@Test
+	void testAdjustedNeuron2ReturnsSevenForPointSeven() {
+		double inputValue = 7;
+		assertEquals(7, Neuron.applyActivationFunction(inputValue));
+	}
+
 	
 	@Test
 	void testRunNeuron() {
@@ -185,9 +195,37 @@ class NeuronTest {
 		double[] weights = new double[] {2, 3, 4};
 		Neuron neuron = new Neuron(weights, 1, 0);
 		neuron.runNeuron(inputs);
-		//expectedOutput = 1*2 + 1*3 + 1*4 = 9
-		//assertEquals(9, neuron.getOutput()); // see the activation function
-		//System.out.println("AfterRunNeuron: " + neuron.toString());
+		//expectedOutput = 1*2 + 1*3 + 1*4 = 9 scaled to less than 1.0
+		assertTrue( Math.abs( 0.999 - neuron.getOutput()) < 0.002 ); // see the activation function
+		//System.out.println("Neuron.toSting() = " + neuron.toString());
+	}
+	
+	@Test
+	void testRunNeuronUnchangedOnTooFewInputCount() {
+		double[] inputs = new double[] {1, 1};
+		double[] weights = new double[] {2, 3, 4};
+		Neuron neuron = new Neuron(weights, 1, 0);
+		Neuron originalNeuron = neuron.copyNeuron();
+		neuron.runNeuron(inputs);
+		assertTrue( neuron.equals(originalNeuron));
+	}
+	
+	@Test
+	void testRunNeuronUnchangedOnTooManyInputCount() {
+		double[] inputs = new double[] {1, 1, 1, 3};
+		double[] weights = new double[] {2, 3, 4};
+		Neuron neuron = new Neuron(weights, 1, 0);
+		Neuron originalNeuron = neuron.copyNeuron();
+		neuron.runNeuron(inputs);
+		assertTrue( neuron.equals(originalNeuron));
 	}
 
+	//@Disabled
+	@Test
+	void testToString() {
+		double[] weights = {1.1,2.2, 3.3};
+		Neuron neuron = new Neuron(weights, 4, 5);
+		//System.out.println(neuron.toString());
+		assertEquals("Neuron {|w0:1.1000w1:2.2000w2:3.3000threshold:4.0000|output:5.0000|}", neuron.toString());
+	}
 }

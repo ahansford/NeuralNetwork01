@@ -5,9 +5,32 @@ import com.neuralnetwork.NetworkLayer.*;
 
 public class NeuralNetwork {
 	
-	
+	//  *** Members ***
 	private NetworkLayer[] layers;
 	
+	
+	//*** Access Methods ***	
+	public NetworkLayer[] getNetworkLayers() { return this.layers; }
+	
+	public int getNetworkLayerCount() { 
+		if (this.layers != null) { return this.layers.length; } // 
+		else {return 0; }
+	}
+	
+	public int getNetworkInputCount() {
+		return this.getNetworkLayers()[0].getInputCountIntoLayer(); 
+		}
+	
+	public double[] getNetworkOutputs() {
+		return this.getNetworkLayers()[this.getNetworkLayerCount() - 1].getLayerOutputs();
+	} 
+	
+	public int getNetworkOutputCount() {
+		return this.getNetworkLayers()[this.getNetworkLayerCount() - 1].getNeuronCountInLayer();
+	} 
+	
+	
+	//*** Constructor(s) ***
 	public NeuralNetwork(int layerCount) {
 		this.layers = new NetworkLayer[layerCount];
 		for (int i = 0; i < layerCount; i++)
@@ -59,38 +82,8 @@ public class NeuralNetwork {
 		layers[index] = newLayer;
 	}
 	
-	public NetworkLayer[] getNetworkLayers() { return this.layers; }
-	
-	public int getNetworkLayerCount() { 
-		if (this.layers != null) { return this.layers.length; } // 
-		else {return 0; }
-	}
-	
-	
-	public int getNetworkInputCount() {
-		return this.getNetworkLayers()[0].getInputCountIntoLayer(); 
-		}
-	
-	public void runNetwork(double[] inputs) {
-		int layerCount = this.getNetworkLayerCount();
-		NetworkLayer currentLayer;
-		for (int index = 0; index < layerCount; index++) {
-			currentLayer = this.getNetworkLayers()[index];
-			if (currentLayer.getLayerType() == LayerType.I) {
-				// This is the input layer
-				//System.out.println( "NeuralNetwork input layer Just before RunningNetwork: " + index);
-				currentLayer.runLayer(inputs);
-				
-			} else {
-				// This is not the input layer
-				// Use outputs from the prior layer to pass as inputs
-				currentLayer.runLayer(this.getNetworkLayers()[index - 1].getLayerOutputs());
-			}
-			//System.out.println( "RunningNetwork: " + index + " "+ currentLayer.toString());
-		}
-		return;
-	}
-	
+
+	// *** Methods ***	
 	public boolean equals(NeuralNetwork otherNetwork) {
 		int layerCount = this.getNetworkLayerCount(); 
 		int otherLayerCount = otherNetwork.getNetworkLayerCount();
@@ -117,6 +110,26 @@ public class NeuralNetwork {
 		return copiedNeuralNetwork;
 	}
 	
+	public void runNetwork(double[] inputs) {
+		int layerCount = this.getNetworkLayerCount();
+		NetworkLayer currentLayer;
+		for (int index = 0; index < layerCount; index++) {
+			currentLayer = this.getNetworkLayers()[index];
+			if (currentLayer.getLayerType() == LayerType.I) {
+				// This is the input layer
+				//System.out.println( "NeuralNetwork input layer Just before RunningNetwork: " + index);
+				currentLayer.runLayer(inputs);
+				
+			} else {
+				// This is not the input layer
+				// Use outputs from the prior layer to pass as inputs
+				currentLayer.runLayer(this.getNetworkLayers()[index - 1].getLayerOutputs());
+			}
+			//System.out.println( "RunningNetwork: " + index + " "+ currentLayer.toString());
+		}
+		return;
+	}
+	
 	public NeuralNetwork adjustNeuralNetwork() {
 		NeuralNetwork adjustedNeuralNetwork = this.copyNeuralNetwork();
 		
@@ -130,19 +143,17 @@ public class NeuralNetwork {
 		return adjustedNeuralNetwork;
 	}
 
-	public double[] getNetworkOutputs() {
-		return this.getNetworkLayers()[this.getNetworkLayerCount() - 1].getLayerOutputs();
-	}
-	
 	public double calculateRMSerror(double[][][] trainingData) {
 		double runningTotals = 0;
 		double result;
 		for ( int i = 0; i < trainingData.length; i++) {
-			this.runNetwork(trainingData[i][0]);
-			result = this.getNetworkOutputs()[0];
-			runningTotals += (trainingData[i][1][0] - result) * (trainingData[i][1][0] - result);
+			for (int j =0; j < this.getNetworkOutputCount(); j++) {
+				this.runNetwork(trainingData[i][0]);
+				result = this.getNetworkOutputs()[j];
+				runningTotals += (trainingData[i][1][j] - result) * (trainingData[i][1][j] - result);
+			}
 		}
-		double meanSqrError = runningTotals / trainingData.length; 
+		double meanSqrError = runningTotals / (trainingData.length*this.getNetworkOutputCount()); 
 		double RMSerror = Math.sqrt(meanSqrError);
 		return RMSerror;
 	} 

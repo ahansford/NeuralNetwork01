@@ -6,6 +6,7 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import com.neuralnetwork.NetworkLayer;
@@ -33,7 +34,14 @@ class NeuralNetworkTest {
 	@AfterEach
 	void tearDown() throws Exception {
 	}
+	
 
+	@Test
+	void testGetNetworkLayersReturnsSpecifiedLayerCount() {
+		NeuralNetwork neuralNetwork = new NeuralNetwork(5);
+		assertEquals( 5, neuralNetwork.getNetworkLayers().length);
+	}
+	
 	@Test
 	void testNeuralNetworkLayerCountThreeOnSimpleCreate() {
 		int inputsCount = 1; 
@@ -46,9 +54,9 @@ class NeuralNetworkTest {
 														outputsCount );
 		assertEquals(3,neuralNetwork.getNetworkLayerCount());
 	}
-	
+		
 	@Test
-	void testNeuralNetworkOutputCountOneOnSimpleCreate() {
+	void testGetNetworkLayersReturnsNonNullLayersOnSimpleCreate() {
 		int inputsCount = 1; 
         int hiddenLayerCount = 1; 
         int hiddenLayerNeuronCount = 1;
@@ -57,8 +65,25 @@ class NeuralNetworkTest {
 														hiddenLayerCount,
 														hiddenLayerNeuronCount,
 														outputsCount );
-		assertEquals(1,neuralNetwork.getNetworkOutputs().length);
+		NetworkLayer[] networkLayers = neuralNetwork.getNetworkLayers();
+		assertNotNull(networkLayers[0]);
+		assertNotNull(networkLayers[1]);
+		assertNotNull(networkLayers[2]);
 	}
+	
+	@Test
+	void testGetNetworkLayerCountReturnsCorrectValueOnComplexCreate() {
+		int inputsCount = 7; 
+        int hiddenLayerCount = 3; 
+        int hiddenLayerNeuronCount = 17;
+        int outputsCount = 17;
+		NeuralNetwork neuralNetwork = new NeuralNetwork(inputsCount,
+														hiddenLayerCount,
+														hiddenLayerNeuronCount,
+														outputsCount );
+		assertEquals((1+3+1),neuralNetwork.getNetworkLayerCount());
+	}
+	
 	
 	@Test
 	void testNeuralNetworkInputCountOneOnSimpleCreate() {
@@ -74,17 +99,43 @@ class NeuralNetworkTest {
 	}
 
 	@Test
-	void testGetNetworkLayers() {
-		NeuralNetwork neuralNetwork = new NeuralNetwork(1,1,1,1);
-		NetworkLayer[] networkLayers = neuralNetwork.getNetworkLayers();
-		// show that at lease one neuron is present
-		assertTrue( 0 < networkLayers[0].getNeurons().length);
+	void testGetNetworkOutputCountReturnsOutputNeuronCountOnCreate() {
+		int inputsCount = 7; 
+        int hiddenLayerCount = 3; 
+        int hiddenLayerNeuronCount = 17;
+        int outputsCount = 17;
+		NeuralNetwork neuralNetwork = new NeuralNetwork(inputsCount,
+														hiddenLayerCount,
+														hiddenLayerNeuronCount,
+														outputsCount );
+		assertEquals(17,neuralNetwork.getNetworkOutputCount());
 	}
 	
+	@Test
+	void testNeuralNetworkOutputCountOneOnSimpleCreate() {
+		int inputsCount = 1; 
+        int hiddenLayerCount = 1; 
+        int hiddenLayerNeuronCount = 1;
+        int outputsCount = 1;
+		NeuralNetwork neuralNetwork = new NeuralNetwork(inputsCount,
+														hiddenLayerCount,
+														hiddenLayerNeuronCount,
+														outputsCount );
+		assertEquals(1,neuralNetwork.getNetworkOutputCount());
+	}
+
 	@Test
 	void testNeuralNetworkEqualsSelf() {
 		NeuralNetwork neuralNetwork = new NeuralNetwork(1,1,1,1);
 		assertTrue( neuralNetwork.equals(neuralNetwork) );
+	}
+	
+	@Test
+	void testNeuralNetworkDiffernetLayerCountsNotEqual() {
+		NeuralNetwork neuralNetwork = new NeuralNetwork(1,1,1,1);
+		NeuralNetwork otherNetwork =  new NeuralNetwork(1,2,1,1);
+		assertFalse( neuralNetwork.equals(otherNetwork) );
+		
 	}
 	
 	@Test
@@ -118,6 +169,14 @@ class NeuralNetworkTest {
 		NeuralNetwork uninitializedNetwork = new NeuralNetwork(1);
 		uninitializedNetwork = copiedNetwork.copyNeuralNetwork();
 		assertTrue( copiedNetwork.equals(uninitializedNetwork) );
+	}
+	
+	@Test
+	void testTwoNetworksWithDifferentOutputCountsNotEqual() {
+		NeuralNetwork neuralNetwork = new NeuralNetwork(1,1,1,1);
+		NeuralNetwork copiedNetwork = new NeuralNetwork(1,1,1,3);
+		assertFalse( neuralNetwork.equals(copiedNetwork) );
+		assertFalse( copiedNetwork.equals(neuralNetwork) );
 	}
 	
 	@Test
@@ -175,6 +234,24 @@ class NeuralNetworkTest {
 		}
 		double goalRMSerror = Math.sqrt(runSquaresTotal/trainingSetLength);
 		assertTrue(goalRMSerror-neuralNetwork.calculateRMSerror(TEST_TRAINING_SET) < 0.001);
+	}
+	
+	@Disabled
+	@Test
+	void testNeuralNetworkToString() {
+		int inputsCount = 2; 
+        int hiddenLayerCount = 1; 
+        int hiddenLayerNeuronCount = 1;
+        int outputsCount = 4;
+		NeuralNetwork neuralNetwork = new NeuralNetwork(inputsCount,
+														hiddenLayerCount,
+														hiddenLayerNeuronCount,
+														outputsCount );
+		//int trainingSetLength = TEST_TRAINING_SET.length;
+		double[] inputs = new double[TEST_TRAINING_SET[0][0].length];
+		inputs = TEST_TRAINING_SET[1][0];
+		neuralNetwork.runNetwork(inputs);
+		System.out.println(neuralNetwork.toString());
 	}
 
 }

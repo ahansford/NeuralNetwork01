@@ -10,10 +10,10 @@ package com.neuralnetwork;
 public class Driver {
 	
 	public static int MAX_ITTERATIONS = 200;
-	public static double[][][] TRAINING_SET = new double[][][] {{{0, 0}, {0}},
-															    {{0, 1}, {1}},
-															    {{1, 0}, {1}},
-															    {{1, 1}, {0}}};
+	public static double[][][] TRAINING_SET = new double[][][] {{{0, 0}, {1, 0, 0, 1}},
+															    {{0, 1}, {1, 0, 1, 0}},
+															    {{1, 0}, {1, 0, 1, 0}},
+															    {{1, 1}, {0, 1, 0, 0}}};
 		
 	public static NeuralNetwork neuralNetwork;
 
@@ -25,7 +25,7 @@ public class Driver {
 		int inputsCount = TRAINING_SET[0][0].length; 
         int hiddenLayerCount = 1; 
         int hiddenLayerNeuronCount = 2;
-        int outputsCount = 1;
+        int outputsCount = 4;
         neuralNetwork = new NeuralNetwork(inputsCount,
 										  hiddenLayerCount,
 										  hiddenLayerNeuronCount,
@@ -68,7 +68,7 @@ public class Driver {
 		int inputsCount = TRAINING_SET[0][0].length; 
 		int outputCount = TRAINING_SET[0][1].length; 
 		
-		StringBuffer sB = new StringBuffer("\n++++++++++++++++++++++++++++++++++++++++++++++\n");
+		StringBuffer sB = new StringBuffer("\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
 		sB.append("| ");
 		for (int i = 0; i < inputsCount; i++) {
 			sB.append("w" + i + " |  ");
@@ -95,9 +95,10 @@ public class Driver {
 		for (int i = 0; i < outputCount; i++) {
 			sB.append(String.format("%.0f", trainingSet[index][1][i]) + "  |  ");
 		}
-		//System.out.println("Index: " + index);
-		neuralNetwork.runNetwork(TRAINING_SET[index][0]);
-		sB.append(String.format("%.9f", neuralNetwork.getNetworkOutputs()[0]) + "  |  ");
+		for (int i = 0; i < outputCount; i++) {
+			neuralNetwork.runNetwork(TRAINING_SET[index][0]);
+			sB.append(String.format("%.9f", neuralNetwork.getNetworkOutputs()[i]) + "  |  ");
+		}
 		sB.append(String.format("%.5f", neuralNetwork.calculateRMSerror(TRAINING_SET)) + "  |  ");
 		System.out.println(sB);
 	}
