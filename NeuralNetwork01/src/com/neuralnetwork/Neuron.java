@@ -63,9 +63,7 @@ public class Neuron {
 	}
 	
 	public static double applyActivationFunction(double weightedSum) {
-		if (weightedSum < 0) weightedSum=0;
-		//if (weightedSum > 1) weightedSum=1;
-		return weightedSum;
+		return (weightedSum < 0 ? 0: 1);
 	}
 	
 	public static double applyActivationFunction2(double weightedSum) {
@@ -73,10 +71,13 @@ public class Neuron {
 	}
 	
 	public void runNeuron(double[] inputs) {
+		// GOAL:  Sum all neuron inputs[i]*weights[i], then subtract the threshold
+		// OUTPUT a positive number if weightedSum is less than the threshold
+		// ... if weightedSum-threshold is negative, the neuron did not fire
 		int weightCount = this.getWeightCount();
 		if (inputs.length != weightCount) return; // input mismatch  UNREPORTED ERROR 
 		double[] weights = this.getWeights();
-		double weightedSum = -this.getThreshold();
+		double weightedSum = -this.getThreshold();  // preemptively subtract the current threshold
 		for (int i = 0; i < weightCount; i++) {
 			weightedSum += inputs[i] * weights[i];
 		}

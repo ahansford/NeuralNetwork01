@@ -143,20 +143,24 @@ public class NeuralNetwork {
 		return adjustedNeuralNetwork;
 	}
 
-	public double calculateRMSerror(double[][][] trainingData) {
+	public double calculateMeanSqrError(double[][][] trainingData) {
 		double runningTotals = 0;
 		double result;
-		for ( int i = 0; i < trainingData.length; i++) {
-			for (int j =0; j < this.getNetworkOutputCount(); j++) {
+		for ( int i = 0; i < trainingData.length; i++) {            // cycle through the training sets
+			for (int j =0; j < this.getNetworkOutputCount(); j++) { // cycle through the network outputs
 				this.runNetwork(trainingData[i][0]);
 				result = this.getNetworkOutputs()[j];
 				runningTotals += (trainingData[i][1][j] - result) * (trainingData[i][1][j] - result);
 			}
 		}
 		double meanSqrError = runningTotals / (trainingData.length*this.getNetworkOutputCount()); 
-		double RMSerror = Math.sqrt(meanSqrError);
-		return RMSerror;
+		return meanSqrError;
 	} 
+	
+	public double calculateRMSerror(double[][][] trainingData) {
+		double RMSerror = Math.sqrt(calculateMeanSqrError(trainingData));
+		return RMSerror;
+	}
 	
     @Override
     public String toString() { 
