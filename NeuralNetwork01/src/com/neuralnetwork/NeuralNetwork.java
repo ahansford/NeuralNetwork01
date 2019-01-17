@@ -22,7 +22,7 @@ public class NeuralNetwork {
 		}
 	
 	public double[] getNetworkOutputs() {
-		return this.getNetworkLayers()[this.getNetworkLayerCount() - 1].getLayerOutputs();
+		return this.getNetworkLayers()[this.getNetworkLayerCount() - 1].getActivatedLayerOutputs();
 	} 
 	
 	public int getNetworkOutputCount() {
@@ -123,7 +123,7 @@ public class NeuralNetwork {
 			} else {
 				// This is not the input layer
 				// Use outputs from the prior layer to pass as inputs
-				currentLayer.runLayer(this.getNetworkLayers()[index - 1].getLayerOutputs());
+				currentLayer.runLayer(this.getNetworkLayers()[index - 1].getActivatedLayerOutputs());
 			}
 			//System.out.println( "RunningNetwork: " + index + " "+ currentLayer.toString());
 		}

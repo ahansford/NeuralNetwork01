@@ -26,11 +26,11 @@ public class NetworkLayer {
 		else { return this.getNeuronAtIndex(0).getWeightCount(); }
 	}
 	
-	public double[] getLayerOutputs() {
+	public double[] getActivatedLayerOutputs() {
 		int numberNeurons = this.getNeuronCountInLayer();
 		double[] outputs = new double[numberNeurons];
-		for (int i = 0; i < numberNeurons; i++) {
-			outputs[i] = this.getNeurons()[i].getOutput();
+		for (int n = 0; n < numberNeurons; n++) {
+			outputs[n] = this.getNeurons()[n].getOutput();
 		}
 		return outputs;
 	}

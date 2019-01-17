@@ -124,7 +124,7 @@ class NetworkLayerTest {
 		Neuron[] neurons = new Neuron[] {neuron1, neuron2, neuron3};
 		NetworkLayer  networkLayer = new NetworkLayer();
 		networkLayer.setNeurons(neurons);
-		double[] testOutputs =networkLayer.getLayerOutputs();
+		double[] testOutputs =networkLayer.getActivatedLayerOutputs();
 		assertEquals(outputs.length, testOutputs.length);
 		for(int i = 0; i < outputs.length; i++) {
 			assertEquals(outputs[i], testOutputs[i]);
@@ -234,7 +234,7 @@ class NetworkLayerTest {
 		neurons[1].setWeights(weights1);
 		networkLayer.setNeurons(neurons);
 		networkLayer.runLayer(inputs);
-		outputs = networkLayer.getLayerOutputs();
+		outputs = networkLayer.getActivatedLayerOutputs();
 		assertTrue(Neuron.applyActivationFunction2(expectedOutputs[0])-outputs[0] < 0.1);
 		assertTrue(Neuron.applyActivationFunction2(expectedOutputs[1])-outputs[1] < 0.1);
 	}
