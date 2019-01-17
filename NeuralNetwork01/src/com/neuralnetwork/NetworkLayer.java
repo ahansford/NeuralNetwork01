@@ -35,6 +35,15 @@ public class NetworkLayer {
 		return outputs;
 	}
 	
+	public double[] getWeightedLayerOutputs() {
+		int numberNeurons = this.getNeuronCountInLayer();
+		double[] outputs = new double[numberNeurons];
+		for (int n = 0; n < numberNeurons; n++) {
+			outputs[n] = this.getNeurons()[n].getOutput();
+		}
+		return outputs;
+	}
+	
 	// *** Constructor(s) ***
 	public NetworkLayer() {
 		this.setLayerType( LayerType.UNKNOWN );
