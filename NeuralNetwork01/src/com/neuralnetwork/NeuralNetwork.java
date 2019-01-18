@@ -84,6 +84,12 @@ public class NeuralNetwork {
 	
 
 	// *** Methods ***	
+	
+	public void adjustNetwork(double[][][] trainingSet) {
+		
+	}
+	
+	
 	public boolean equals(NeuralNetwork otherNetwork) {
 		int layerCount = this.getNetworkLayerCount(); 
 		int otherLayerCount = otherNetwork.getNetworkLayerCount();
