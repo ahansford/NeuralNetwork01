@@ -9,6 +9,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
+import com.neuralnetwork.HillClimb;
 import com.neuralnetwork.NetworkLayer;
 import com.neuralnetwork.NeuralNetwork;
 
@@ -152,9 +153,6 @@ class NeuralNetworkTest {
 		NeuralNetwork simpleNeuralNetwork = new NeuralNetwork(1);
 		simpleNeuralNetwork = neuralNetwork.copyNeuralNetwork();
 		assertTrue( neuralNetwork.equals(simpleNeuralNetwork) );
-		
-		neuralNetwork = neuralNetwork.adjustNeuralNetwork();
-		assertFalse( neuralNetwork.equals(simpleNeuralNetwork) );
 	}
 	
 	@Test
@@ -190,7 +188,7 @@ class NeuralNetworkTest {
 	void testAdjustedNeuralNetworkDoesAffectOriginal() {
 		NeuralNetwork neuralNetwork = new NeuralNetwork(1,1,1,1);
 		NeuralNetwork originalNetwork = neuralNetwork.copyNeuralNetwork();
-		NeuralNetwork adjustedNetwork = neuralNetwork.adjustNeuralNetwork();
+		NeuralNetwork adjustedNetwork = ((HillClimb) neuralNetwork).adjustAllWeightsThresholdsRandomly();
 		assertFalse( neuralNetwork.equals(adjustedNetwork) );
 		assertTrue(originalNetwork.equals(neuralNetwork));;
 	}

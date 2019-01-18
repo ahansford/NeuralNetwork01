@@ -126,7 +126,7 @@ public class NetworkLayer {
 		return;
 	}
 	
-	public NetworkLayer adjustNetworkLayer() {
+	public NetworkLayer adjustAllLayerWeightsThresholdsRandomly() {
 		NetworkLayer adjustedLayer = this.copyNetworkLayer();
 		Neuron[] originalNeurons = this.getNeurons();
 		int neuronCount = this.getNeuronCountInLayer();

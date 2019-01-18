@@ -365,7 +365,7 @@ class NetworkLayerTest {
 		NetworkLayer adjustedLayer = networkLayer.copyNetworkLayer();
 		assertTrue(networkLayer.equals(adjustedLayer)); 
 		
-		adjustedLayer = networkLayer.adjustNetworkLayer();
+		adjustedLayer = networkLayer.adjustAllLayerWeightsThresholdsRandomly();
 		assertFalse(networkLayer.equals(adjustedLayer)); 
 
 		// Demonstrates partial matching assurance; dependent on neuronAdjust testing
@@ -373,7 +373,7 @@ class NetworkLayerTest {
 		assertEquals(networkLayer.getNeuronCountInLayer(), adjustedLayer.getNeuronCountInLayer());
 	}
 	
-	//@Disabled
+	@Disabled
 	@Test
 	void testToString() {
 		double[] weights = new double[] {1.1, 2.2, 3.3};
