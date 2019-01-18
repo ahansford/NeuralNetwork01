@@ -62,8 +62,9 @@ public class Neuron {
 		return new Neuron(adjustedWeights, adjustedThreshold, 0);
 	}
 	
+	/**/
 	public static double applyActivationFunction(double weightedSum) {
-		return (weightedSum < 0 ? 0: 1);
+		return (weightedSum < 0 ? 0: weightedSum);
 	}
 	
 	public static double applyActivationFunction2(double weightedSum) {
@@ -81,7 +82,7 @@ public class Neuron {
 		for (int i = 0; i < weightCount; i++) {
 			weightedSum += inputs[i] * weights[i];
 		}
-		weightedSum = applyActivationFunction2(weightedSum);
+		//weightedSum = applyActivationFunction2(weightedSum);
 		this.setOutput(weightedSum);
 	}
 	

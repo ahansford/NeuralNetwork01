@@ -39,7 +39,7 @@ class NetworkLayerTest {
 		assertEquals(NetworkLayer.LayerType.UNKNOWN, networkLayer.getLayerType());
 			assertEquals(1, networkLayer.getNeurons()[0].getWeights().length);
 			//assertEquals(0, networkLayer.getNeurons()[0].getWeights()[0]); // weight is random
-			//assertEquals(0, networkLayer.getNeurons()[0].getThreshold()); // threshold is random
+			//assertEquals(0, networkLayer.getNeurons()[0].getThreshold());  // threshold is random
 			assertEquals(0, networkLayer.getNeurons()[0].getOutput());
 	}
 	
@@ -75,7 +75,7 @@ class NetworkLayerTest {
 	}
 	
 	@Test
-	void testGetgNeuronCountInLayer() {
+	void testGetNeuronCountInLayer() {
 		double[] weights = new double[] {0.0};
 		double[] outputs = new double[] {1.1, 2.2, 3.3};
 		Neuron neuron1 = new Neuron(weights, 0.0, outputs[0]);
@@ -88,34 +88,51 @@ class NetworkLayerTest {
 		assertEquals(neurons.length, networkLayer.getNeuronCountInLayer());
 		
 		NetworkLayer  networkLayer2 = new NetworkLayer();
-		assertEquals(networkLayer2.getNeuronAtIndex(0).getWeightCount(), networkLayer2.getNeuronCountInLayer());
+		assertEquals(1, networkLayer2.getNeuronCountInLayer());
 	}
 	
 	@Test
 	void testGetInputCountToLayer() {
 		double[] weights = new double[] {0.0};
-		double[] outputs = new double[] {1.1, 2.2, 3.3, 4.4};
+		double[] outputs = new double[] {1.1, 2.2, 3.3, 4.4, 5.5};
 		Neuron neuron1 = new Neuron(weights, 0.0, outputs[0]);
 		Neuron neuron2 = new Neuron(weights, 0.0, outputs[1]);
 		Neuron neuron3 = new Neuron(weights, 0.0, outputs[2]);
 		Neuron neuron4 = new Neuron(weights, 0.0, outputs[3]);
-		Neuron[] neurons = new Neuron[] {neuron1, neuron2, neuron3, neuron4};
+		Neuron neuron5 = new Neuron(weights, 0.0, outputs[4]);
+		Neuron[] neurons = new Neuron[] {neuron1, neuron2, neuron3, neuron4, neuron5};
 		NetworkLayer  networkLayer = new NetworkLayer();
 		networkLayer.setNeurons(neurons);
 		
 		networkLayer.setLayerType(LayerType.I);
-		assertEquals(networkLayer.getNeurons().length, networkLayer.getInputCountIntoLayer());
+		assertEquals(5, networkLayer.getInputCountIntoLayer());
 
 		networkLayer.setLayerType(LayerType.H);
-		assertEquals(networkLayer.getNeurons()[0].getWeights().length, networkLayer.getInputCountIntoLayer());
+		assertEquals(1, networkLayer.getInputCountIntoLayer());
 		
 		networkLayer.setLayerType(LayerType.O);
-		assertEquals(networkLayer.getNeurons()[0].getWeights().length, networkLayer.getInputCountIntoLayer());
+		assertEquals(1, networkLayer.getInputCountIntoLayer());
 	}
 	
+	@Test
+	void testGetWeightedLayerOutputsReturnsCorrectValues() {
+		double[] weights = new double[] {0.0};
+		double[] outputs = new double[] {1.1, 2.2, 3.3};
+		Neuron neuron1 = new Neuron(weights, 0.0, outputs[0]);
+		Neuron neuron2 = new Neuron(weights, 0.0, outputs[1]);
+		Neuron neuron3 = new Neuron(weights, 0.0, outputs[2]);
+		Neuron[] neurons = new Neuron[] {neuron1, neuron2, neuron3};
+		NetworkLayer  networkLayer = new NetworkLayer();
+		networkLayer.setNeurons(neurons);
+		double[] testOutputs =networkLayer.getWeightedLayerOutputs();
+		assertEquals(outputs.length, testOutputs.length);
+		for(int i = 0; i < outputs.length; i++) {
+			assertEquals(outputs[i], testOutputs[i]);
+		}
+	}
 	
 	@Test
-	void testGetLayerOutputsReturnsCorrectValues() {
+	void testGetActivatedLayerOutputsReturnsCorrectValues() {
 		double[] weights = new double[] {0.0};
 		double[] outputs = new double[] {1.1, 2.2, 3.3};
 		Neuron neuron1 = new Neuron(weights, 0.0, outputs[0]);
@@ -125,10 +142,9 @@ class NetworkLayerTest {
 		NetworkLayer  networkLayer = new NetworkLayer();
 		networkLayer.setNeurons(neurons);
 		double[] testOutputs =networkLayer.getActivatedLayerOutputs();
-		assertEquals(outputs.length, testOutputs.length);
-		for(int i = 0; i < outputs.length; i++) {
-			assertEquals(outputs[i], testOutputs[i]);
-		}
+		assertTrue((testOutputs[0] - 0.750)< 0.001);
+		assertTrue((testOutputs[1] - 0.900)< 0.001);
+		assertTrue((testOutputs[2] - 0.964)< 0.001);
 	}
 	
 	@Test
@@ -164,19 +180,13 @@ class NetworkLayerTest {
 	void testWrongLayerTypeNotAreEquals() {
 		NetworkLayer  networkLayer = new NetworkLayer();		
 		NetworkLayer  networkLayer2 = new NetworkLayer();
+		networkLayer.setLayerType(LayerType.UNKNOWN);
 		networkLayer2.setLayerType(LayerType.H);
 		assertFalse(networkLayer.equals(networkLayer2));
 	}
 	
 	@Test
-	void testWrongPriorLayersNotAreEquals() {
-		NetworkLayer  networkLayer = new NetworkLayer();		
-		NetworkLayer  networkLayer2 = new NetworkLayer();
-		assertFalse(networkLayer.equals(networkLayer2));
-	}
-	
-	@Test
-	void testWrongNextLayersNotAreEquals() {
+	void testSimpleRandonWeightsLayersNotAreEquals() {
 		NetworkLayer  networkLayer = new NetworkLayer();		
 		NetworkLayer  networkLayer2 = new NetworkLayer();
 		assertFalse(networkLayer.equals(networkLayer2));
@@ -217,14 +227,35 @@ class NetworkLayerTest {
 	}
 	
 	@Test
-	void testRunLayer() {
+	void testWrongNeuronCountReturnsNotEqual() {
+		double[] weights = new double[] {1.1, 2.2, 3.3};
+		double[] outputs = new double[] {4.4, 5.5, 6.6};
+		Neuron neuron1 = new Neuron(weights, 3.0, outputs[0]);
+		Neuron neuron2 = new Neuron(weights, 3.0, outputs[1]);
+		Neuron neuron3 = new Neuron(weights, 3.0, outputs[2]);
+		Neuron[] neurons = new Neuron[] {neuron1, neuron2, neuron3};
+		NetworkLayer  networkLayer = new NetworkLayer();
+		networkLayer.setLayerType(LayerType.I);
+		networkLayer.setNeurons(neurons);
+		
+		neurons = new Neuron[] {neuron1, neuron2};
+		NetworkLayer  networkLayer2 = new NetworkLayer();
+		networkLayer2.setLayerType(LayerType.I);
+		networkLayer2.setNeurons(neurons);
+		
+		assertTrue( !networkLayer.equals(networkLayer2));  
+	}
+	
+	@Test
+	void testRunLayerReturnsExpectedActivatedValues() {
 		int numberInputs = 3;
         int numberNeurons= 2;
         double[] inputs = new double[] {1, 1, 1};
 		double[] weights0 = new double[] {2, 3, 4};
 		double[] weights1 = new double[] {5, 6, 7};
 		double[] outputs = new double[numberNeurons];
-		double[] expectedOutputs = new double[] {9,18};
+		//double[] expectedWeightedOutputs = new double[] {9,18};
+		double[] expectedActivatedOutputs = new double[] {0.99981,0.99999};
 		NetworkLayer  networkLayer = new NetworkLayer(LayerType.H,
 				                                      numberInputs, 
 				                                      numberNeurons);
@@ -235,12 +266,14 @@ class NetworkLayerTest {
 		networkLayer.setNeurons(neurons);
 		networkLayer.runLayer(inputs);
 		outputs = networkLayer.getActivatedLayerOutputs();
-		assertTrue(Neuron.applyActivationFunction2(expectedOutputs[0])-outputs[0] < 0.1);
-		assertTrue(Neuron.applyActivationFunction2(expectedOutputs[1])-outputs[1] < 0.1);
+		//assertEquals(expectedOutputs[0], outputs[0]);
+		//assertEquals(expectedActivatedOutputs[1],  outputs[1]);
+		assertTrue((expectedActivatedOutputs[0] - outputs[0]) < 0.1);
+		assertTrue((expectedActivatedOutputs[1] - outputs[1]) < 0.1);
 	}
 	
 	@Test
-	void testRunInputLayer() {
+	void testRunningLayerDoesNotChangeWeightsOrThreshold() {
 		int numberInputs = 3;
         int numberNeurons= 3;
         double[] inputs = new double[] {1, 1, 1};
@@ -259,7 +292,26 @@ class NetworkLayerTest {
 	}
 	
 	@Test
-	void testRunInputLayerWithWrongInputs() {
+	void testRunningWrongInputCountDoesNotChangeOutput() {
+		int numberInputs = 2;
+        int numberNeurons= 3;
+        double[] inputs = new double[] {1, 1, 1};
+		double[] weights = new double[] {2, 3, 4};
+		NetworkLayer  networkLayer = new NetworkLayer(LayerType.I,
+				                                      numberInputs, 
+				                                      numberNeurons);
+		Neuron[] neurons = networkLayer.getNeurons();
+		neurons[0].setWeights(weights);
+		neurons[1].setWeights(weights);
+		neurons[2].setWeights(weights);
+		networkLayer.setNeurons(neurons);
+
+		networkLayer.runLayer(inputs);
+		assertEquals(0.0, networkLayer.getWeightedLayerOutputs()[0]);
+	}
+	
+	@Test
+	void testRunLayerWithTooManyInputsDoesNOtChangeOutput() {
 		int numberInputs = 3;
         int numberNeurons= 3;
         double[] inputs = new double[] {1, 1, 1, 1};
@@ -272,11 +324,29 @@ class NetworkLayerTest {
 		neurons[1].setWeights(weights);
 		neurons[2].setWeights(weights);
 		networkLayer.setNeurons(neurons);
-		NetworkLayer originalLayer = networkLayer.copyNetworkLayer();
+		
 		networkLayer.runLayer(inputs);
-		assertTrue(networkLayer.equals(originalLayer));
+		assertEquals(0.0, networkLayer.getWeightedLayerOutputs()[0]);
 	}
 	
+	@Test
+	void testRunHiddenLayerWithTooManyInputsDoesNOtChangeOutput() {
+		int numberInputs = 3;
+        int numberNeurons= 3;
+        double[] inputs = new double[] {1, 1, 1, 1};
+		double[] weights = new double[] {2, 3, 4};
+		NetworkLayer  networkLayer = new NetworkLayer(LayerType.H,
+				                                      numberInputs, 
+				                                      numberNeurons);
+		Neuron[] neurons = networkLayer.getNeurons();
+		neurons[0].setWeights(weights);
+		neurons[1].setWeights(weights);
+		neurons[2].setWeights(weights);
+		networkLayer.setNeurons(neurons);
+		
+		networkLayer.runLayer(inputs);
+		assertEquals(0.0, networkLayer.getWeightedLayerOutputs()[0]);
+	}
 	
 	
 	@Test
@@ -292,8 +362,7 @@ class NetworkLayerTest {
 		networkLayer.setNeurons(neurons);
 		
 		// Proper operation of equals() proves the new layer was modified
-		NetworkLayer adjustedLayer;
-		adjustedLayer = networkLayer.copyNetworkLayer();
+		NetworkLayer adjustedLayer = networkLayer.copyNetworkLayer();
 		assertTrue(networkLayer.equals(adjustedLayer)); 
 		
 		adjustedLayer = networkLayer.adjustNetworkLayer();
@@ -304,7 +373,7 @@ class NetworkLayerTest {
 		assertEquals(networkLayer.getNeuronCountInLayer(), adjustedLayer.getNeuronCountInLayer());
 	}
 	
-	@Disabled
+	//@Disabled
 	@Test
 	void testToString() {
 		double[] weights = new double[] {1.1, 2.2, 3.3};

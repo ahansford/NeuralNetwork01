@@ -19,29 +19,30 @@ public class NetworkLayer {
 	public void   setNeuronAtIndex(Neuron neuron, int index) {this.neurons[index] = neuron;}
 	public Neuron getNeuronAtIndex(int index) {return this.neurons[index];}
 	
-	public int getNeuronCountInLayer() { return this.getNeurons().length; }
-	
 	public int getInputCountIntoLayer() { 
 		if (this.getLayerType() == LayerType.I) { return this.getNeuronCountInLayer(); } 
 		else { return this.getNeuronAtIndex(0).getWeightCount(); }
 	}
 	
+	public int getNeuronCountInLayer() { return this.getNeurons().length; }
+	
 	public double[] getActivatedLayerOutputs() {
 		int numberNeurons = this.getNeuronCountInLayer();
-		double[] outputs = new double[numberNeurons];
+		double[] weightedOutputs = this.getWeightedLayerOutputs();
+		double [] activatedOutputs = new double[numberNeurons];
 		for (int n = 0; n < numberNeurons; n++) {
-			outputs[n] = this.getNeurons()[n].getOutput();
+			activatedOutputs[n] = ActivationFunction.applyLogisticFunction(weightedOutputs[n]);
 		}
-		return outputs;
+		return activatedOutputs;
 	}
 	
 	public double[] getWeightedLayerOutputs() {
 		int numberNeurons = this.getNeuronCountInLayer();
-		double[] outputs = new double[numberNeurons];
+		double[] weightedOutputs = new double[numberNeurons];
 		for (int n = 0; n < numberNeurons; n++) {
-			outputs[n] = this.getNeurons()[n].getOutput();
+			weightedOutputs[n] = this.getNeurons()[n].getOutput();
 		}
-		return outputs;
+		return weightedOutputs;
 	}
 	
 	// *** Constructor(s) ***
