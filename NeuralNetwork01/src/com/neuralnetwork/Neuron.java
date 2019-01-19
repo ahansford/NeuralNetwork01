@@ -2,7 +2,7 @@ package com.neuralnetwork;
 
 public class Neuron {
 	
-	private double  LEARNING_RATE = 0.1;
+	private double  LEARNING_RATE = 0.05;
 	
 	private double[] weights = new double[] {0.0};
 	private double threshold = 0;

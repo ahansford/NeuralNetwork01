@@ -6,14 +6,12 @@ import com.neuralnetwork.NetworkLayer.*;
 public class NeuralNetwork {
 	
 	//  *** Members ***
-	protected NetworkLayer[] layers;
+	private NetworkLayer[] layers;
+	protected boolean verboseFlag = false;
 	
 	
 	//*** Access Methods ***	
 	public NetworkLayer[] getNetworkLayers() { return this.layers; }
-	
-	
-	void setNetworkTo(NeuralNetwork network) { this.layers = network.layers;}
 	
 	public int getNetworkLayerCount() { 
 		if (this.layers != null) { return this.layers.length; } // 
@@ -32,9 +30,10 @@ public class NeuralNetwork {
 		return this.getNetworkLayers()[this.getNetworkLayerCount() - 1].getNeuronCountInLayer();
 	} 
 	
-	void replaceNetwork(NeuralNetwork neuralNetwork) {
-		
-	}
+	public void setNeuralNetworkTo(NeuralNetwork neuralNetwork) {this.layers = neuralNetwork.layers;}
+	
+	public void setVerboseFlag(boolean verboseFlag) { this.verboseFlag = verboseFlag; }
+	
 	
 	//*** Constructor(s) ***
 	public NeuralNetwork(int layerCount) {
@@ -90,13 +89,6 @@ public class NeuralNetwork {
 	
 
 	// *** Methods ***	
-	
-	// method to be overridden by external algorithms
-	public void adjustNetwork(double[][][] trainingSet) {
-		
-	}
-	
-	
 	public boolean equals(NeuralNetwork otherNetwork) {
 		int layerCount = this.getNetworkLayerCount(); 
 		int otherLayerCount = otherNetwork.getNetworkLayerCount();
@@ -143,7 +135,18 @@ public class NeuralNetwork {
 		return;
 	}
 	
-
+	public NeuralNetwork adjustNeuralNetwork() {
+		NeuralNetwork adjustedNeuralNetwork = this.copyNeuralNetwork();
+		
+		int layerCount = this.getNetworkLayerCount();
+		NetworkLayer adjustementLayer = new NetworkLayer();
+		for (int index = 0; index < layerCount; index++) {
+			adjustementLayer = this.getNetworkLayers()[index];
+			adjustementLayer = adjustementLayer.adjustNetworkLayer();
+			adjustedNeuralNetwork.layers[index] = adjustementLayer;
+		}
+		return adjustedNeuralNetwork;
+	}
 
 	public double calculateMeanSqrError(double[][][] trainingData) {
 		double runningTotals = 0;

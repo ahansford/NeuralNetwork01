@@ -1,9 +1,13 @@
 package com.neuralnetwork;
 
-public class ActivationFunction {
+public abstract class ActivationFunction {
 	
-	public static double applyLogisticFunction(double weightedSum) {
-		return 1.0 / (1 + Math.exp(-1.0 * weightedSum));
+	public static double applyRectifiedLinear(double weightedInput) {
+		return (weightedInput < 0 ? 0 : weightedInput);
+	}
+	
+	public static double applyLogisticFunction(double weightedInput) {
+		return (1/(1+Math.exp(-weightedInput)));
 	}
 
 }

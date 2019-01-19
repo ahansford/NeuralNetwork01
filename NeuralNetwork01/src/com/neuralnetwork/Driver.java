@@ -9,6 +9,7 @@ package com.neuralnetwork;
  */
 public class Driver {
 	
+	
 	public static double[][][] TRAINING_SET = new double[][][] {{{0, 0}, {1, 0, 0, 1}},
 															    {{0, 1}, {1, 0, 1, 0}},
 															    {{1, 0}, {1, 0, 1, 0}},
@@ -20,30 +21,18 @@ public class Driver {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		
-		// Create a network
+		int trainingSetCount = TRAINING_SET.length;
 		int inputsCount = TRAINING_SET[0][0].length; 
         int hiddenLayerCount = 1; 
         int hiddenLayerNeuronCount = 2;
         int outputsCount = 4;
-        neuralNetwork = new HillClimb(inputsCount,
-									  hiddenLayerCount,
-									  hiddenLayerNeuronCount,
-									  outputsCount );
+        neuralNetwork = new NeuralNetwork(inputsCount,
+										  hiddenLayerCount,
+										  hiddenLayerNeuronCount,
+										  outputsCount );
 		
-        ((HillClimb)neuralNetwork).setPrintFlag(false);
-        ((HillClimb)neuralNetwork).runHillClimb(TRAINING_SET);
-        System.out.println("Epoch: " + ((HillClimb)neuralNetwork).getEpoch() + ",   Error: " + ((HillClimb)neuralNetwork).getError() );
-        printTrainingSetResult(TRAINING_SET);
-        
-        System.exit(0);
-	}
-	
-	
-	
-	// *** Support and Printing methods
-	public static void printTrainingSetResult (double[][][] trainingSet) {
-		int trainingSetCount = TRAINING_SET.length;
+        //NeuralNetwork adjustedNetwork = new NeuralNetwork(neuralNetwork.getNetworkLayerCount());
+       
         printTrainingHeading(TRAINING_SET);
         for (int i = 0; i < trainingSetCount; i++) {
         	printTrainingRow(TRAINING_SET, i);
@@ -71,6 +60,7 @@ public class Driver {
 	}
 	
 	public static void printTrainingRow(double[][][] trainingSet, int index) {
+		//int trainingSetCount = trainingSet.length;
 		int inputsCount = trainingSet[0][0].length; 
 		int outputCount = trainingSet[0][1].length; 
 		// print values
