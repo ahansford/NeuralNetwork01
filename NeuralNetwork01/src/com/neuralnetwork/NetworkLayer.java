@@ -158,5 +158,14 @@ public class NetworkLayer {
     	sB.append("}\n");
         return String.format("%s", sB); 
     }
+	
+    
+    public NetworkLayer adjustLayerNeuronWeight(int neuronIndex, int weightIndex) {
+    	NetworkLayer adjustedLayer = this.copyNetworkLayer();
+    	Neuron adjustedNeuron = adjustedLayer.getNeuronAtIndex(neuronIndex).adjustNeuronWeight(weightIndex);
+    	adjustedLayer.setNeuronAtIndex(adjustedNeuron, neuronIndex);
+		return adjustedLayer;
+	}
+
     
 }

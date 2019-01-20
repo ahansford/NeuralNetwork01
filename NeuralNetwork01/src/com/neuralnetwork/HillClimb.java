@@ -8,36 +8,39 @@ public class HillClimb extends NeuralNetwork {
 		super(layerCount);
 		// TODO Auto-generated constructor stub
 	}
+	
+	public HillClimb(int inputsCount, 
+	           		 int hiddenLayerCount, 
+	           		 int hiddenLayerNeuronCount,
+	           		 int outputsCount) {
+		super(inputsCount, hiddenLayerCount, hiddenLayerNeuronCount, outputsCount);
+	}
 
 	
-    public void adjustNetwork(double[][][] trainingSet) {
-		int trainingSetCount = trainingSet.length;
-		
-        NeuralNetwork adjustedNetwork = new NeuralNetwork(this.getNetworkLayerCount());
+    public void runHillClimbAlgorithm(double[][][] trainingSet) {
+		NeuralNetwork adjustedNetwork = new NeuralNetwork(this.getNetworkLayerCount());
         double originalRMSerror = 0;
         double adjustedRMSerror = 0;
-        int k =0;
+        this.setEpoch(0);
+        int k = 0;
         boolean runFlag = true;
         while (runFlag) {
         	adjustedNetwork = this.copyNeuralNetwork().adjustNeuralNetwork();
         	adjustedRMSerror = adjustedNetwork.calculateRMSerror(trainingSet);
         	originalRMSerror = this.calculateRMSerror(trainingSet);
-        	if (this.verboseFlag) { System.out.print("| " + originalRMSerror + " | " + adjustedRMSerror + " | "); }
+        	if (this.getVerboseFlag()) { System.out.print("| " + originalRMSerror + " | " + adjustedRMSerror + " | "); }
         	if (adjustedRMSerror < originalRMSerror) {
         		// adjusted is better
         		this.setNeuralNetworkTo(adjustedNetwork); //reassign network
-        		if (this.verboseFlag) { System.out.println("climb | "); }
-        		k =1;
+        		if (this.getVerboseFlag()) { System.out.println("CLIMB | "); }
+        		k = 1;
+        		this.setEpoch(this.getEpoch() + 1);
+        		this.setRMSerror(adjustedRMSerror);
         	} else {
-        		if (this.verboseFlag) { System.out.println("stay  | "+k); }
+        		if (this.getVerboseFlag()) { System.out.println("stay  | " + k); }
         		k++;
-        		if (k> MAX_ITTERATIONS) runFlag = false; // stop looping
+        		if (k > MAX_ITTERATIONS) runFlag = false; // stop looping
         	}
-        	for (int i = 0; i < trainingSetCount; i++) {
-				this.runNetwork(trainingSet[i][0]);
-				if (this.verboseFlag) { Driver.printTrainingRow(trainingSet, i);}
-			}
-        	if (this.verboseFlag) { System.out.println("\n"); }
         }
 	}
 

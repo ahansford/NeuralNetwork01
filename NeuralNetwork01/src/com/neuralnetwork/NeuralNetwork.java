@@ -7,7 +7,9 @@ public class NeuralNetwork {
 	
 	//  *** Members ***
 	private NetworkLayer[] layers;
-	protected boolean verboseFlag = false;
+	protected boolean      verboseFlag = false;
+	protected int          epoch = 0;
+	protected double       RMSerror = 0.0;
 	
 	
 	//*** Access Methods ***	
@@ -16,6 +18,14 @@ public class NeuralNetwork {
 	public int getNetworkLayerCount() { 
 		if (this.layers != null) { return this.layers.length; } // 
 		else {return 0; }
+	}
+	
+	public int getNetworkLayerNeuronCount(int layerIndex) {
+		return this.getNetworkLayers()[layerIndex].getNeuronCountInLayer();
+	}
+	
+	public int getNetworkLayerWeightCount(int layerIndex) {
+		return this.getNetworkLayers()[layerIndex].getInputCountIntoLayer();
 	}
 	
 	public int getNetworkInputCount() {
@@ -32,7 +42,14 @@ public class NeuralNetwork {
 	
 	public void setNeuralNetworkTo(NeuralNetwork neuralNetwork) {this.layers = neuralNetwork.layers;}
 	
-	public void setVerboseFlag(boolean verboseFlag) { this.verboseFlag = verboseFlag; }
+	public void    setVerboseFlag(boolean verboseFlag) { this.verboseFlag = verboseFlag; }
+	public boolean getVerboseFlag() { return this.verboseFlag; }
+	
+	public void   setRMSerror (double RMSerror) {this.RMSerror =  RMSerror; }
+	public double getRMSerror() { return this.RMSerror; }
+	
+	public void setEpoch(int epoch) {this.epoch =  epoch; }
+	public int  getEpoch() { return this.epoch; }
 	
 	
 	//*** Constructor(s) ***
@@ -112,6 +129,9 @@ public class NeuralNetwork {
 			if (copiedNeuralNetwork.getNetworkLayers()[index] == null) return null;
 			copiedNeuralNetwork.layers[index] = this.getNetworkLayers()[index].copyNetworkLayer();
 		}
+		copiedNeuralNetwork.setVerboseFlag(this.getVerboseFlag());
+		copiedNeuralNetwork.setEpoch(this.getEpoch());
+		copiedNeuralNetwork.setRMSerror(this.getRMSerror());
 		return copiedNeuralNetwork;
 	}
 	
@@ -147,6 +167,14 @@ public class NeuralNetwork {
 		}
 		return adjustedNeuralNetwork;
 	}
+	
+	public NeuralNetwork adjustNetworkNeuronWeight(int layerIndex, int neuronIndex, int weightIndex) {
+		NeuralNetwork adjustedNetwork = this.copyNeuralNetwork();
+		NetworkLayer[] adjustedLayers = adjustedNetwork.getNetworkLayers();
+		adjustedLayers[layerIndex] = adjustedLayers[layerIndex].adjustLayerNeuronWeight(neuronIndex, weightIndex);
+		adjustedNetwork.layers = adjustedLayers;
+		return adjustedNetwork;
+	}
 
 	public double calculateMeanSqrError(double[][][] trainingData) {
 		double runningTotals = 0;
@@ -164,6 +192,7 @@ public class NeuralNetwork {
 	
 	public double calculateRMSerror(double[][][] trainingData) {
 		double RMSerror = Math.sqrt(calculateMeanSqrError(trainingData));
+		this.setRMSerror(RMSerror);
 		return RMSerror;
 	}
 	

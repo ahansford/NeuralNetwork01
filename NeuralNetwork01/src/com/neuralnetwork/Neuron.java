@@ -2,7 +2,7 @@ package com.neuralnetwork;
 
 public class Neuron {
 	
-	private double  LEARNING_RATE = 0.05;
+	private double  LEARNING_RATE = 0.1;
 	
 	private double[] weights = new double[] {0.0};
 	private double threshold = 0;
@@ -62,7 +62,13 @@ public class Neuron {
 		return new Neuron(adjustedWeights, adjustedThreshold, 0);
 	}
 	
-	/**/
+	public Neuron adjustNeuronWeight(int weightIndex) {
+		if (weightIndex > this.getWeightCount() ) return this;  // ERROR weight index
+		double[] adjustedWeights = this.getWeights();
+		adjustedWeights[weightIndex] = adjustedWeights[weightIndex] + (Math.random() - 0.5) * LEARNING_RATE; 
+		return new Neuron(adjustedWeights, this.getThreshold(), 0);
+	}
+	
 	public static double applyActivationFunction(double weightedSum) {
 		return (weightedSum < 0 ? 0: weightedSum);
 	}

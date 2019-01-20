@@ -72,6 +72,45 @@ class NeuralNetworkTest {
 	}
 	
 	@Test
+	void testGetRMSerrorReturnsZeroLayersOnSimpleCreate() {
+		int inputsCount = 1; 
+        int hiddenLayerCount = 1; 
+        int hiddenLayerNeuronCount = 1;
+        int outputsCount = 1;
+		NeuralNetwork neuralNetwork = new NeuralNetwork(inputsCount,
+														hiddenLayerCount,
+														hiddenLayerNeuronCount,
+														outputsCount );
+		assertEquals(0, neuralNetwork.getRMSerror());
+	}
+	
+	@Test
+	void testGetEpochReturnsZeroLayersOnSimpleCreate() {
+		int inputsCount = 1; 
+        int hiddenLayerCount = 1; 
+        int hiddenLayerNeuronCount = 1;
+        int outputsCount = 1;
+		NeuralNetwork neuralNetwork = new NeuralNetwork(inputsCount,
+														hiddenLayerCount,
+														hiddenLayerNeuronCount,
+														outputsCount );
+		assertEquals(0, neuralNetwork.getEpoch());
+	}
+	
+	@Test
+	void testGetVerboseFlagReturnsFalseLayersOnSimpleCreate() {
+		int inputsCount = 1; 
+        int hiddenLayerCount = 1; 
+        int hiddenLayerNeuronCount = 1;
+        int outputsCount = 1;
+		NeuralNetwork neuralNetwork = new NeuralNetwork(inputsCount,
+														hiddenLayerCount,
+														hiddenLayerNeuronCount,
+														outputsCount );
+		assertEquals(false, neuralNetwork.getVerboseFlag());
+	}
+	
+	@Test
 	void testGetNetworkLayerCountReturnsCorrectValueOnComplexCreate() {
 		int inputsCount = 7; 
         int hiddenLayerCount = 3; 
@@ -194,6 +233,14 @@ class NeuralNetworkTest {
 		assertFalse( neuralNetwork.equals(adjustedNetwork) );
 		assertTrue(originalNetwork.equals(neuralNetwork));;
 	}
+	
+	@Test
+	void testAdjustedNeuronWeightNotEqualToOriginal() {
+		NeuralNetwork neuralNetwork = new NeuralNetwork(1,1,1,1);
+		NeuralNetwork adjustedNetwork = neuralNetwork.copyNeuralNetwork();
+		adjustedNetwork = adjustedNetwork.adjustNetworkNeuronWeight(0, 0, 0);
+		assertFalse( neuralNetwork.equals(adjustedNetwork) );
+	}
 
 	@Test
 	void testRunNetwork() {
@@ -205,7 +252,6 @@ class NeuralNetworkTest {
 														hiddenLayerCount,
 														hiddenLayerNeuronCount,
 														outputsCount );
-		
 		double[] inputs = new double[] {2, 3};
 		neuralNetwork.runNetwork(inputs);
 	}

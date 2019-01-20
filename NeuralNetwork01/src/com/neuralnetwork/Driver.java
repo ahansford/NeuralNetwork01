@@ -15,37 +15,46 @@ public class Driver {
 															    {{1, 0}, {1, 0, 1, 0}},
 															    {{1, 1}, {0, 1, 0, 0}}};
 		
+	public static HillClimb hillClimbNetwork;
 	public static NeuralNetwork neuralNetwork;
 
 	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		int trainingSetCount = TRAINING_SET.length;
 		int inputsCount = TRAINING_SET[0][0].length; 
         int hiddenLayerCount = 1; 
         int hiddenLayerNeuronCount = 2;
         int outputsCount = 4;
-        neuralNetwork = new NeuralNetwork(inputsCount,
+        neuralNetwork = new HillClimb(inputsCount,
 										  hiddenLayerCount,
 										  hiddenLayerNeuronCount,
 										  outputsCount );
-		
-        //NeuralNetwork adjustedNetwork = new NeuralNetwork(neuralNetwork.getNetworkLayerCount());
-       
-        printTrainingHeading(TRAINING_SET);
-        for (int i = 0; i < trainingSetCount; i++) {
-        	printTrainingRow(TRAINING_SET, i);
-        }
-        System.out.println("\n" + neuralNetwork.toString());
+        ((HillClimb) neuralNetwork).runHillClimbAlgorithm(TRAINING_SET);
+        printTrainingSetResults(neuralNetwork, TRAINING_SET);
 	}
 	
-	public static void printTrainingHeading(double[][][] trainingSet) {
+	
+	
+	public static void printTrainingSetResults(NeuralNetwork neuralNetwork, 
+											   double[][][] trainingSet) {
+		int trainingSetCount = trainingSet.length;
+		printTrainingHeading(neuralNetwork, trainingSet);
+	        for (int i = 0; i < trainingSetCount; i++) {
+	        	printTrainingRow(neuralNetwork, trainingSet, i);
+	        }
+	        System.out.println("\n" + neuralNetwork.toString());  
+	}
+	
+	public static void printTrainingHeading(NeuralNetwork neuralNetwork, 
+			   								double[][][] trainingSet) {
 		int inputsCount = TRAINING_SET[0][0].length; 
 		int outputCount = TRAINING_SET[0][1].length; 
-		
-		StringBuffer sB = new StringBuffer("\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
-		sB.append("| ");
+		//String divider = "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n";
+		String divider = "----------------------------------------------------------------------------------------------------------------";
+		StringBuffer sB = new StringBuffer(divider + "\n NeuralNetwork Training Epoch: " + neuralNetwork.getEpoch());
+		sB.append("; Error: " + neuralNetwork.getRMSerror() + "\n");
+		sB.append(divider + "\n| ");
 		for (int i = 0; i < inputsCount; i++) {
 			sB.append("w" + i + " |  ");
 		}
@@ -56,11 +65,13 @@ public class Driver {
 			sB.append("     O" + i + "      |  ");
 		}
 		sB.append("RMS" +  "      |  ");
+		sB.append("\n" + divider);
 		System.out.println(sB);
 	}
 	
-	public static void printTrainingRow(double[][][] trainingSet, int index) {
-		//int trainingSetCount = trainingSet.length;
+	public static void printTrainingRow(NeuralNetwork neuralNetwork, 
+										double[][][] trainingSet, 
+										int index) {
 		int inputsCount = trainingSet[0][0].length; 
 		int outputCount = trainingSet[0][1].length; 
 		// print values
