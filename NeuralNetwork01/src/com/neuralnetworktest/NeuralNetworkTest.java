@@ -9,8 +9,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
+import com.neuralnetwork.GradientDescent;
 import com.neuralnetwork.NetworkLayer;
 import com.neuralnetwork.NeuralNetwork;
+import com.neuralnetwork.Neuron;
 
 class NeuralNetworkTest {
 	
@@ -254,6 +256,25 @@ class NeuralNetworkTest {
 		double[] inputs = new double[] {2, 3};
 		neuralNetwork.runNetwork(inputs);
 	}
+	
+	@Test
+	void testRunningThreeNeuronNetworkGeneratedOneOutput() {
+		NeuralNetwork neuralNetwork = getNewThreeNeuronNeuralNetwork();
+		double[] inputs = new double[] {1.0};
+		neuralNetwork.runNetwork(inputs);
+		neuralNetwork.runNetwork(inputs);
+		neuralNetwork.runNetwork(inputs);
+		neuralNetwork.runNetwork(inputs);
+		
+		System.out.println(neuralNetwork.toString());
+		//assertEquals(
+		
+		//double[] input = new double[] {1.0};
+		//gradientNetwork.runNetwork(input);
+	}
+	
+	
+	
 
 	@Test
 	void testRMSValueCalculatedCorrectly() {
@@ -284,19 +305,22 @@ class NeuralNetworkTest {
 	@Disabled
 	@Test
 	void testNeuralNetworkToString() {
-		int inputsCount = 2; 
+		NeuralNetwork neuralNetwork = getNewThreeNeuronNeuralNetwork();
+		System.out.println(neuralNetwork.toString());
+	}
+	
+	NeuralNetwork getNewThreeNeuronNeuralNetwork() {
+		int inputsCount = 1;
         int hiddenLayerCount = 1; 
         int hiddenLayerNeuronCount = 1;
-        int outputsCount = 4;
-		NeuralNetwork neuralNetwork = new NeuralNetwork(inputsCount,
-														hiddenLayerCount,
-														hiddenLayerNeuronCount,
-														outputsCount );
-		//int trainingSetLength = TEST_TRAINING_SET.length;
-		double[] inputs = new double[TEST_TRAINING_SET[0][0].length];
-		inputs = TEST_TRAINING_SET[1][0];
-		neuralNetwork.runNetwork(inputs);
-		System.out.println(neuralNetwork.toString());
+        int outputsCount = 1;
+        NeuralNetwork neuralNetwork = new GradientDescent(inputsCount, hiddenLayerCount, hiddenLayerNeuronCount, outputsCount);
+		double[] weights = new double[] {1.0};
+		Neuron neuron = new Neuron(weights, 0, 0);
+		neuralNetwork.getNetworkLayers()[0].setNeuronAtIndex(neuron.copyNeuron(), 0);
+		neuralNetwork.getNetworkLayers()[1].setNeuronAtIndex(neuron.copyNeuron(), 0);
+		neuralNetwork.getNetworkLayers()[2].setNeuronAtIndex(neuron.copyNeuron(), 0);
+		return neuralNetwork;
 	}
 
 }

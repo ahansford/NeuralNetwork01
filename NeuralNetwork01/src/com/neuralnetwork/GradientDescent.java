@@ -84,14 +84,14 @@ public class GradientDescent extends NeuralNetwork {
 	        				System.out.println("Shift if deltaCostMagnitude > HoldingCostMagnitude"+ deltaCostMagnitude + " " + HoldingCostMagnitude);
 	        				if (deltaCostMagnitude > HoldingCostMagnitude) {
 	        					// this weight is an improvement of the weights already tested
-	        					//System.out.println("CurrentGradient: " + currentGradientError + ", HoldingGradient: " +  HoldingGradientError);
+	        					// System.out.println("CurrentGradient: " + currentGradientError + ", HoldingGradient: " +  HoldingGradientError);
 	        					HoldingCostMagnitude = deltaCostMagnitude;
 	        					this.gradientLayerIndex  = l;
 	        					this.gradientNeuronIndex = n;
 	        					this.gradientWeightIndex = w;
-	        					//holdingNetwork = adjustedNetwork;
+	        					// holdingNetwork = adjustedNetwork;
 	        					holdingStep = this.initialStep;
-	        					System.out.println(" Found a stronger weight at index : " +l+ " " + n + " "+ w + " " +deltaCostMagnitude);
+	        					System.out.println(" Found a stronger weight at index : " +l+ " " + n + " "+ w + " " +deltaCost + " " +deltaCostMagnitude);
 	        				}
 	        				
 	        				// end of three loops 
@@ -105,13 +105,13 @@ public class GradientDescent extends NeuralNetwork {
 	        	
 	        	// determine max useful step down the gradient
 	        	holdingNetwork.setNeuralNetworkTo(adjustedNetwork);
-	        	int stepMultiplier = ((GradientDescent) holdingNetwork).getStepMultiplier(trainingSet, this.initialStep);
+	        	int stepMultiplier = ((GradientDescent) holdingNetwork).getStepMultiplier(trainingSet, this.holdingStep);
 	        	System.out.println("index : " + k + "  "+gradientLayerIndex+ " " + gradientNeuronIndex + " "+ gradientWeightIndex + " " + HoldingCostMagnitude);
 	        	System.out.println(",  stepMultiplier : " +stepMultiplier);
 	        	adjustedNetwork = this.adjustNetworkNeuronWeight(gradientLayerIndex, 
 	        												     gradientNeuronIndex, 
 	        													 gradientWeightIndex, 
-	        													 this.initialStep * stepMultiplier);
+	        													 this.holdingStep * stepMultiplier);
 	        
 	        this.setNeuralNetworkTo(adjustedNetwork);
 	        k++;
@@ -119,12 +119,12 @@ public class GradientDescent extends NeuralNetwork {
 	        }
 	 }
 	        
-	private int getStepMultiplier(double[][][] trainingSet, double step) {
+	public int getStepMultiplier(double[][][] trainingSet, double step) {
 		//NeuralNetwork holdingNetwork = null;
 	    //boolean breakFlag;
 	    double holdingError = this.calculateRMSerror(trainingSet);
 	    NeuralNetwork adjustedNetwork;
-	    int i = 1;
+	    int i = 2;
 	    double adjustedRMSerror;
 	    boolean descentFlag =  true;
 	    do {
@@ -136,6 +136,7 @@ public class GradientDescent extends NeuralNetwork {
 	    	//adjustedRMSerror = adjustedNetwork.calculateRMSerror(trainingSet);
 	    	if ( adjustedRMSerror < holdingError) {
 	    		// the last step multiplier was an improvement
+	    		System.out.println(" the last step multiplier was an improvement, i: " + i);
 	    		holdingError = adjustedRMSerror;
 	    		i++;
 	    	} else { 
@@ -146,8 +147,10 @@ public class GradientDescent extends NeuralNetwork {
 							this.gradientWeightIndex, 
 							this.holdingStep );
 	    		i--;
+	    		System.out.println(" back up one step, i: " + i);
 	    	}
 	    } while (descentFlag);
+	    System.out.println(" RETURNING, i: " + i);
 	return i-1;  
 	}
 

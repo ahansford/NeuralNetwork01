@@ -273,6 +273,21 @@ class NetworkLayerTest {
 	}
 	
 	@Test
+	void testRunningInputLayerReturnsExpectedValues() {
+		LayerType layerType = LayerType.I; 
+		int neuronCount = 1;
+		int inputCount = 1;
+		NetworkLayer  networkLayer = getNewNetworkLayer(layerType, neuronCount, inputCount);
+		double[] inputs = new double[] {1.0};
+		networkLayer.runLayer(inputs);
+		
+		double[] outputs = networkLayer.getActivatedLayerOutputs();
+		assertEquals(1, outputs[0]);
+		//assertEquals(expectedActivatedOutputs[1],  outputs[1]);
+		//assertTrue((1.0 - outputs[0]) < 0.1);
+	}
+	
+	@Test
 	void testRunningLayerDoesNotChangeWeightsOrThreshold() {
 		int numberInputs = 3;
         int numberNeurons= 3;
@@ -395,6 +410,29 @@ class NetworkLayerTest {
 		networkLayer2.setLayerType(LayerType.O);
 		networkLayer2.setNeurons(neurons2);
 		System.out.println("NetworkLayer toString: " + networkLayer.toString());		
+	}
+	
+	NetworkLayer getNewNetworkLayer(LayerType layerType, int neuronCount, int inputCount) {
+        double[] inputs = new double[inputCount];
+        for (int i = 0; i < inputCount; i++) { inputs[i] = 0; }
+        
+        int weightCount = 0;
+        if (layerType == LayerType.I)            { weightCount = 1; }	
+        else if (layerType == LayerType.H)       { weightCount = inputCount; }
+        else if (layerType == LayerType.O)       { weightCount = inputCount; }
+        else if (layerType == LayerType.UNKNOWN) { weightCount = 1; }
+        
+        double[] weights = new double[weightCount];
+        for (int i = 0; i < weightCount; i++) { weights[i] = 1.0; }
+		
+		NetworkLayer  networkLayer = new NetworkLayer(layerType,
+													  inputCount, 
+				                                      neuronCount);
+		Neuron[] neurons = new Neuron[neuronCount];
+		for (int i = 0; i < neuronCount; i++) { neurons[i] = new Neuron(weights, 0, 0); }
+		networkLayer.setNeurons(neurons);
+	
+		return networkLayer;
 	}
 
 }
