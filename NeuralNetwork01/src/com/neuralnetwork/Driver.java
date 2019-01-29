@@ -26,12 +26,24 @@ public class Driver {
         int hiddenLayerCount = 1; 
         int hiddenLayerNeuronCount = 2;
         int outputsCount = 4;
+        NeuralNetwork originalNetwork;
+        
         neuralNetwork = new HillClimb(inputsCount,
-										  hiddenLayerCount,
-										  hiddenLayerNeuronCount,
-										  outputsCount );
+									  hiddenLayerCount,
+									  hiddenLayerNeuronCount,
+									  outputsCount );
+        originalNetwork = neuralNetwork.copyNeuralNetwork();
         ((HillClimb) neuralNetwork).runHillClimbAlgorithm(TRAINING_SET);
         printTrainingSetResults(neuralNetwork, TRAINING_SET);
+        
+        GradientDescent gradientNetwork = new GradientDescent(inputsCount,
+				  						hiddenLayerCount,
+				  						hiddenLayerNeuronCount,
+				  						outputsCount );
+        gradientNetwork.setNeuralNetworkTo(originalNetwork);
+        ((GradientDescent) gradientNetwork).runGradiemtDescentAlgorithm(TRAINING_SET);
+        printTrainingSetResults(gradientNetwork, TRAINING_SET);
+        
 	}
 	
 	

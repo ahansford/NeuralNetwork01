@@ -160,10 +160,11 @@ public class NetworkLayer {
     }
 	
     
-    public NetworkLayer adjustLayerNeuronWeight(int neuronIndex, int weightIndex) {
+    public NetworkLayer adjustLayerNeuronWeight(int neuronIndex, int weightIndex, double step) {
     	NetworkLayer adjustedLayer = this.copyNetworkLayer();
-    	Neuron adjustedNeuron = adjustedLayer.getNeuronAtIndex(neuronIndex).adjustNeuronWeight(weightIndex);
+    	Neuron adjustedNeuron = adjustedLayer.getNeuronAtIndex(neuronIndex).getNeuronWithAdjustedWeight(weightIndex, step);
     	adjustedLayer.setNeuronAtIndex(adjustedNeuron, neuronIndex);
+    	//System.out.println("Adjusting Neuron number: " + neuronIndex);
 		return adjustedLayer;
 	}
 

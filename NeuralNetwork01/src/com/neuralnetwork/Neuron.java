@@ -46,8 +46,12 @@ public class Neuron {
 		return true;  // SUCCESS no differences found
 	}
 		
-	public Neuron copyNeuron() {
-		Neuron copiedNeuron = new Neuron(this.getWeights(), this.getThreshold(), this.getOutput());
+	public Neuron copyNeuron () {
+		double[] weights = new double[this.getWeightCount()];
+		for (int w = 0; w < this.getWeightCount(); w++) {
+			weights[w] = this.getWeights()[w];
+		}
+		Neuron copiedNeuron = new Neuron(weights, this.getThreshold(), this.getOutput());
 		return copiedNeuron;
 	}
 	
@@ -62,11 +66,12 @@ public class Neuron {
 		return new Neuron(adjustedWeights, adjustedThreshold, 0);
 	}
 	
-	public Neuron adjustNeuronWeight(int weightIndex) {
-		if (weightIndex > this.getWeightCount() ) return this;  // ERROR weight index
-		double[] adjustedWeights = this.getWeights();
-		adjustedWeights[weightIndex] = adjustedWeights[weightIndex] + (Math.random() - 0.5) * LEARNING_RATE; 
-		return new Neuron(adjustedWeights, this.getThreshold(), 0);
+	public Neuron getNeuronWithAdjustedWeight(int weightIndex, double step) {
+		if ((weightIndex + 1) > this.getWeightCount() ) return this;  // ERROR weight index
+		Neuron  adjustedNeuron= this.copyNeuron();
+		double[] adjustedWeights = adjustedNeuron.getWeights();
+		adjustedWeights[weightIndex] += step; 
+		return adjustedNeuron;
 	}
 	
 	public static double applyActivationFunction(double weightedSum) {

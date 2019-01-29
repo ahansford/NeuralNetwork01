@@ -237,8 +237,7 @@ class NeuralNetworkTest {
 	@Test
 	void testAdjustedNeuronWeightNotEqualToOriginal() {
 		NeuralNetwork neuralNetwork = new NeuralNetwork(1,1,1,1);
-		NeuralNetwork adjustedNetwork = neuralNetwork.copyNeuralNetwork();
-		adjustedNetwork = adjustedNetwork.adjustNetworkNeuronWeight(0, 0, 0);
+		NeuralNetwork adjustedNetwork = neuralNetwork.adjustNetworkNeuronWeight(0, 0, 0, 0.1);
 		assertFalse( neuralNetwork.equals(adjustedNetwork) );
 	}
 

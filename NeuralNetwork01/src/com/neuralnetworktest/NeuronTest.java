@@ -94,6 +94,17 @@ class NeuronTest {
 	}
 	
 	@Test
+	void testCopiedNeuronInNotOriginal() {
+		double[] weights = {1.1,2.2, 3.3};
+		Neuron neuron = new Neuron(weights, 4, 5);
+		Neuron copiedNeuron = neuron.copyNeuron();
+		copiedNeuron.setThreshold(14);
+		assertEquals(4, neuron.getThreshold());
+		copiedNeuron.getWeights()[0] = 400;
+		assertFalse(neuron.equals(copiedNeuron));
+	}
+	
+	@Test
 	void testNeuronNotEqualToNullNeuron() {
 		double[] weights = {1.1,2.2, 3.3};
 		Neuron neuron = new Neuron(weights, 4, 5);
@@ -169,6 +180,15 @@ class NeuronTest {
 		double[] weights = {1.0, 1.0, 1.0};
 		Neuron neuron = new Neuron(weights, 1, 0);
 		Neuron adjustedNeuron = neuron.getAdjustedNeuron();
+		assertFalse(neuron.equals(adjustedNeuron));
+	}
+	
+	@Test
+	void testAdjustedNeuronWeightNotEqualOriginal() {
+		double[] weights = {1.0, 1.0, 1.0};
+		Neuron neuron = new Neuron(weights, 1, 0);
+		//System.out.println("Neuron" + neuron.toString());
+		Neuron adjustedNeuron = neuron.getNeuronWithAdjustedWeight(0, 0.1);
 		assertFalse(neuron.equals(adjustedNeuron));
 	}
 	
