@@ -234,7 +234,7 @@ class NeuralNetworkTest {
 		assertTrue(goalRMSerror-neuralNetwork.calculateRMSerror(TEST_TRAINING_SET) < 0.001);
 	}
 	
-	@Disabled
+	//@Disabled
 	@Test
 	void testNeuralNetworkToString() {
 		int inputsCount = 2; 
