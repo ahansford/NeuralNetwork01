@@ -11,7 +11,7 @@ public class Neuron2 {
 	public double[] getWeights() { 
 		int weightsCount = this.getWeightsCount();
 		double[] weights = new double[weightsCount];
-		for (int i =0; i < weightsCount; i++) { weights[i] = thresholdAndWeights[i =1]; }
+		for (int i =0; i < weightsCount; i++) { weights[i] = thresholdAndWeights[i + 1]; }
 		return weights; 
 	} 
 	
@@ -26,14 +26,14 @@ public class Neuron2 {
 	public double[] getThresholdAndWeights() { return this.thresholdAndWeights; }
 	public void     setThresholdAndWeights(double[] thresholdAndWeights) { this.thresholdAndWeights = thresholdAndWeights; }
 	
-	public int getWeightsCount() { return this.getWeights().length-1; }
-	public int getThresholdAndWeightsCount() { return this.getWeights().length;   }
+	public int getWeightsCount() { return (this.thresholdAndWeights.length - 1); }
+	public int getThresholdAndWeightsCount() { return this.thresholdAndWeights.length;   }
 	
-	public double getThreshold() { return this.getWeights()[0]; }
-	public void   setThreshold(double threshold) { this.getWeights()[0] = threshold; }
+	public double getThreshold() { return this.thresholdAndWeights[0]; }
+	public void   setThreshold(double threshold) { this.thresholdAndWeights[0] = threshold; }
 	
 	public int getThresholdAndWeightsIndex() {
-		if (this.index >= this.getThresholdAndWeightsCount()) { this.index = 0;} else {this.index++;}
+		if (this.index >= this.getThresholdAndWeightsCount() - 1) { this.index = 0;} else {this.index++;}
 		if (this.index < 0 ) this.index = 0;
 		return this.index;
 	}
@@ -42,7 +42,7 @@ public class Neuron2 {
 	public double getOutput() { return output; }
 	public void   setOutput(double output) { this.output = output; }
 	
-	
+	//*** Constructor(s) ***//
 	public Neuron2() { 
 		double[] weights = { (Math.random() - 0.5) };
 		this.setWeights( weights );
@@ -53,8 +53,10 @@ public class Neuron2 {
 	public Neuron2( double[] weights, double threshold, double output) {
 		double[] thresholdAndWeights = new double[ weights.length +1 ];
 		thresholdAndWeights[0] = threshold;  // w0 is the threshold position
-		for (int i = 1; i < weights.length; i++) { thresholdAndWeights[i] = weights[i-1]; } // weights are added after the threshold
-		this.setWeights( thresholdAndWeights );
+		// TODO System.out.println("thresholdAndWeights.length: " +thresholdAndWeights.length + ", weights.length: " +weights.length);
+		
+		for (int i = 0; i < weights.length; i++) { thresholdAndWeights[i+1] = weights[i]; } // weights are added after the threshold
+		this.setThresholdAndWeights( thresholdAndWeights );
 		this.setOutput( output );
 		}
 	
@@ -89,11 +91,23 @@ public class Neuron2 {
 	}
 	
 	public Neuron2 getNeuronWithAdjustedWeightAtIndex(int weightIndex, double step) {
-		if ((weightIndex + 1) > this.getWeightsCount() ) return this;  // ERROR weight index
+		if ((weightIndex) > this.getWeightsCount() ) return this;  // ERROR weight index
+		if ((weightIndex) < 0 ) return this;                       // ERROR weight index
+		
 		Neuron2  adjustedNeuron= this.copyNeuron();
 		double[] adjustedWeights = adjustedNeuron.getWeights();
-		adjustedWeights[weightIndex+1] += step; 
+		adjustedWeights[weightIndex] += step; 
 		adjustedNeuron.setWeights(adjustedWeights);
+		return adjustedNeuron;
+	}
+	
+	public Neuron2 getNeuronWithAdjustedThresholdAndWeightsAtIndex(int weightIndex, double step) {
+		if ((weightIndex) > this.getWeightsCount() ) return this;  // ERROR weight index
+		if ((weightIndex) < 0 ) return this;                       // ERROR weight index
+		Neuron2  adjustedNeuron= this.copyNeuron();
+		double[] adjustedThresholdAndWeights = adjustedNeuron.getThresholdAndWeights();
+		adjustedThresholdAndWeights[weightIndex] += step; 
+		adjustedNeuron.setThresholdAndWeights(adjustedThresholdAndWeights);
 		return adjustedNeuron;
 	}
 	
@@ -124,11 +138,11 @@ public class Neuron2 {
     public String toString() { 
     	StringBuffer sB = new StringBuffer();
     	sB.append(String.format("Neuron {|"));
-    	for(int i=0; i < getThresholdAndWeightsCount(); i++) {
-    		sB.append("w"  + i + ":"  + String.format("%.4f", this.getThresholdAndWeights()[i]));
+    	for(int i=0; i < getWeightsCount(); i++) {
+    		sB.append(" w"  + i + ":"  + String.format("%.4f", this.getWeights()[i]));
     	}
-    	sB.append("threshold:" + String.format("%.4f|", this.getThreshold()));
-    	sB.append("output:" + String.format("%.4f|", this.getOutput()));
+    	sB.append(" threshold:" + String.format("%.4f |", this.getThreshold()));
+    	sB.append(" output:" + String.format("%.4f |", this.getOutput()));
         sB.append( String.format("}") );
         return String.format("%s", sB); 
     }
