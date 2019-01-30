@@ -224,6 +224,18 @@ class NeuronTest {
 	}
 	
 	@Test
+	void testRunStandardNeuronReturnsOutputOfONe() {
+		double[] inputs = new double[] {1};
+		Neuron neuron = getStandardNeuron(1);
+		System.out.println(neuron.toString());
+		neuron.runNeuron(inputs);
+		assertEquals( 1.0, neuron.getOutput() ); // careful about comparing floats
+		System.out.println(neuron.toString());
+	}
+	
+	
+	
+	@Test
 	void testRunNeuronUnchangedOnTooFewInputCount() {
 		double[] inputs = new double[] {1, 1};
 		double[] weights = new double[] {2, 3, 4};
@@ -248,5 +260,13 @@ class NeuronTest {
 		Neuron neuron = new Neuron(weights, 4, 5);
 		//System.out.println(neuron.toString());
 		assertEquals("Neuron {|w0:1.1000w1:2.2000w2:3.3000threshold:4.0000|output:5.0000|}", neuron.toString());
+	}
+	
+	Neuron getStandardNeuron(int weightCount) {
+		double[] weights = new double[weightCount];
+		for (int i = 0; i < weightCount; i++) { weights[i] = 1.0; }
+		double threshold = 0.0;
+		Neuron neuron = new Neuron(weights, threshold, 0);
+		return neuron;
 	}
 }
