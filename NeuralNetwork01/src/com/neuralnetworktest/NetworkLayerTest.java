@@ -282,7 +282,7 @@ class NetworkLayerTest {
 		networkLayer.runLayer(inputs);
 		
 		double[] outputs = networkLayer.getActivatedLayerOutputs();
-		assertEquals(1, outputs[0]);
+		assertEquals(0.7310585786300049, outputs[0]);
 		//assertEquals(expectedActivatedOutputs[1],  outputs[1]);
 		//assertTrue((1.0 - outputs[0]) < 0.1);
 	}
