@@ -10,8 +10,6 @@ import org.junit.jupiter.api.Test;
 
 import com.neuralnetwork.GradientDescent;
 
-import com.neuralnetwork.NetworkLayer.LayerType;
-
 import com.neuralnetwork.Neuron;
 
 class GradientDescentTest {

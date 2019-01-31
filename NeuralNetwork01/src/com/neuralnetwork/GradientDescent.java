@@ -32,14 +32,9 @@ public class GradientDescent extends NeuralNetwork {
 			holdingNetwork = new GradientDescent(this.getNetworkLayerCount());
 	        double originalRMSerror = 0;
 	        double adjustedRMSerror = 0;
-	        double currentGradientError = 0;
-
-	        double adjustedGradientError = 0;
-	        double holdingStep = 0;
-
+	        //double currentGradientError = 0;
 	        //double adjustedGradientError = 0;
 	        //double holdingStep = 0;
-
 	        double deltaCostMagnitude = 0;
 	        double HoldingCostMagnitude = 0;
 	        
