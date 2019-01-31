@@ -9,7 +9,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import com.neuralnetwork.GradientDescent;
-import com.neuralnetwork.NetworkLayer.LayerType;
 import com.neuralnetwork.Neuron;
 
 class GradientDescentTest {
@@ -34,7 +33,7 @@ class GradientDescentTest {
 
 	@Test
 	void test() {
-		//fail("Not yet implemented");
+		assertTrue(true);
 	}
 	
 	@Test
