@@ -171,7 +171,8 @@ public class NeuralNetwork {
 	public NeuralNetwork adjustNetworkNeuronWeight(int layerIndex, int neuronIndex, int weightIndex, double step) {
 		NeuralNetwork adjustedNetwork = this.copyNeuralNetwork();
 		NetworkLayer[] adjustedLayers = adjustedNetwork.getNetworkLayers();
-		adjustedLayers[layerIndex] = adjustedLayers[layerIndex].adjustLayerNeuronWeight(neuronIndex, weightIndex, step);
+		//adjustedLayers[layerIndex] = adjustedLayers[layerIndex].adjustLayerNeuronWeight(neuronIndex, weightIndex, step);
+		adjustedLayers[layerIndex] = adjustedLayers[layerIndex].adjustLayerNeuronThresholdAndWeights(neuronIndex, weightIndex, step);
 		adjustedNetwork.layers = adjustedLayers;
 		//System.out.println("Adjusting layer number: " + layerIndex + ",  error: " + this.calculateRMSerror(Driver.TRAINING_SET));
 		return adjustedNetwork;

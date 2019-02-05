@@ -202,7 +202,7 @@ public class Neuron2 {
     }
     
     
-	/////////////////////////////////////////////
+	//////////////////////////////////////
 	//*** Hill Climb Support Methods ***//
 	
 	/**
@@ -230,7 +230,7 @@ public class Neuron2 {
 	// TODO is this truly needed once the code shifts to provide the 
 	// largest gradient descent option.
 	public Neuron2 getNeuronWithAdjustedWeightAtIndex(int weightIndex, double step) {
-		if ((weightIndex) > this.getWeightsCount() ) return this;  // ERROR weight index
+		if ((weightIndex) > this.getWeightsCount() - 1 ) return this;  // ERROR weight index
 		if ((weightIndex) < 0 ) return this;                       // ERROR weight index
 		Neuron2  adjustedNeuron= this.copyNeuron();
 		double[] adjustedWeights = adjustedNeuron.getWeights();

@@ -403,7 +403,7 @@ class Neuron2Test {
 				// Found a larger error at this index
 				holdingDelta = currentDeltaMagnitude;
 				holdingIndex = i; 
-						System.out.println("....Found a larger error at index: " + holdingIndex + ", *** Error: " + adjustedError);
+					System.out.println("....Found a larger error at index: " + holdingIndex + ", *** Error: " + adjustedError);
 			}
 				
 			System.out.println("gradientOutputs[" + i + "]: " + gradientOutputs[i]);

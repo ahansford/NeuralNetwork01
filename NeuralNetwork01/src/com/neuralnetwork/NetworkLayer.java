@@ -126,20 +126,6 @@ public class NetworkLayer {
 		return;
 	}
 	
-	public NetworkLayer adjustNetworkLayer() {
-		NetworkLayer adjustedLayer = this.copyNetworkLayer();
-		Neuron2[] originalNeurons = this.getNeurons();
-		int neuronCount = this.getNeuronCountInLayer();
-		Neuron2[] adjustedNeurons = new Neuron2[neuronCount]; 
-
-		for (int i = 0; i < neuronCount; i++) {
-			adjustedNeurons[i] = originalNeurons[i].getThresholdAndWeightsAdjustedNeuron(); 
-		}
-		adjustedLayer.setNeurons(adjustedNeurons);
-		adjustedLayer.setLayerType(this.getLayerType());
-		return adjustedLayer;
-	}
-	
     @Override
     public String toString() { 
     	StringBuffer sB = new StringBuffer();
@@ -160,14 +146,33 @@ public class NetworkLayer {
     }
 	
     
-    public NetworkLayer adjustLayerNeuronWeight(int neuronIndex, int weightIndex, double step) {
-    	NetworkLayer adjustedLayer = this.copyNetworkLayer();
-    	Neuron2 adjustedNeuron = adjustedLayer.getNeuronAtIndex(neuronIndex).getNeuronWithAdjustedWeightAtIndex(weightIndex, step);
-    	adjustedLayer.setNeuronAtIndex(adjustedNeuron, neuronIndex);
-    	//System.out.println("Adjusting Neuron number: " + neuronIndex);
+	//////////////////////////////////////
+	//*** Hill Climb Support Methods ***//
+    
+	public NetworkLayer adjustNetworkLayer() {
+		NetworkLayer adjustedLayer = this.copyNetworkLayer();
+		Neuron2[] originalNeurons = this.getNeurons();
+		int neuronCount = this.getNeuronCountInLayer();
+		Neuron2[] adjustedNeurons = new Neuron2[neuronCount]; 
+
+		for (int i = 0; i < neuronCount; i++) {
+			adjustedNeurons[i] = originalNeurons[i].getThresholdAndWeightsAdjustedNeuron(); 
+		}
+		adjustedLayer.setNeurons(adjustedNeurons);
+		adjustedLayer.setLayerType(this.getLayerType());
 		return adjustedLayer;
 	}
+
+	
+	////////////////////////////////////////////////////
+	//*** PRIVATE Gradient Descent Support Methods ***//
     
+	/**
+	 * Returns a new NetworkLayer with the the specified neuron 
+	 * weight/threshold adjusted by the step amount.  There is no need
+	 * to make a separate call to adjust the threshold.  The threshold 
+	 * is managed within the index range as well as the weights.
+	 */
     public NetworkLayer adjustLayerNeuronThresholdAndWeights(int neuronIndex, int thresholdAndWeightsIndex, double step) {
     	NetworkLayer adjustedLayer = this.copyNetworkLayer();
     	Neuron2 adjustedNeuron = adjustedLayer.getNeuronAtIndex(neuronIndex).getNeuronWithAdjustedThresholdAndWeightsAtIndex(thresholdAndWeightsIndex, step);
@@ -176,5 +181,19 @@ public class NetworkLayer {
 		return adjustedLayer;
 	}
 
+	/**
+	 * DEPRECATED
+	 * Returns a new NetworkLayer with the the specified neuron weight
+	 * adjusted by the step amount.  used in conjunction with a specific
+	 * call to adjust the threshold separate from the weights.  The weights
+	 * or the threshold could be the larger affect. Both need to be checked.
+	 */
+    public NetworkLayer adjustLayerNeuronWeight(int neuronIndex, int weightIndex, double step) {
+    	NetworkLayer adjustedLayer = this.copyNetworkLayer();
+    	Neuron2 adjustedNeuron = adjustedLayer.getNeuronAtIndex(neuronIndex).getNeuronWithAdjustedWeightAtIndex(weightIndex, step);
+    	adjustedLayer.setNeuronAtIndex(adjustedNeuron, neuronIndex);
+    	//System.out.println("Adjusting Neuron number: " + neuronIndex);
+		return adjustedLayer;
+	}
     
 }

@@ -52,7 +52,7 @@ public class GradientDescent extends NeuralNetwork {
 	        	for(int l = 0; l < adjustedNetwork.getNetworkLayerCount(); l++) {
 	        		for (int n = 0; n < adjustedNetwork.getNetworkLayerNeuronCount(l); n++ ) 	{
 	        			for (int w = 0; w < adjustedNetwork.getNetworkLayerWeightCount(l); w++) {
-	        				
+	        				// TODO:  change the count to include the threshold
 	        				
 	        				// adjust a single weight using the standard step size
 	        				adjustedNetwork = adjustedNetwork.adjustNetworkNeuronWeight(l, n, w, this.initialStep);
