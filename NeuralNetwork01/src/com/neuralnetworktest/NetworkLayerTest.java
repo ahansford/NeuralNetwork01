@@ -11,7 +11,8 @@ import org.junit.jupiter.api.Test;
 
 import com.neuralnetwork.NetworkLayer;
 import com.neuralnetwork.NetworkLayer.LayerType;
-import com.neuralnetwork.Neuron;
+//import com.neuralnetwork.Neuron;
+import com.neuralnetwork.Neuron2;
 
 
 class NetworkLayerTest {
@@ -54,8 +55,8 @@ class NetworkLayerTest {
 	void testSetNeuronsGetNeuronsReturnSpecifiedValues() {
 		NetworkLayer  networkLayer = new NetworkLayer();
 		double[] weights = new double[] {1.1, 2,2};
-		Neuron neuron = new Neuron(weights, 3.3, 4.4);
-		Neuron[] neurons = new Neuron[] {neuron};
+		Neuron2 neuron = new Neuron2(weights, 3.3, 4.4);
+		Neuron2[] neurons = new Neuron2[] {neuron};
 		networkLayer.setNeurons(neurons);
 		assertTrue(networkLayer.getNeurons()[0].equals(neuron));
 	}
@@ -64,9 +65,9 @@ class NetworkLayerTest {
 	void testSetAndGetNeuronAtIndexPassesCorrectValues() {
 		NetworkLayer  networkLayer = new NetworkLayer(LayerType.H, 2,3);
 		double[] weights = new double[] {1, 2};
-		Neuron neuronA = new Neuron(weights, 3, 4);
+		Neuron2 neuronA = new Neuron2(weights, 3, 4);
 		weights = new double[] {1, 2};
-		Neuron neuronB = new Neuron(weights, 5, 6);
+		Neuron2 neuronB = new Neuron2(weights, 5, 6);
 		networkLayer.setNeuronAtIndex(neuronA, 0);
 		assertTrue(neuronA.equals(networkLayer.getNeuronAtIndex(0)));
 		networkLayer.setNeuronAtIndex(neuronB, 0);
@@ -78,11 +79,11 @@ class NetworkLayerTest {
 	void testGetNeuronCountInLayer() {
 		double[] weights = new double[] {0.0};
 		double[] outputs = new double[] {1.1, 2.2, 3.3};
-		Neuron neuron1 = new Neuron(weights, 0.0, outputs[0]);
-		Neuron neuron2 = new Neuron(weights, 0.0, outputs[1]);
-		Neuron neuron3 = new Neuron(weights, 0.0, outputs[2]);
-		Neuron neuron4 = new Neuron(weights, 0.0, outputs[2]);
-		Neuron[] neurons = new Neuron[] {neuron1, neuron2, neuron3, neuron4};
+		Neuron2 neuron1 = new Neuron2(weights, 0.0, outputs[0]);
+		Neuron2 neuron2 = new Neuron2(weights, 0.0, outputs[1]);
+		Neuron2 neuron3 = new Neuron2(weights, 0.0, outputs[2]);
+		Neuron2 neuron4 = new Neuron2(weights, 0.0, outputs[2]);
+		Neuron2[] neurons = new Neuron2[] {neuron1, neuron2, neuron3, neuron4};
 		NetworkLayer  networkLayer = new NetworkLayer();
 		networkLayer.setNeurons(neurons);
 		assertEquals(neurons.length, networkLayer.getNeuronCountInLayer());
@@ -95,12 +96,12 @@ class NetworkLayerTest {
 	void testGetInputCountToLayer() {
 		double[] weights = new double[] {0.0};
 		double[] outputs = new double[] {1.1, 2.2, 3.3, 4.4, 5.5};
-		Neuron neuron1 = new Neuron(weights, 0.0, outputs[0]);
-		Neuron neuron2 = new Neuron(weights, 0.0, outputs[1]);
-		Neuron neuron3 = new Neuron(weights, 0.0, outputs[2]);
-		Neuron neuron4 = new Neuron(weights, 0.0, outputs[3]);
-		Neuron neuron5 = new Neuron(weights, 0.0, outputs[4]);
-		Neuron[] neurons = new Neuron[] {neuron1, neuron2, neuron3, neuron4, neuron5};
+		Neuron2 neuron1 = new Neuron2(weights, 0.0, outputs[0]);
+		Neuron2 neuron2 = new Neuron2(weights, 0.0, outputs[1]);
+		Neuron2 neuron3 = new Neuron2(weights, 0.0, outputs[2]);
+		Neuron2 neuron4 = new Neuron2(weights, 0.0, outputs[3]);
+		Neuron2 neuron5 = new Neuron2(weights, 0.0, outputs[4]);
+		Neuron2[] neurons = new Neuron2[] {neuron1, neuron2, neuron3, neuron4, neuron5};
 		NetworkLayer  networkLayer = new NetworkLayer();
 		networkLayer.setNeurons(neurons);
 		
@@ -118,10 +119,10 @@ class NetworkLayerTest {
 	void testGetWeightedLayerOutputsReturnsCorrectValues() {
 		double[] weights = new double[] {0.0};
 		double[] outputs = new double[] {1.1, 2.2, 3.3};
-		Neuron neuron1 = new Neuron(weights, 0.0, outputs[0]);
-		Neuron neuron2 = new Neuron(weights, 0.0, outputs[1]);
-		Neuron neuron3 = new Neuron(weights, 0.0, outputs[2]);
-		Neuron[] neurons = new Neuron[] {neuron1, neuron2, neuron3};
+		Neuron2 neuron1 = new Neuron2(weights, 0.0, outputs[0]);
+		Neuron2 neuron2 = new Neuron2(weights, 0.0, outputs[1]);
+		Neuron2 neuron3 = new Neuron2(weights, 0.0, outputs[2]);
+		Neuron2[] neurons = new Neuron2[] {neuron1, neuron2, neuron3};
 		NetworkLayer  networkLayer = new NetworkLayer();
 		networkLayer.setNeurons(neurons);
 		double[] testOutputs =networkLayer.getWeightedLayerOutputs();
@@ -135,10 +136,10 @@ class NetworkLayerTest {
 	void testGetActivatedLayerOutputsReturnsCorrectValues() {
 		double[] weights = new double[] {0.0};
 		double[] outputs = new double[] {1.1, 2.2, 3.3};
-		Neuron neuron1 = new Neuron(weights, 0.0, outputs[0]);
-		Neuron neuron2 = new Neuron(weights, 0.0, outputs[1]);
-		Neuron neuron3 = new Neuron(weights, 0.0, outputs[2]);
-		Neuron[] neurons = new Neuron[] {neuron1, neuron2, neuron3};
+		Neuron2 neuron1 = new Neuron2(weights, 0.0, outputs[0]);
+		Neuron2 neuron2 = new Neuron2(weights, 0.0, outputs[1]);
+		Neuron2 neuron3 = new Neuron2(weights, 0.0, outputs[2]);
+		Neuron2[] neurons = new Neuron2[] {neuron1, neuron2, neuron3};
 		NetworkLayer  networkLayer = new NetworkLayer();
 		networkLayer.setNeurons(neurons);
 		double[] testOutputs =networkLayer.getActivatedLayerOutputs();
@@ -157,11 +158,11 @@ class NetworkLayerTest {
 	void testTwoNetworkLayersAreEquals() {
 		double[] weights = new double[] {1.1, 2.2, 3.3};
 		double[] outputs = new double[] {4.4, 5.5, 6.6};
-		Neuron neuron1 = new Neuron(weights, 3.0, outputs[0]);
-		Neuron neuron2 = new Neuron(weights, 3.0, outputs[1]);
-		Neuron neuron3 = new Neuron(weights, 3.0, outputs[2]);
-		Neuron[] neurons = new Neuron[] {neuron1, neuron2, neuron3};
-		Neuron[] neurons2 = new Neuron[] {neuron1.copyNeuron(), 
+		Neuron2 neuron1 = new Neuron2(weights, 3.0, outputs[0]);
+		Neuron2 neuron2 = new Neuron2(weights, 3.0, outputs[1]);
+		Neuron2 neuron3 = new Neuron2(weights, 3.0, outputs[2]);
+		Neuron2[] neurons = new Neuron2[] {neuron1, neuron2, neuron3};
+		Neuron2[] neurons2 = new Neuron2[] {neuron1.copyNeuron(), 
 				                          neuron2.copyNeuron(), 
 				                          neuron2.copyNeuron()};
 		
@@ -196,10 +197,10 @@ class NetworkLayerTest {
 	void testEqualTestOfNullLayerReturnsFalse() {
 		double[] weights = new double[] {1.1, 2.2, 3.3};
 		double[] outputs = new double[] {4.4, 5.5, 6.6};
-		Neuron neuron1 = new Neuron(weights, 3.0, outputs[0]);
-		Neuron neuron2 = new Neuron(weights, 3.0, outputs[1]);
-		Neuron neuron3 = new Neuron(weights, 3.0, outputs[2]);
-		Neuron[] neurons = new Neuron[] {neuron1, neuron2, neuron3};
+		Neuron2 neuron1 = new Neuron2(weights, 3.0, outputs[0]);
+		Neuron2 neuron2 = new Neuron2(weights, 3.0, outputs[1]);
+		Neuron2 neuron3 = new Neuron2(weights, 3.0, outputs[2]);
+		Neuron2[] neurons = new Neuron2[] {neuron1, neuron2, neuron3};
 		NetworkLayer  networkLayer = new NetworkLayer();
 		networkLayer.setLayerType(LayerType.I);
 		networkLayer.setNeurons(neurons);
@@ -213,10 +214,10 @@ class NetworkLayerTest {
 	void testCopiedLayerIsEqualToSelf() {
 		double[] weights = new double[] {1.1, 2.2, 3.3};
 		double[] outputs = new double[] {4.4, 5.5, 6.6};
-		Neuron neuron1 = new Neuron(weights, 3.0, outputs[0]);
-		Neuron neuron2 = new Neuron(weights, 3.0, outputs[1]);
-		Neuron neuron3 = new Neuron(weights, 3.0, outputs[2]);
-		Neuron[] neurons = new Neuron[] {neuron1, neuron2, neuron3};
+		Neuron2 neuron1 = new Neuron2(weights, 3.0, outputs[0]);
+		Neuron2 neuron2 = new Neuron2(weights, 3.0, outputs[1]);
+		Neuron2 neuron3 = new Neuron2(weights, 3.0, outputs[2]);
+		Neuron2[] neurons = new Neuron2[] {neuron1, neuron2, neuron3};
 		NetworkLayer  networkLayer = new NetworkLayer();
 		networkLayer.setLayerType(LayerType.I);
 		networkLayer.setNeurons(neurons);
@@ -230,15 +231,15 @@ class NetworkLayerTest {
 	void testWrongNeuronCountReturnsNotEqual() {
 		double[] weights = new double[] {1.1, 2.2, 3.3};
 		double[] outputs = new double[] {4.4, 5.5, 6.6};
-		Neuron neuron1 = new Neuron(weights, 3.0, outputs[0]);
-		Neuron neuron2 = new Neuron(weights, 3.0, outputs[1]);
-		Neuron neuron3 = new Neuron(weights, 3.0, outputs[2]);
-		Neuron[] neurons = new Neuron[] {neuron1, neuron2, neuron3};
+		Neuron2 neuron1 = new Neuron2(weights, 3.0, outputs[0]);
+		Neuron2 neuron2 = new Neuron2(weights, 3.0, outputs[1]);
+		Neuron2 neuron3 = new Neuron2(weights, 3.0, outputs[2]);
+		Neuron2[] neurons = new Neuron2[] {neuron1, neuron2, neuron3};
 		NetworkLayer  networkLayer = new NetworkLayer();
 		networkLayer.setLayerType(LayerType.I);
 		networkLayer.setNeurons(neurons);
 		
-		neurons = new Neuron[] {neuron1, neuron2};
+		neurons = new Neuron2[] {neuron1, neuron2};
 		NetworkLayer  networkLayer2 = new NetworkLayer();
 		networkLayer2.setLayerType(LayerType.I);
 		networkLayer2.setNeurons(neurons);
@@ -259,7 +260,7 @@ class NetworkLayerTest {
 		NetworkLayer  networkLayer = new NetworkLayer(LayerType.H,
 				                                      numberInputs, 
 				                                      numberNeurons);
-		Neuron[] neurons = new Neuron[2];
+		Neuron2[] neurons = new Neuron2[2];
 		neurons = networkLayer.getNeurons();
 		neurons[0].setWeights(weights0);
 		neurons[1].setWeights(weights1);
@@ -296,7 +297,7 @@ class NetworkLayerTest {
 		NetworkLayer  networkLayer = new NetworkLayer(LayerType.I,
 				                                      numberInputs, 
 				                                      numberNeurons);
-		Neuron[] neurons = networkLayer.getNeurons();
+		Neuron2[] neurons = networkLayer.getNeurons();
 		neurons[0].setWeights(weights);
 		neurons[1].setWeights(weights);
 		neurons[2].setWeights(weights);
@@ -315,7 +316,7 @@ class NetworkLayerTest {
 		NetworkLayer  networkLayer = new NetworkLayer(LayerType.I,
 				                                      numberInputs, 
 				                                      numberNeurons);
-		Neuron[] neurons = networkLayer.getNeurons();
+		Neuron2[] neurons = networkLayer.getNeurons();
 		neurons[0].setWeights(weights);
 		neurons[1].setWeights(weights);
 		neurons[2].setWeights(weights);
@@ -334,7 +335,7 @@ class NetworkLayerTest {
 		NetworkLayer  networkLayer = new NetworkLayer(LayerType.I,
 				                                      numberInputs, 
 				                                      numberNeurons);
-		Neuron[] neurons = networkLayer.getNeurons();
+		Neuron2[] neurons = networkLayer.getNeurons();
 		neurons[0].setWeights(weights);
 		neurons[1].setWeights(weights);
 		neurons[2].setWeights(weights);
@@ -353,7 +354,7 @@ class NetworkLayerTest {
 		NetworkLayer  networkLayer = new NetworkLayer(LayerType.H,
 				                                      numberInputs, 
 				                                      numberNeurons);
-		Neuron[] neurons = networkLayer.getNeurons();
+		Neuron2[] neurons = networkLayer.getNeurons();
 		neurons[0].setWeights(weights);
 		neurons[1].setWeights(weights);
 		neurons[2].setWeights(weights);
@@ -368,10 +369,10 @@ class NetworkLayerTest {
 	void testAdjustedLayerNeuronsAreNotEqualToSelf() {
 		double[] weights = new double[] {1.1, 2.2, 3.3};
 		double[] outputs = new double[] {4.4, 5.5, 6.6};
-		Neuron neuron1 = new Neuron(weights, 3.0, outputs[0]);
-		Neuron neuron2 = new Neuron(weights, 3.0, outputs[1]);
-		Neuron neuron3 = new Neuron(weights, 3.0, outputs[2]);
-		Neuron[] neurons = new Neuron[] {neuron1, neuron2, neuron3};
+		Neuron2 neuron1 = new Neuron2(weights, 3.0, outputs[0]);
+		Neuron2 neuron2 = new Neuron2(weights, 3.0, outputs[1]);
+		Neuron2 neuron3 = new Neuron2(weights, 3.0, outputs[2]);
+		Neuron2[] neurons = new Neuron2[] {neuron1, neuron2, neuron3};
 		NetworkLayer  networkLayer = new NetworkLayer();
 		networkLayer.setLayerType(LayerType.I);
 		networkLayer.setNeurons(neurons);
@@ -393,11 +394,11 @@ class NetworkLayerTest {
 	void testToString() {
 		double[] weights = new double[] {1.1, 2.2, 3.3};
 		double[] outputs = new double[] {4.4, 5.5, 6.6};
-		Neuron neuron1 = new Neuron(weights, 3.0, outputs[0]);
-		Neuron neuron2 = new Neuron(weights, 3.0, outputs[1]);
-		Neuron neuron3 = new Neuron(weights, 3.0, outputs[2]);
-		Neuron[] neurons = new Neuron[] {neuron1, neuron2, neuron3};
-		Neuron[] neurons2 = new Neuron[] {neuron1.copyNeuron(), 
+		Neuron2 neuron1 = new Neuron2(weights, 3.0, outputs[0]);
+		Neuron2 neuron2 = new Neuron2(weights, 3.0, outputs[1]);
+		Neuron2 neuron3 = new Neuron2(weights, 3.0, outputs[2]);
+		Neuron2[] neurons = new Neuron2[] {neuron1, neuron2, neuron3};
+		Neuron2[] neurons2 = new Neuron2[] {neuron1.copyNeuron(), 
 				                          neuron2.copyNeuron(), 
 				                          neuron3.copyNeuron()};
 		
@@ -428,8 +429,8 @@ class NetworkLayerTest {
 		NetworkLayer  networkLayer = new NetworkLayer(layerType,
 													  inputCount, 
 				                                      neuronCount);
-		Neuron[] neurons = new Neuron[neuronCount];
-		for (int i = 0; i < neuronCount; i++) { neurons[i] = new Neuron(weights, 0, 0); }
+		Neuron2[] neurons = new Neuron2[neuronCount];
+		for (int i = 0; i < neuronCount; i++) { neurons[i] = new Neuron2(weights, 0, 0); }
 		networkLayer.setNeurons(neurons);
 	
 		return networkLayer;

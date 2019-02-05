@@ -247,7 +247,7 @@ public class Neuron2 {
 		adjustedThresholdAndWeights[weightIndex] += step; 
 		adjustedNeuron.setThresholdAndWeights(adjustedThresholdAndWeights);
 		return adjustedNeuron;
-	}
+	} 
 	
 	
 }

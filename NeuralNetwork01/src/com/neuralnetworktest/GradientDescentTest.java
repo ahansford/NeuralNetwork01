@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 
 import com.neuralnetwork.GradientDescent;
 
-import com.neuralnetwork.Neuron;
+import com.neuralnetwork.Neuron2;
 
 class GradientDescentTest {
 	
@@ -59,7 +59,7 @@ class GradientDescentTest {
         int outputsCount = 1;
 		GradientDescent gradientNetwork = new GradientDescent(inputsCount, hiddenLayerCount, hiddenLayerNeuronCount, outputsCount);
 		double[] weights = new double[] {1.0};
-		Neuron neuron = new Neuron(weights, 0, 0);
+		Neuron2 neuron = new Neuron2(weights, 0, 0);
 		gradientNetwork.getNetworkLayers()[0].setNeuronAtIndex(neuron.copyNeuron(), 0);
 		gradientNetwork.getNetworkLayers()[1].setNeuronAtIndex(neuron.copyNeuron(), 0);
 		gradientNetwork.getNetworkLayers()[2].setNeuronAtIndex(neuron.copyNeuron(), 0);
