@@ -23,7 +23,7 @@ public class Neuron2 {
 	// TODO:  used as part of the Hill Climb algorithm.  This value should be
 	// passed into the getNeuronWithAdjustedWeightAtIndex() so that tuning 
 	// parameters can be explored.
-	private double  LEARNING_RATE = 0.1;
+	private double  LEARNING_RATE = 0.9;
 	
 	private double[] thresholdAndWeights = new double[] {0.0};
 	private double output = 0.0;
@@ -230,8 +230,9 @@ public class Neuron2 {
 	// TODO is this truly needed once the code shifts to provide the 
 	// largest gradient descent option.
 	public Neuron2 getNeuronWithAdjustedWeightAtIndex(int weightIndex, double step) {
-		if ((weightIndex) > this.getWeightsCount() - 1 ) return this;  // ERROR weight index
-		if ((weightIndex) < 0 ) return this;                       // ERROR weight index
+		// NOTE:  The index ranges from 0..x while the count ranges from 1..x+1
+		if ((weightIndex) > this.getWeightsCount() - 1 ) return this; // ERROR weight index
+		if ((weightIndex) < 0 ) return this;                          // ERROR weight index
 		Neuron2  adjustedNeuron= this.copyNeuron();
 		double[] adjustedWeights = adjustedNeuron.getWeights();
 		adjustedWeights[weightIndex] += step; 
@@ -240,8 +241,9 @@ public class Neuron2 {
 	}
 	
 	public Neuron2 getNeuronWithAdjustedThresholdAndWeightsAtIndex(int weightIndex, double step) {
-		if ((weightIndex) > this.getWeightsCount() ) return this;  // ERROR weight index
-		if ((weightIndex) < 0 ) return this;                       // ERROR weight index
+		// NOTE:  The index ranges from 0..x while the count ranges from 1..x+1
+		if ((weightIndex) > this.getWeightsCount() - 1 ) return this; // ERROR weight index
+		if ((weightIndex) < 0 ) return this;                          // ERROR weight index
 		Neuron2  adjustedNeuron= this.copyNeuron();
 		double[] adjustedThresholdAndWeights = adjustedNeuron.getThresholdAndWeights();
 		adjustedThresholdAndWeights[weightIndex] += step; 

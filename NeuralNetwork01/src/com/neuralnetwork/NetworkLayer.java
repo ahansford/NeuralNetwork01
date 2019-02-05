@@ -1,15 +1,36 @@
 package com.neuralnetwork;
 
+
+/**
+ * Implements a complete layer of perceptrons
+ * 
+ * Each layer holds an array of Neurons, as well as a LayerType indicator.
+ * 
+ * The copyNetworkLayer() generates an entirely new layer copy
+ * 
+ */ 
 public class NetworkLayer {
+	
 	
 	public enum LayerType {UNKNOWN, I, H, O}
 	
 	// *** Members  ***
+	
+	/**
+	 * LayerType includes 'I'nput, 'H'idden, 'O'utput, and "UNKNOWN"
+	 * A layer listed with an UNKNOWN LayerType should be considered an error
+	 */ 
 	LayerType layerType;
+	
+	/**
+	 * A collection of neurons contained within the layer
+	 */
 	private Neuron2[] neurons;
 	
 	
-	// *** Access methods ***
+	///////////////////////////////////////////////////////////////////////
+    // *** True accessors to the combined threshold and weights array ***//
+	
 	public void      setLayerType(LayerType layerType) {this.layerType = layerType;}
 	public LayerType getLayerType() {return this.layerType;}
 	
@@ -24,13 +45,17 @@ public class NetworkLayer {
 		else { return this.getNeuronAtIndex(0).getWeightsCount(); }
 	}
 	
+	public int getGetNeuronThresholdAndWeightsCountForLayer() { 
+		return this.getNeuronAtIndex(0).getThresholdAndWeightsCount(); 
+	}
+	
 	public int getNeuronCountInLayer() { return this.getNeurons().length; }
 	
 	public double[] getActivatedLayerOutputs() {
-		int numberNeurons = this.getNeuronCountInLayer();
+		int neuronCount = this.getNeuronCountInLayer();
 		double[] weightedOutputs = this.getWeightedLayerOutputs();
-		double [] activatedOutputs = new double[numberNeurons];
-		for (int n = 0; n < numberNeurons; n++) {
+		double [] activatedOutputs = new double[neuronCount];
+		for (int n = 0; n < neuronCount; n++) {
 			activatedOutputs[n] = ActivationFunction.applyLogisticFunction(weightedOutputs[n]);
 		}
 		return activatedOutputs;
@@ -45,7 +70,8 @@ public class NetworkLayer {
 		return weightedOutputs;
 	}
 	
-	// *** Constructor(s) ***
+	//////////////////////////
+	//*** Constructor(s) ***//
 	public NetworkLayer() {
 		this.setLayerType( LayerType.UNKNOWN );
 		this.setNeurons( new Neuron2[1] );  // create a new Neuron array

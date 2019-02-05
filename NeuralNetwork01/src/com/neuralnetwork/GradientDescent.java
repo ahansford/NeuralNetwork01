@@ -6,13 +6,12 @@ public class GradientDescent extends NeuralNetwork {
 	
 	private int gradientLayerIndex  = 0;
 	private int gradientNeuronIndex = 0;
-	private int gradientWeightIndex = 0; 
-	private double holdingStep;
+	private int gradientWeightIndex = 0;
 	
 	private double initialStep = 0.05;
-	GradientDescent holdingNetwork = null;
+	private double holdingStep;
 	
-	double originalRMSerror = 0;
+	//double originalRMSerror = 0;
 	
 	
 	public GradientDescent(int layerCount) {
@@ -28,97 +27,99 @@ public class GradientDescent extends NeuralNetwork {
 	}
 	
 	 public void runGradiemtDescentAlgorithm(double[][][] trainingSet) {
-			NeuralNetwork adjustedNetwork = new NeuralNetwork(this.getNetworkLayerCount());
-			holdingNetwork = new GradientDescent(this.getNetworkLayerCount());
-	        double originalRMSerror = 0;
-	        double adjustedRMSerror = 0;
-	        //double currentGradientError = 0;
-	        //double adjustedGradientError = 0;
-	        //double holdingStep = 0;
-	        double deltaCostMagnitude = 0;
-	        double HoldingCostMagnitude = 0;
-	        
+			//Create a copy of this original network to manipulate looking for the greatest gradient
+		 	NeuralNetwork adjustedNetwork = new NeuralNetwork(this.getNetworkLayerCount());
+		 	
+		 	// Create a holding network to hold the best intermediate values at they are found
+		 	NeuralNetwork holdingNetwork = new GradientDescent(this.getNetworkLayerCount());
+			
+			// Original error is the "this" network error, the adjusted error is the current manipulated 
+			// network error, holding error is the largest error found at a given stage through the algorithm
+	        double originalRMSerror = this.calculateRMSerror(trainingSet);;
+	        double adjustedRMSerror = originalRMSerror;
+	        double holdingRMSerror  = originalRMSerror;
+
 	        this.setEpoch(0);
 	        int k = 0;
-	        //boolean runFlag = true;
 	        while (k < MAX_ITERATIONS) {
 	        	this.setEpoch(this.getEpoch() + 1);
-	        	this.originalRMSerror = this.calculateRMSerror(trainingSet);
+	        	System.out.println("\nNew Epoch: " + this.getEpoch() );
+	        	
+	        	// set all errors equal to the original network to start, improvements should be lower
+	        	//adjustedRMSerror = originalRMSerror;
+	        	//holdingRMSerror  = originalRMSerror;
+	        	
+	        	// Copy the original Network on each pass through
 	        	adjustedNetwork.setNeuralNetworkTo(this);
-	        	// any improvement with certainly be smaller in magnitude than the original error
-	        	HoldingCostMagnitude = 0;
-	        	System.out.println("\nNew Epoch: " + k );
-	        	// find the largest gradient
+	        	// Inject a random setting based on the Neuron2 learning rate
+	        	adjustedNetwork.adjustNeuralNetwork();
+	        	
+	        	// loop through network layers, neurons and weights to find the largest gradient that reduces the error
 	        	for(int l = 0; l < adjustedNetwork.getNetworkLayerCount(); l++) {
 	        		for (int n = 0; n < adjustedNetwork.getNetworkLayerNeuronCount(l); n++ ) 	{
-	        			for (int w = 0; w < adjustedNetwork.getNetworkLayerWeightCount(l); w++) {
-	        				// TODO:  change the count to include the threshold
-	        				
+	        			for (int w = 0; w < adjustedNetwork.getNetworkLayerThresholdAndWeightsCountForLayer(l); w++) {
+	        				System.out.print("Layer: " + l + "  Neuron: " + n + "  Weight: " + w);
 	        				// adjust a single weight using the standard step size
 	        				adjustedNetwork = adjustedNetwork.adjustNetworkNeuronWeight(l, n, w, this.initialStep);
 	        				
 	        				// calculate the new RMSerror
 	        				adjustedRMSerror = adjustedNetwork.calculateRMSerror(trainingSet);
 	        				
-	        				// calculate the difference between the adjusted weight error and the original error
-	        				double deltaCost = adjustedRMSerror - this.originalRMSerror;
-	        				
-	        				// if the deltaCost error is positive, then invert the step sign
-	        				if ( deltaCost >= 0 ) {
-	        					//  Step direction increased the cost function, opposite of our goal
-	        					//  ... invert the step
+	        				// If adjusted error is larger than original, then try an inverted step
+	        				if (adjustedRMSerror > originalRMSerror ) {
+	        					// The original step increased the error, therefore invert step sign and re-check
 	        					this.initialStep = -this.initialStep;
-	        					//Reverse the original weight adjustment
 	        					adjustedNetwork = adjustedNetwork.adjustNetworkNeuronWeight(l, n, w, this.initialStep);
-	        					// make a step in the descending direction
-	        					adjustedNetwork = adjustedNetwork.adjustNetworkNeuronWeight(l, n, w, this.initialStep);
-	        					// calculate the new RMSerror
-		        				adjustedRMSerror = adjustedNetwork.calculateRMSerror(trainingSet);
-		        				// calculate the difference between the adjusted weight error and the original error
-		        				deltaCost = adjustedRMSerror - originalRMSerror;
+	        					adjustedRMSerror = adjustedNetwork.calculateRMSerror(trainingSet);
 	        				}
 	        				
-	        				//System.out.println("DeltaCost should be negative here: " + deltaCost + ", k="+k+" "+l+ " " + n + " "+ w);
+	        				// If the inverted step direction still increases the error, then break out of this loop iteration
+	        				if (adjustedRMSerror > originalRMSerror ) {
+	        					// Neither step direction reduced the error ... break
+	        					System.out.println(" Neither step direction improved at index : " +l+ " " + n + " "+ w );
+	        					break;
+	        				}
 	        				
-	        				deltaCostMagnitude = Math.abs(deltaCost);
-	        				System.out.println("Shift if deltaCostMagnitude > HoldingCostMagnitude"+ deltaCostMagnitude + " " + HoldingCostMagnitude);
-	        				if (deltaCostMagnitude > HoldingCostMagnitude) {
-	        					// this weight is an improvement of the weights already tested
+	        				// The adjusted error has smaller than the original error
+	        				// Check to see if the adjusted error is smaller than the holding error
+	        				
+	        				System.out.println("Testing if adjustedRMSerror < holdingRMSerror  "+ adjustedRMSerror + " " + holdingRMSerror + " - "+(adjustedRMSerror < holdingRMSerror ? "new " : "keep")+" : "+ (holdingRMSerror-adjustedRMSerror) );
+	        				if (adjustedRMSerror < holdingRMSerror) {
+	        					//System.out.println("  SHIFT to new");
+	        					System.out.println("   ... Shifting because the adjustedRMSerror < holdingRMSerror  "+ adjustedRMSerror + " " + holdingRMSerror);
+		        				
+	        					// this weight step is an improvement of the weights already tested
 	        					// System.out.println("CurrentGradient: " + currentGradientError + ", HoldingGradient: " +  HoldingGradientError);
-	        					HoldingCostMagnitude = deltaCostMagnitude;
+	        					holdingRMSerror = adjustedRMSerror;
 	        					this.gradientLayerIndex  = l;
 	        					this.gradientNeuronIndex = n;
 	        					this.gradientWeightIndex = w;
 	        					// holdingNetwork = adjustedNetwork;
 	        					holdingStep = this.initialStep;
-	        					System.out.println(" Found a stronger weight at index : " +l+ " " + n + " "+ w + " " +deltaCost + " " +deltaCostMagnitude);
+	        					holdingNetwork.setNeuralNetworkTo(adjustedNetwork.copyNeuralNetwork());
+	        					System.out.println(" Found a stronger weight at index : " +l+ " " + n + " "+ w + " " +holdingRMSerror + " " +holdingRMSerror);
+	        				} else {
+	        					//System.out.println("  Keep old");
+	        					
 	        				}
+	        
 	        				
-	        				// end of three loops 
+	        				// end of three loops inner code
 	        			}
 	        		}
 	        	}
-	        	System.out.println(" Selecting the weight at index : " +this.gradientLayerIndex+ " " + this.gradientNeuronIndex+ " "+ this.gradientWeightIndex + " " + HoldingCostMagnitude);
 	        	
-	        	HoldingCostMagnitude=0;
+	        	// Pick the holding network since it holds the greatest improvement.
+	        	System.out.println(" Selecting the weight at index : " +this.gradientLayerIndex+ " " + this.gradientNeuronIndex+ " "+ this.gradientWeightIndex + " Step: " + this.initialStep + " error: "+ holdingRMSerror);
 	        	
-	        	
-	        	// determine max useful step down the gradient
-	        	holdingNetwork.setNeuralNetworkTo(adjustedNetwork);
-	        	int stepMultiplier = ((GradientDescent) holdingNetwork).getStepMultiplier(trainingSet, this.holdingStep);
-	        	System.out.println("index : " + k + "  "+gradientLayerIndex+ " " + gradientNeuronIndex + " "+ gradientWeightIndex + " " + HoldingCostMagnitude);
-	        	System.out.println(",  stepMultiplier : " +stepMultiplier);
-	        	adjustedNetwork = this.adjustNetworkNeuronWeight(gradientLayerIndex, 
-	        												     gradientNeuronIndex, 
-	        													 gradientWeightIndex, 
-	        													 this.holdingStep * stepMultiplier);
-	        
-	        this.setNeuralNetworkTo(adjustedNetwork);
-	        k++;
+	        	this.setNeuralNetworkTo(holdingNetwork);
+	        	//this = holdingNetwork.copyNeuralNetwork();
+	        	k++;
 	        
 	        }
 	 }
 	        
+	 
 	public int getStepMultiplier(double[][][] trainingSet, double step) {
 		//NeuralNetwork holdingNetwork = null;
 	    //boolean breakFlag;

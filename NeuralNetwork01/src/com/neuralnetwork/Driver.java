@@ -9,12 +9,17 @@ package com.neuralnetwork;
  */
 public class Driver {
 	
-	
+	/*
 	public static double[][][] TRAINING_SET = new double[][][] {{{0, 0}, {1, 0, 0, 1}},
 															    {{0, 1}, {1, 0, 1, 0}},
 															    {{1, 0}, {1, 0, 1, 0}},
 															    {{1, 1}, {0, 1, 0, 0}}};
-		
+															    */
+	public static double[][][] TRAINING_SET = new double[][][] {{{0, 0}, {1}},
+	                                                            {{0, 1}, {1}},
+	                                                            {{1, 0}, {1}},
+	                                                            {{1, 1}, {0}}};
+
 	public static HillClimb hillClimbNetwork;
 	public static NeuralNetwork neuralNetwork;
 
@@ -25,8 +30,8 @@ public class Driver {
 		int inputsCount = TRAINING_SET[0][0].length; 
         int hiddenLayerCount = 1; 
         int hiddenLayerNeuronCount = 2;
-        int outputsCount = 4;
-        NeuralNetwork originalNetwork;
+        int outputsCount = 1;
+        NeuralNetwork originalNetwork = null;
         //NeuralNetwork copyNetwork;
         
         neuralNetwork = new HillClimb(inputsCount,
@@ -37,17 +42,14 @@ public class Driver {
         ((HillClimb) neuralNetwork).runHillClimbAlgorithm(TRAINING_SET);
         printTrainingSetResults(neuralNetwork, TRAINING_SET);
         
+        /**/
         GradientDescent gradientNetwork = new GradientDescent(inputsCount,
 				  											  hiddenLayerCount,
 				  											  hiddenLayerNeuronCount,
 				  											  outputsCount );
-        // downcast needs instance of to prevent runtime exception
-        if (originalNetwork instanceof GradientDescent) {
-        	gradientNetwork = (GradientDescent) originalNetwork.copyNeuralNetwork() ;
-        }	
+        gradientNetwork.setNeuralNetworkTo(originalNetwork.copyNeuralNetwork()) ;
         gradientNetwork.runGradiemtDescentAlgorithm(TRAINING_SET);
         printTrainingSetResults(gradientNetwork, TRAINING_SET);
-        
 	}
 	
 	

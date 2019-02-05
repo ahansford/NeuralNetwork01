@@ -28,6 +28,10 @@ public class NeuralNetwork {
 		return this.getNetworkLayers()[layerIndex].getInputCountIntoLayer();
 	}
 	
+	public int getNetworkLayerThresholdAndWeightsCountForLayer(int layerIndex) {
+		return this.getNetworkLayers()[layerIndex].getGetNeuronThresholdAndWeightsCountForLayer();
+	}
+	
 	public int getNetworkInputCount() {
 		return this.getNetworkLayers()[0].getInputCountIntoLayer(); 
 		}
@@ -40,7 +44,12 @@ public class NeuralNetwork {
 		return this.getNetworkLayers()[this.getNetworkLayerCount() - 1].getNeuronCountInLayer();
 	} 
 	
-	public void setNeuralNetworkTo(NeuralNetwork neuralNetwork) {this.layers = neuralNetwork.layers;}
+	public void setNeuralNetworkTo(NeuralNetwork neuralNetwork) {
+		this.layers = neuralNetwork.layers;
+		this.verboseFlag = neuralNetwork.verboseFlag;
+		this.epoch = neuralNetwork.epoch;
+		this.RMSerror = neuralNetwork.RMSerror;
+	}
 	
 	public void    setVerboseFlag(boolean verboseFlag) { this.verboseFlag = verboseFlag; }
 	public boolean getVerboseFlag() { return this.verboseFlag; }
@@ -138,8 +147,10 @@ public class NeuralNetwork {
 	public void runNetwork(double[] inputs) {
 		int layerCount = this.getNetworkLayerCount();
 		NetworkLayer currentLayer;
+		
 		for (int index = 0; index < layerCount; index++) {
 			currentLayer = this.getNetworkLayers()[index];
+			//if (currentLayer.getLayerType() == LayerType.UNKNOWN) { System.out.println("ERROR running UNKNOWN type layer"); }
 			if (currentLayer.getLayerType() == LayerType.I) {
 				// This is the input layer
 				//System.out.println( "NeuralNetwork input layer Just before RunningNetwork: " + index);
@@ -148,7 +159,9 @@ public class NeuralNetwork {
 			} else {
 				// This is not the input layer
 				// Use outputs from the prior layer to pass as inputs
-				currentLayer.runLayer(this.getNetworkLayers()[index - 1].getActivatedLayerOutputs());
+				//System.out.println("Getting prior layer outputs for layer index: " + index);
+				NetworkLayer priorLayer = this.getNetworkLayers()[index - 1];
+				currentLayer.runLayer(priorLayer.getActivatedLayerOutputs());
 			}
 			//System.out.println( "RunningNetwork: " + index + " "+ currentLayer.toString());
 		}
