@@ -2,13 +2,13 @@ package com.neuralnetwork;
 
 public class GradientDescent extends NeuralNetwork {
 
-	public static int MAX_ITERATIONS = 2000;
+	public static int MAX_ITERATIONS = 50;
 	
 	private int gradientLayerIndex  = 0;
 	private int gradientNeuronIndex = 0;
 	private int gradientWeightIndex = 0;
 	
-	private double initialStep = 0.05;
+	private double initialStep = 0.1;
 	private double holdingStep;
 	
 	//double originalRMSerror = 0;
@@ -109,6 +109,8 @@ public class GradientDescent extends NeuralNetwork {
 	        		}
 	        	}
 	        	
+	        	
+	        	if (originalRMSerror == holdingRMSerror) {this.initialStep = this.initialStep/2;}
 	        	// Pick the holding network since it holds the greatest improvement.
 	        	System.out.println(" Selecting the weight at index : " +this.gradientLayerIndex+ " " + this.gradientNeuronIndex+ " "+ this.gradientWeightIndex + " Step: " + this.initialStep + " error: "+ holdingRMSerror);
 	        	

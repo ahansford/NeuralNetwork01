@@ -23,7 +23,7 @@ public class Neuron2 {
 	// TODO:  used as part of the Hill Climb algorithm.  This value should be
 	// passed into the getNeuronWithAdjustedWeightAtIndex() so that tuning 
 	// parameters can be explored.
-	private double  LEARNING_RATE = 0.9;
+	private double  LEARNING_RATE = 3;
 	
 	private double[] thresholdAndWeights = new double[] {0.0};
 	private double output = 0.0;

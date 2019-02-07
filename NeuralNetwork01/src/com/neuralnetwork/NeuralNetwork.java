@@ -64,8 +64,19 @@ public class NeuralNetwork {
 	//*** Constructor(s) ***
 	public NeuralNetwork(int layerCount) {
 		this.layers = new NetworkLayer[layerCount];
-		for (int i = 0; i < layerCount; i++)
-			this.layers[i]= new NetworkLayer();
+		for (int i = 0; i < layerCount; i++) {
+			NetworkLayer newLayer = new NetworkLayer();
+			if ( i == 0 ) { 
+				newLayer.setLayerType(LayerType.I);
+				break;  }
+			if ( i == layerCount - 1) {
+				newLayer.setLayerType(LayerType.O);
+				break;  }
+			else {
+				newLayer.setLayerType(LayerType.H);
+			}
+			this.layers[i] = newLayer;
+		}
 	}
 	
 	public NeuralNetwork(int inputsCount, 
@@ -150,7 +161,10 @@ public class NeuralNetwork {
 		
 		for (int index = 0; index < layerCount; index++) {
 			currentLayer = this.getNetworkLayers()[index];
-			//if (currentLayer.getLayerType() == LayerType.UNKNOWN) { System.out.println("ERROR running UNKNOWN type layer"); }
+			if (currentLayer.getLayerType() == LayerType.UNKNOWN) { 
+				System.err.println("ERROR: NeuralNetwork.runNetwork() trying to run UNKNOWN layer type"); 
+				return;
+			}
 			if (currentLayer.getLayerType() == LayerType.I) {
 				// This is the input layer
 				//System.out.println( "NeuralNetwork input layer Just before RunningNetwork: " + index);
@@ -159,7 +173,7 @@ public class NeuralNetwork {
 			} else {
 				// This is not the input layer
 				// Use outputs from the prior layer to pass as inputs
-				//System.out.println("Getting prior layer outputs for layer index: " + index);
+				// System.out.println("Getting prior layer outputs for layer index: " + index);
 				NetworkLayer priorLayer = this.getNetworkLayers()[index - 1];
 				currentLayer.runLayer(priorLayer.getActivatedLayerOutputs());
 			}

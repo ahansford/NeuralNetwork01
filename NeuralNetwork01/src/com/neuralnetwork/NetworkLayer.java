@@ -1,5 +1,6 @@
 package com.neuralnetwork;
 
+//import com.neuralnetwork.NetworkLayer.LayerType;
 
 /**
  * Implements a complete layer of perceptrons
@@ -130,24 +131,29 @@ public class NetworkLayer {
 	public void runLayer(double[] inputs) {
 		int inputCount = inputs.length;
 		int numberNeurons = this.getNeuronCountInLayer();
+		int inputCountIntoLayer = this.getInputCountIntoLayer();
 		double[] singleInput = new double[1];
-		if (this.getLayerType() == LayerType.I) { 
-			// Input layer processing needed
-			if (inputCount != this.getNeuronCountInLayer()) {
-				System.out.println("ERROR NetworkLayer.runLayer(): Inputs.length not matched to INPUT layer neuron count");
-				return;}  // UNHANDLED ERROR
+		
+		if (this.getLayerType() == LayerType.UNKNOWN) { // TODO: UNHANDLED ERROR
+			System.err.println("ERROR: NetworkLayer.runNetwork() trying to run UNKNOWN layer type"); 
+			return; 
+		}
+		
+		if (inputCount != inputCountIntoLayer) {  // TODO: UNHANDLED ERROR
+			System.err.println("ERROR NetworkLayer.runLayer(): inputs.length not matched to this.getInputCountIntoLayer: "+ inputCountIntoLayer + ", inputs: " + inputCount);
+			System.err.println(this.toString());
+			return;
+		}  
+		
+		if (this.getLayerType() == LayerType.I) {  // Input layer processing needed
 			for (int n = 0; n < numberNeurons; n++) {
 				singleInput[0] = inputs[n];
 				this.getNeurons()[n].runNeuron(singleInput);}
 			}
-		else {
-			// This is a hidden or output neuron
-			if (inputCount != this.getInputCountIntoLayer()) { 
-				System.out.println("ERROR NetworkLayer.runLayer(): Inputs.length not matched to required input count to layer"); 
-				return; } // input mismatch UNHANDLED ERROR
+		else {  // This is a hidden or output neuron
 			for (int n = 0; n < numberNeurons; n++) {
 				this.getNeurons()[n].runNeuron(inputs);
-				}
+			}
 		}
 		return;
 	}
@@ -203,6 +209,7 @@ public class NetworkLayer {
     	NetworkLayer adjustedLayer = this.copyNetworkLayer();
     	Neuron2 adjustedNeuron = adjustedLayer.getNeuronAtIndex(neuronIndex).getNeuronWithAdjustedThresholdAndWeightsAtIndex(thresholdAndWeightsIndex, step);
     	adjustedLayer.setNeuronAtIndex(adjustedNeuron, neuronIndex);
+    	//adjustedLayer.setLayerType(this.getLayerType());
     	//System.out.println("Adjusting Neuron number: " + neuronIndex);
 		return adjustedLayer;
 	}
