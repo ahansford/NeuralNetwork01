@@ -112,9 +112,9 @@ public class Neuron2 {
 	 * and threshold values are assigned a random value between -0.5 and +0.5.
 	 */
 	public Neuron2() { 
-		double[] weights = { (Math.random() - 0.5) };
+		double[] weights = { 1.0 };
 		this.setWeights( weights );
-		this.setThreshold( Math.random() - 0.5 );
+		this.setThreshold( 0.0 );
 		this.setOutput( 0.0 );
 	}
 	
@@ -152,7 +152,10 @@ public class Neuron2 {
 		// OUTPUT a positive number if weightedSum is less than the threshold
 		// ... if weightedSum-threshold is negative, the neuron did not fire
 		int weightCount = this.getWeightsCount();
-		if (inputs.length != weightCount) return; // input mismatch  UNREPORTED ERROR 
+		if (inputs.length != weightCount) {  // input mismatch ERROR
+			System.err.println("Neuron2.runNeuron(): ERROR mismatched input count of " +inputs.length + "for " + weightCount + " weights");
+			return;
+		}
 		double[] weights = this.getWeights();
 		double weightedSum = -this.getThreshold();  // preemptively subtract the current threshold
 		for (int i = 0; i < weightCount; i++) {
@@ -166,7 +169,7 @@ public class Neuron2 {
 		return (weightedSum < 0 ? 0: weightedSum);
 	}
 	
-	public static double applyActivationFunction2(double weightedSum) {
+	public static double applyActivationSigmoid(double weightedSum) {
 		return 1.0 / (1 + Math.exp(-1.0 * weightedSum));
 	}
 	

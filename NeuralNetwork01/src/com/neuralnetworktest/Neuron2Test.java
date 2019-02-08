@@ -33,48 +33,20 @@ class Neuron2Test {
 	@Test
 	void testDisabled() {}
 	
+	// *** Simple constructor working as expected *** //
 	@Test
 	void testOneNeuronWithOneWeightOnSimpleCreate() {
 		Neuron2 neuron = new Neuron2();
-		//assertEquals(0, neuron.getWeights()[0]); // random
 		assertEquals(1, neuron.getWeightsCount());
-		//assertEquals(0, neuron.getThreshold()); // random
+        assertEquals(1.0, neuron.getWeights()[0]);
+		assertEquals(0, neuron.getThreshold());
 		assertEquals(0, neuron.getOutput());
-		//System.out.println("SimpleNeuronCreate: " + neuron.toString());
+		//System.out.println("\n testOneNeuronWithOneWeightOnSimpleCreate(): SimpleNeuronCreate: " + neuron.toString() + "\n");
 	}
 	
-	@Test
-	void testGetStandardNeuronReturnsExpectedValues() {
-		int weightCount = 1;
-		Neuron2 neuron = getStandardNeuron2(weightCount);
-		assertEquals(1, neuron.getWeights()[0]); 
-		assertEquals(1, neuron.getWeightsCount());
-		assertEquals(0, neuron.getThreshold()); 
-		assertEquals(0, neuron.getOutput());
-		//System.out.println("SimpleNeuronCreate: " + neuron.toString());
-	}
 	
-	@Test
-	void testGetStandardNeuronHandlesMultipleWeights() {
-		int weightCount = 4;
-		Neuron2 neuron = getStandardNeuron2(weightCount);
-		assertEquals(1, neuron.getWeights()[0]); 
-		assertEquals(1, neuron.getWeights()[1]);
-		assertEquals(1, neuron.getWeights()[2]);
-		assertEquals(1, neuron.getWeights()[3]);
-		
-	}
 	
-	@Test
-	void testAllNeuronValuesOnComplexCreateSetAsExpected() {
-		double[] weights = {7.8};
-		Neuron2 neuron = new Neuron2(weights, 0.1, 0);
-		assertEquals(7.8, neuron.getWeights()[0]);
-		assertEquals(0.1, neuron.getThreshold());
-		assertEquals(0, neuron.getOutput());
-	}
-	
-
+	// *** Complex constructor working as expected *** //
 	@Test
 	void testNeuronComplexCreateWeightsSetAsExpected() {
 		double[] weights = {25.7, 30.4};
@@ -107,6 +79,41 @@ class Neuron2Test {
 	}
 	
 	@Test
+	void testAllNeuronValuesOnComplexCreateSetAsExpected() {
+		double[] weights = {7.8};
+		Neuron2 neuron = new Neuron2(weights, 0.1, 0);
+		assertEquals(7.8, neuron.getWeights()[0]);
+		assertEquals(0.1, neuron.getThreshold());
+		assertEquals(0, neuron.getOutput());
+	}
+	
+	
+	// *** Local function to create a new Neuron working as expected *** //
+	
+		@Test
+		void testGetStandardNeuronReturnsExpectedValues() {
+			int weightCount = 1;
+			Neuron2 neuron = getStandardNeuron2(weightCount);
+			assertEquals(1, neuron.getWeights()[0]); 
+			assertEquals(1, neuron.getWeightsCount());
+			assertEquals(0, neuron.getThreshold()); 
+			assertEquals(0, neuron.getOutput());
+			//System.out.println("\n testGetStandardNeuronReturnsExpectedValues(): getStandardNeuron2: " + neuron.toString() + "\n");
+		}
+		
+		@Test
+		void testGetStandardNeuronHandlesMultipleWeights() {
+			int weightCount = 4;
+			Neuron2 neuron = getStandardNeuron2(weightCount);
+			assertEquals(1, neuron.getWeights()[0]); 
+			assertEquals(1, neuron.getWeights()[1]);
+			assertEquals(1, neuron.getWeights()[2]);
+			assertEquals(1, neuron.getWeights()[3]);
+			//System.out.println("\n testGetStandardNeuronReturnsExpectedValues(): getStandardNeuron2: with " +weightCount+ " weights -> " + neuron.toString() + "\n");
+		}
+		
+	// *** Copy will make a complete replica of the original Neuron *** //
+	@Test
 	void testCopiedNeuronHasExpectedValues() {
 		double[] weights = {1.1, 2.2, 3.3};
 		Neuron2 neuron = new Neuron2(weights, 4, 5);
@@ -117,25 +124,7 @@ class Neuron2Test {
 		assertEquals(4,   copiedNeuron.getThreshold());
 		assertEquals(5,   copiedNeuron.getOutput());
 	}
-
-	@Test
-	void testNeuronCopyHasExpectedValues() {
-		double[] weights = {1.1,2.2, 3.3};
-		Neuron2 neuron = new Neuron2(weights, 4, 5);
-		assertEquals(1.1, neuron.copyNeuron().getWeights()[0]);
-		assertEquals(2.2, neuron.copyNeuron().getWeights()[1]);
-		assertEquals(3.3, neuron.copyNeuron().getWeights()[2]);
-		assertEquals(4,   neuron.copyNeuron().getThreshold());
-		assertEquals(5,   neuron.copyNeuron().getOutput());
-	}
-
-	@Test
-	void testNeuronEqualsSelf() {
-		double[] weights = {1.1,2.2, 3.3};
-		Neuron2 neuron = new Neuron2(weights, 4, 5);
-		assertTrue(neuron.equals(neuron));
-	}
-		
+	
 	@Test
 	void testCopiedNeuronIsNotOriginal() {
 		double[] weights = {1.1,2.2, 3.3};
@@ -146,20 +135,22 @@ class Neuron2Test {
 		copiedNeuron.getWeights()[0] = 400;
 		assertFalse(neuron.equals(copiedNeuron));
 	}
+
 	
+	// *** Equal properly matches weights and thresholds *** //
+	
+	@Test
+	void testNeuronEqualsSelf() {
+		double[] weights = {1.1,2.2, 3.3};
+		Neuron2 neuron = new Neuron2(weights, 4, 5);
+		assertTrue(neuron.equals(neuron));
+	}
+		
 	@Test
 	void testNeuronNotEqualToNullNeuron() {
 		double[] weights = {1.1,2.2, 3.3};
 		Neuron2 neuron = new Neuron2(weights, 4, 5);
 		assertFalse(neuron.equals((Neuron2)null));
-	}
-	
-	@Test
-	void testUnequalNeuronsNotEqual() {
-		double[] weights = {1.1,2.2, 3.3};
-		Neuron2 neuron = new Neuron2(weights, 4, 5);
-		Neuron2 neuron2 = new Neuron2();
-		assertFalse(neuron.equals(neuron2));
 	}
 	
 	@Test
@@ -191,15 +182,6 @@ class Neuron2Test {
 	}
 	
 	@Test
-	void testWrongInputLenght2NotEqual() {
-		double[] weights = {1.1, 2.2};
-		double[] weights2 = {1.1, 2.2, 3.3};
-		Neuron2 neuron = new Neuron2(weights, 0, 0);
-		Neuron2 neuron2 = new Neuron2(weights2, 0, 0);
-		assertFalse(neuron.equals(neuron2));
-	}
-	
-	@Test
 	void testWrongWeightValuesNotEqual() {
 		double[] weights1 = {1.1, 2.2, 3.3};
 		double[] weights2 = {4.4, 5.5, 6.6};
@@ -215,17 +197,23 @@ class Neuron2Test {
 		Neuron2 copiedNeuron = neuron.copyNeuron();
 		assertTrue(neuron.equals(copiedNeuron));
 	}
+
+
+	// *** Adjust Neuron makes adjustments as expected *** //
 	
 	@Test
 	void testAdjustedTsAndWsDoesNotEqualOriginal() {
-		double[] weights = {1.0, 1.0, 1.0};
-		Neuron2 neuron = new Neuron2(weights, 1, 0);
+		int weightCount = 3;
+		Neuron2 neuron = getStandardNeuron2(weightCount);
 		Neuron2 adjustedNeuron = neuron.getThresholdAndWeightsAdjustedNeuron();
 		assertFalse(neuron.equals(adjustedNeuron));
 	}
 	
+	
+	// *** Adjust Neuron weight at INDEX makes adjustments as expected *** //
+	
 	@Test
-	void testAdjustedNeuronWeightNotEqualOriginal() {
+	void testAdjustedNeuronWeightAtIndexNotEqualOriginal() {
 		double[] weights = {1.0, 1.0, 1.0};
 		Neuron2 neuron = new Neuron2(weights, 1, 0);
 		//System.out.println("Neuron" + neuron.toString());
@@ -248,20 +236,23 @@ class Neuron2Test {
 		double step = 0.3;
 		int weightIndex = 1;
 		Neuron2 adjustedNeuron = neuron.getNeuronWithAdjustedWeightAtIndex(weightIndex, step);
-		assertEquals(1.3, adjustedNeuron.getWeights()[weightIndex]);
+		assertEquals((1.0 + step), adjustedNeuron.getWeights()[weightIndex]);
 	}
 	
 	@Test
-	void testGetNeuronWithAdjustedWeightAtIndexReturnsSelfOnIndexRange() {
+	void testGetNeuronWithAdjustedWeightAtIndexReturnsSelfOnOutOfRangeIndex() {
 		Neuron2 neuron = getStandardNeuron2(2);
 		double step = 0.3;
-		int weightIndex = -1;
+		int weightIndex = -3;
 		Neuron2 adjustedNeuron = neuron.getNeuronWithAdjustedWeightAtIndex(weightIndex, step);
 		assertTrue(adjustedNeuron.equals(neuron));
 		weightIndex = 100;
 		adjustedNeuron = neuron.getNeuronWithAdjustedWeightAtIndex(weightIndex, step);
 		assertTrue(adjustedNeuron.equals(neuron));
 	}
+	
+	
+	// *** Automatic reseting get Index point works as expected *** //
 	
 	@Test
 	void testGetThresholdAndWeightsIndexReturnsZeroOnFirstCall() {
@@ -277,19 +268,69 @@ class Neuron2Test {
 		assertEquals(2, neuron.getThresholdAndWeightsIndex());
 		assertEquals(0, neuron.getThresholdAndWeightsIndex());
 		assertEquals(1, neuron.getThresholdAndWeightsIndex());
-		
 	}
 	
 	@Test
 	void testResetThresholdAndWeightsIndexReturnsZeroOnFirstCall() {
-		Neuron2 neuron = getStandardNeuron2(2);
+		Neuron2 neuron = getStandardNeuron2(5);
 		neuron.getThresholdAndWeightsIndex();
 		neuron.getThresholdAndWeightsIndex();
 		neuron.resetThresholdAndWeightsIndex();
 		assertEquals(0, neuron.getThresholdAndWeightsIndex());
 	}
 	
+
+	// *** RunNeuron works as expected *** //
 	
+	@Test
+	void testRunNeuron() {
+		double[] inputs = new double[] {1, 1, 1};
+		double[] weights = new double[] {2, 3, 4};
+		double thresholdValue = 0;
+		double expectedOutputValue = 2 + 3 + 4 - thresholdValue;
+		Neuron2 neuron = new Neuron2(weights, thresholdValue, 0);
+		neuron.runNeuron(inputs);
+		assertEquals( expectedOutputValue, neuron.getOutput() ); 
+	}
+	
+	@Test
+	void testRunSingleInputNeuronReturnsOutputOfOne() {
+		double[] inputs = new double[] {1};
+		Neuron2 neuron = getStandardNeuron2(1);
+		neuron.runNeuron(inputs);
+		assertEquals( 1.0, neuron.getOutput() ); // careful about comparing floats
+	}
+	
+	@Test
+	void testThreeNeuronRunStandardNeuronReturnsOutputOfThree() {
+		int weightsCount = 3;
+		double[] inputs = new double[] {1, 1, 1};
+		Neuron2 neuron = getStandardNeuron2(weightsCount);
+		neuron.runNeuron(inputs);
+		assertEquals( 3.0, neuron.getOutput() ); // careful about comparing floats
+	}
+	
+	@Test
+	void testRunNeuronUnchangedOnTooFewInputCount() {
+		double[] inputs = new double[] {1, 1};
+		double[] weights = new double[] {2, 3, 4};
+		Neuron2 neuron = new Neuron2(weights, 1, 0);
+		System.out.print("testRunNeuronUnchangedOnTooFewInputCount(): triggering error -> ");
+		neuron.runNeuron(inputs);
+		assertEquals(0,  neuron.getOutput());
+	}
+	
+	@Test
+	void testRunNeuronUnchangedOnTooManyInputCount() {
+		double[] inputs = new double[] {1, 1, 1, 3};
+		double[] weights = new double[] {2, 3, 4};
+		Neuron2 neuron = new Neuron2(weights, 1, 0);
+		System.out.print("testRunNeuronUnchangedOnTooManyInputCount(): triggering error -> ");
+		neuron.runNeuron(inputs);
+		assertEquals(0,  neuron.getOutput());
+	}
+	
+	// *** Activation functions work as expected *** //
 	// TODO: remove to the layer level
 	@Test
 	void testAdjustedNeuron2ReturnsZeroForNegativeNumbers() {
@@ -314,65 +355,21 @@ class Neuron2Test {
 	@Test
 	void testApplyActivationFunction2ReturnsCorrectValue() {
 		double inputValue = 0;
-		assertEquals(0.5, Neuron2.applyActivationFunction2(inputValue));
+		assertEquals(0.5, Neuron2.applyActivationSigmoid(inputValue));
 	}
 	
 	@Test
 	void testApplyActivationFunction2ReturnsCorrectValueOnLargePositive() {
 		double inputValue = 100;
-		assertTrue(0.98 < Neuron2.applyActivationFunction2(inputValue));
+		assertTrue(0.98 < Neuron2.applyActivationSigmoid(inputValue));
 	}
 	
 	@Test
 	void testApplyActivationFunction2ReturnsCorrectValueOnLargeNegative() {
 		double inputValue = -100;
-		assertTrue(0.02 > Neuron2.applyActivationFunction2(inputValue));
+		assertTrue(0.02 > Neuron2.applyActivationSigmoid(inputValue));
 	}
 	
-	
-	@Test
-	void testRunNeuron() {
-		double[] inputs = new double[] {1, 1, 1};
-		double[] weights = new double[] {2, 3, 4};
-		Neuron2 neuron = new Neuron2(weights, 1, 0);
-		neuron.runNeuron(inputs);
-		assertEquals( 8, neuron.getOutput() ); // see the activation function
-	}
-	
-	@Test
-	void testRunStandardNeuronReturnsOutputOfOne() {
-		double[] inputs = new double[] {1};
-		Neuron2 neuron = getStandardNeuron2(1);
-		neuron.runNeuron(inputs);
-		assertEquals( 1.0, neuron.getOutput() ); // careful about comparing floats
-	}
-	
-	@Test
-	void testThreeNeuronRunStandardNeuronReturnsOutputOfThree() {
-		int weightsCount = 3;
-		double[] inputs = new double[] {1, 1, 1};
-		Neuron2 neuron = getStandardNeuron2(weightsCount);
-		neuron.runNeuron(inputs);
-		assertEquals( 3.0, neuron.getOutput() ); // careful about comparing floats
-	}
-	
-	@Test
-	void testRunNeuronUnchangedOnTooFewInputCount() {
-		double[] inputs = new double[] {1, 1};
-		double[] weights = new double[] {2, 3, 4};
-		Neuron2 neuron = new Neuron2(weights, 1, 0);
-		neuron.runNeuron(inputs);
-		assertEquals(0,  neuron.getOutput());
-	}
-	
-	@Test
-	void testRunNeuronUnchangedOnTooManyInputCount() {
-		double[] inputs = new double[] {1, 1, 1, 3};
-		double[] weights = new double[] {2, 3, 4};
-		Neuron2 neuron = new Neuron2(weights, 1, 0);
-		neuron.runNeuron(inputs);
-		assertEquals(0,  neuron.getOutput());
-	}
 	
 	@Test
 	void testCheckGradientWeightValues() {
@@ -390,7 +387,7 @@ class Neuron2Test {
 		double adjustedError = 0;
 		Neuron2 adjustedNeuron = neuron.copyNeuron();
 		int thresholdAndWeightsCount = adjustedNeuron.getThresholdAndWeightsCount();
-				System.out.println("neuron.getThresholdAndWeightsCount(): " + neuron.getThresholdAndWeightsCount());
+				//System.out.println("neuron.getThresholdAndWeightsCount(): " + neuron.getThresholdAndWeightsCount());
 		double[] gradientOutputs = new double[thresholdAndWeightsCount];
 		for ( int i = 0; i < thresholdAndWeightsCount; i++) {
 			adjustedNeuron = neuron.getNeuronWithAdjustedThresholdAndWeightsAtIndex(i, step);
@@ -403,12 +400,12 @@ class Neuron2Test {
 				// Found a larger error at this index
 				holdingDelta = currentDeltaMagnitude;
 				holdingIndex = i; 
-					System.out.println("....Found a larger error at index: " + holdingIndex + ", *** Error: " + adjustedError);
+					//System.out.println("....Found a larger error at index: " + holdingIndex + ", *** Error: " + adjustedError);
 			}
 				
-			System.out.println("gradientOutputs[" + i + "]: " + gradientOutputs[i]);
-			System.out.println(neuron.toString());
-			System.out.println(adjustedNeuron.toString());
+			//System.out.println("gradientOutputs[" + i + "]: " + gradientOutputs[i]);
+			//System.out.println(neuron.toString());
+			//System.out.println(adjustedNeuron.toString());
 			
 		}
 		

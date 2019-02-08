@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 
 import com.neuralnetwork.Driver;
 import com.neuralnetwork.GradientDescent;
-import com.neuralnetwork.NeuralNetwork;
+//import com.neuralnetwork.NeuralNetwork;
 import com.neuralnetwork.Neuron2;
 
 class GradientDescentTest {
@@ -44,7 +44,7 @@ class GradientDescentTest {
 		
 		GradientDescent gradientNetwork = getNewThreeNeuronGradientNetwork();
 		double[] input = new double[] {1.0};
-		//gradientNetwork.runNetwork(input);
+		gradientNetwork.runNetwork(input);
 		//System.out.println(gradientNetwork.toString());
 		
 		//gradientNetwork.runGradiemtDescentAlgorithm(GRADIENT_TRAINING_SET);
