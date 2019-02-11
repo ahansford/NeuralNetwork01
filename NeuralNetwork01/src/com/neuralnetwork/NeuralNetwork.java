@@ -5,14 +5,14 @@ import com.neuralnetwork.NetworkLayer.*;
 
 public class NeuralNetwork {
 	
-	//  *** Members ***
+	//  *** Members *** //
 	private NetworkLayer[] layers;
 	protected boolean      verboseFlag = false;
 	protected int          epoch = 0;
 	protected double       RMSerror = 0.0;
 	
 	
-	//*** Access Methods ***	
+	//*** Access Methods *** //	
 	public NetworkLayer[] getNetworkLayers() { return this.layers; }
 	
 	public int getNetworkLayerCount() { 
@@ -20,16 +20,19 @@ public class NeuralNetwork {
 		else {return 0; }
 	}
 	
+	
+	//*** Second Level Access Methods *** //	
+	
 	public int getNetworkLayerNeuronCount(int layerIndex) {
 		return this.getNetworkLayers()[layerIndex].getNeuronCountInLayer();
 	}
 	
 	public int getNetworkLayerWeightCount(int layerIndex) {
-		return this.getNetworkLayers()[layerIndex].getInputCountIntoLayer();
+		return this.getNetworkLayers()[layerIndex].getNeuronWeightsCountForLayer();
 	}
 	
 	public int getNetworkLayerThresholdAndWeightsCountForLayer(int layerIndex) {
-		return this.getNetworkLayers()[layerIndex].getGetNeuronThresholdAndWeightsCountForLayer();
+		return this.getNetworkLayers()[layerIndex].getNeuronThresholdAndWeightsCountForLayer();
 	}
 	
 	public int getNetworkInputCount() {
@@ -62,23 +65,57 @@ public class NeuralNetwork {
 	
 	
 	//*** Constructor(s) ***
+	/**
+	 * Creates a simple three-layer network with IHO layers that each contain a 
+	 * single neuron.
+	 * 
+	 */
+	public NeuralNetwork() {  // Create a simple three layer network IHO
+		int layerCount = 3;
+		this.layers = new NetworkLayer[layerCount];
+		
+		NetworkLayer newLayer = new NetworkLayer();
+		newLayer.setLayerType(LayerType.I);
+		this.layers[0] = newLayer;
+		
+		newLayer = new NetworkLayer();
+		newLayer.setLayerType(LayerType.H);
+		this.layers[1] = newLayer;
+		
+		newLayer = new NetworkLayer();
+		newLayer.setLayerType(LayerType.O);
+		this.layers[2] = newLayer;
+	}
+	
+	
+	/**
+	 * Creates a network with the specified number of layers.
+	 * 
+	 * Nominal layer count is 3, but it will generate a single layer 'I'nput layer,
+	 * or an 'I'nput + 'O'utput layers 2-layer network.  Larger layer counts fill in 
+	 * with 'H'idden layers.  
+	 * 
+	 * Note that input layers assume a single neuron with a single weight per input.
+	 * 
+	 */
 	public NeuralNetwork(int layerCount) {
 		this.layers = new NetworkLayer[layerCount];
 		for (int i = 0; i < layerCount; i++) {
 			NetworkLayer newLayer = new NetworkLayer();
-			if ( i == 0 ) { 
-				newLayer.setLayerType(LayerType.I);
-				break;  }
-			if ( i == layerCount - 1) {
-				newLayer.setLayerType(LayerType.O);
-				break;  }
-			else {
-				newLayer.setLayerType(LayerType.H);
-			}
+			// The default layer type is hidden, the first layer dominates as input type
+			// WARNING: The order of assignment is essential in this logic.
+			newLayer.setLayerType(LayerType.H);
+			if ( i == layerCount - 1) { newLayer.setLayerType(LayerType.O); }
+			if ( i == 0 )             { newLayer.setLayerType(LayerType.I); }
 			this.layers[i] = newLayer;
 		}
 	}
 	
+	/**
+	 * Creates a network with the specified number of layers.  Provides options
+	 * to specify network configuration parameters.
+	 * 
+	 */
 	public NeuralNetwork(int inputsCount, 
 			             int hiddenLayerCount, 
 			             int hiddenLayerNeuronCount,
@@ -125,7 +162,8 @@ public class NeuralNetwork {
 	}
 	
 
-	// *** Methods ***	
+	// *** Methods ***	// 
+	
 	public boolean equals(NeuralNetwork otherNetwork) {
 		int layerCount = this.getNetworkLayerCount(); 
 		int otherLayerCount = otherNetwork.getNetworkLayerCount();
@@ -182,29 +220,6 @@ public class NeuralNetwork {
 		return;
 	}
 	
-	public NeuralNetwork adjustNeuralNetwork() {
-		NeuralNetwork adjustedNeuralNetwork = this.copyNeuralNetwork();
-		
-		int layerCount = this.getNetworkLayerCount();
-		NetworkLayer adjustementLayer = new NetworkLayer();
-		for (int index = 0; index < layerCount; index++) {
-			adjustementLayer = this.getNetworkLayers()[index];
-			adjustementLayer = adjustementLayer.adjustNetworkLayer();
-			adjustedNeuralNetwork.layers[index] = adjustementLayer;
-		}
-		return adjustedNeuralNetwork;
-	}
-	
-	public NeuralNetwork adjustNetworkNeuronWeight(int layerIndex, int neuronIndex, int weightIndex, double step) {
-		NeuralNetwork adjustedNetwork = this.copyNeuralNetwork();
-		NetworkLayer[] adjustedLayers = adjustedNetwork.getNetworkLayers();
-		//adjustedLayers[layerIndex] = adjustedLayers[layerIndex].adjustLayerNeuronWeight(neuronIndex, weightIndex, step);
-		adjustedLayers[layerIndex] = adjustedLayers[layerIndex].adjustLayerNeuronThresholdAndWeights(neuronIndex, weightIndex, step);
-		adjustedNetwork.layers = adjustedLayers;
-		//System.out.println("Adjusting layer number: " + layerIndex + ",  error: " + this.calculateRMSerror(Driver.TRAINING_SET));
-		return adjustedNetwork;
-	}
-
 	public double calculateMeanSqrError(double[][][] trainingData) {
 		double runningTotals = 0;
 		double result;
@@ -234,7 +249,37 @@ public class NeuralNetwork {
     		sB.append(" ");
     		sB.append(this.getNetworkLayers()[i].toString());
     	}
-    	sB.append(" }");
+    	sB.append("\n  }");
         return String.format("%s", sB); 
     }
+
+
+
+
+	//////////////////////////////////////////////
+	//*** PRIVATE Hill Climb Support Methods ***//
+	
+	public NeuralNetwork adjustNeuralNetwork() {
+		NeuralNetwork adjustedNeuralNetwork = this.copyNeuralNetwork();
+		
+		int layerCount = this.getNetworkLayerCount();
+		NetworkLayer adjustementLayer = new NetworkLayer();
+		for (int index = 0; index < layerCount; index++) {
+			adjustementLayer = this.getNetworkLayers()[index];
+			adjustementLayer = adjustementLayer.adjustNetworkLayer();
+			adjustedNeuralNetwork.layers[index] = adjustementLayer;
+		}
+		return adjustedNeuralNetwork;
+	}
+	
+	public NeuralNetwork adjustNetworkNeuronWeight(int layerIndex, int neuronIndex, int weightIndex, double step) {
+		NeuralNetwork adjustedNetwork = this.copyNeuralNetwork();
+		NetworkLayer[] adjustedLayers = adjustedNetwork.getNetworkLayers();
+		//adjustedLayers[layerIndex] = adjustedLayers[layerIndex].adjustLayerNeuronWeight(neuronIndex, weightIndex, step);
+		adjustedLayers[layerIndex] = adjustedLayers[layerIndex].adjustLayerNeuronThresholdAndWeights(neuronIndex, weightIndex, step);
+		adjustedNetwork.layers = adjustedLayers;
+		//System.out.println("Adjusting layer number: " + layerIndex + ",  error: " + this.calculateRMSerror(Driver.TRAINING_SET));
+		return adjustedNetwork;
+	}
+
 }

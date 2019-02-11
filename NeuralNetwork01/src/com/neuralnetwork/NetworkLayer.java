@@ -32,29 +32,39 @@ public class NetworkLayer {
 	///////////////////////////////////////////////////////////////////////
     // *** True accessors to the combined threshold and weights array ***//
 	
+	public LayerType getLayerType() {return this.layerType;}
+	
 	public void setLayerType(LayerType layerType) {
+		// Trap error assigning multi-weight neurons layer as an input layer
 		if ( layerType == LayerType.I )
 			if ( this.getNeurons() != null ) 
 				if (1 != this.getNeurons()[0].getWeightsCount() ) 
-					System.err.println("UNTRAPPED ERROR: NetworkLayer.setLayerType(): ERROR assigning layer with multi-weight neurons as an input layer");
+					System.err.println("UNTRAPPED ERROR: NetworkLayer.setLayerType(): 42 ERROR assigning layer with multi-weight neurons as an input layer");
 			
 		this.layerType = layerType;
 		}
 	
-	public LayerType getLayerType() {return this.layerType;}
+	public Neuron2[] getNeurons() {return this.neurons;}
 	
 	public void setNeurons(Neuron2[] neurons) {
-		if ( layerType == LayerType.I ) {
+		// Trap error assigning multi-weight neurons to an input layer
+		if ( this.layerType == LayerType.I ) {
 			if ( this.getNeurons() != null ) {
 				if ( 1 != neurons[0].getWeightsCount() ) {
-					System.err.println("UNTRAPPED ERROR: NetworkLayer.setNeurons(): ERROR assigning multi-weight neurons to an input layer");
+					System.err.println("UNTRAPPED ERROR: NetworkLayer.setNeurons(): 54 ERROR assigning multi-weight neurons to an input layer");
 				}}}
 		this.neurons = neurons;
 	}
 	
-	public Neuron2[] getNeurons() {return this.neurons;}
+	public void   setNeuronAtIndex(Neuron2 neuron, int index) {
+		// Trap error assigning multi-weight neuron to an input layer
+		if ( this.layerType == LayerType.I ) {
+			if ( this.getNeurons() != null ) {
+				if ( 1 != neuron.getWeightsCount() ) {
+					System.err.println("UNTRAPPED ERROR: NetworkLayer.setNeurons(): 64 ERROR assigning multi-weight neurons to an input layer");
+				}}}
+		this.neurons[index] = neuron;}
 	
-	public void   setNeuronAtIndex(Neuron2 neuron, int index) {this.neurons[index] = neuron;}
 	public Neuron2 getNeuronAtIndex(int index) {return this.neurons[index];}
 	
 	public int getInputCountIntoLayer() { 
@@ -62,7 +72,11 @@ public class NetworkLayer {
 		else { return this.getNeuronAtIndex(0).getWeightsCount(); }
 	}
 	
-	public int getGetNeuronThresholdAndWeightsCountForLayer() { 
+	public int getNeuronWeightsCountForLayer() { 
+		return this.getNeuronAtIndex(0).getWeightsCount(); 
+	}
+	
+	public int getNeuronThresholdAndWeightsCountForLayer() { 
 		return this.getNeuronAtIndex(0).getThresholdAndWeightsCount(); 
 	}
 	
@@ -112,8 +126,8 @@ public class NetworkLayer {
 		
 		this.setLayerType( layerType );
 		if (layerType == LayerType.I) {
-			if (inputCount != neuronCount) {
-				System.err.println("UNTRAPPED ERROR: NetworkLayer.NetworkLayer(): ERROR mismatched input/neuron count for input layer");
+			if (inputCount != 1) {
+				System.err.println("UNTRAPPED ERROR: NetworkLayer.NetworkLayer(): 130 ERROR mismatched input/neuron count for input layer");
 			}
 			inputCount = 1;  // override the input count for the input layer
 		}
@@ -162,12 +176,12 @@ public class NetworkLayer {
 		double[] singleInput = new double[1];
 		
 		if (this.getLayerType() == LayerType.UNKNOWN) { // TODO: UNHANDLED ERROR
-			System.err.println("ERROR: NetworkLayer.runNetwork() trying to run UNKNOWN layer type"); 
+			System.err.println("ERROR: NetworkLayer.runNetwork() 179 trying to run UNKNOWN layer type"); 
 			return; 
 		}
 		
 		if (inputCount != inputCountIntoLayer) {  // TODO: UNHANDLED ERROR
-			System.err.println("ERROR NetworkLayer.runLayer(): inputs.length not matched to this.getInputCountIntoLayer: "+ inputCountIntoLayer + ", inputs: " + inputCount);
+			System.err.println("ERROR NetworkLayer.runLayer(): 184 inputs.length not matched to this.getInputCountIntoLayer: "+ inputCountIntoLayer + ", inputs: " + inputCount);
 			System.err.println(this.toString());
 			return;
 		}  
@@ -188,7 +202,7 @@ public class NetworkLayer {
     @Override
     public String toString() { 
     	StringBuffer sB = new StringBuffer();
-    	sB.append(String.format("NetworkLayer {"));
+    	sB.append(String.format("\n  NetworkLayer {"));
     	sB.append("  LayerType:" + String.format("%s", this.getLayerType()));
     	int numberNeurons = this.getNeuronCountInLayer();
     	//System.out.println("Layer:toString:neuronCountneuronCount before loop: " + numberNeurons + " " + this.getNeurons().length);

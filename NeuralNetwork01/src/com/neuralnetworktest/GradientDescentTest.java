@@ -7,6 +7,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Disabled;
 
 import com.neuralnetwork.Driver;
 import com.neuralnetwork.GradientDescent;
@@ -16,14 +17,16 @@ import com.neuralnetwork.Neuron2;
 class GradientDescentTest {
 	
 	double[][][] GRADIENT_TRAINING_MINUS_ONE = new double[][][] {{{1}, {-1}}};
-	double[][][] GRADIENT_TRAINING_ONE_K = new double[][][] {{{1}, {20}}};
+	double[][][] GRADIENT_TRAINING_ONE_K     = new double[][][] {{{1}, {20}}};
 
 	@BeforeAll
 	static void setUpBeforeClass() throws Exception {
+		System.out.println("*** GradientDescentTest: START ***");
 	}
 
 	@AfterAll
 	static void tearDownAfterClass() throws Exception {
+		System.out.println("*** GradientDescentTest: END   ***");
 	}
 
 	@BeforeEach
@@ -39,13 +42,14 @@ class GradientDescentTest {
 		assertTrue(true);
 	}
 	
+	@Disabled
 	@Test
 	void testGradientDescentListsCorrectNeuronInSingleNeuronNetwork() {
-		
+		System.out.println("*** testGradientDescentListsCorrectNeuronInSingleNeuronNetwork: START ***");
 		GradientDescent gradientNetwork = getNewThreeNeuronGradientNetwork();
 		double[] input = new double[] {1.0};
 		gradientNetwork.runNetwork(input);
-		//System.out.println(gradientNetwork.toString());
+		System.out.println(gradientNetwork.toString());
 		
 		//gradientNetwork.runGradiemtDescentAlgorithm(GRADIENT_TRAINING_SET);
 		//int multiplier = gradientNetwork.getStepMultiplier(GRADIENT_TRAINING_SET, -0.2);
@@ -54,11 +58,12 @@ class GradientDescentTest {
 		
 	}
 	
+	
 	@Test
 	void test123GradientDescentAlgorithmDrivesWeightsHigher() {
-		
+		System.out.println("*** test123GradientDescentAlgorithmDrivesWeightsHigher: START ***");
 		GradientDescent gradientNetwork = getNew123ThreeNeuronGradientNetwork();
-		//gradientNetwork.runGradiemtDescentAlgorithm(GRADIENT_TRAINING_ONE_K);
+		gradientNetwork.runGradiemtDescentAlgorithm(GRADIENT_TRAINING_ONE_K);
 		Driver.printTrainingSetResults(gradientNetwork, GRADIENT_TRAINING_ONE_K);
 		System.out.println(gradientNetwork.toString());
 

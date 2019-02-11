@@ -17,18 +17,18 @@ import com.neuralnetwork.Neuron2;
 
 class NetworkLayerTest {
 	
-	boolean printErrorMessages = false;
-	boolean printMessages =  false;
-	boolean printAllMessages =  false;
+	boolean printErrorMessages = true;
+	boolean printMessages =  true;
+	boolean printAllMessages =  true;
 	
 	@BeforeAll
 	static void setUpBeforeClass() throws Exception {
-		System.out.println("*** NetworkTest: START ***");
+		System.out.println("*** NetworkLayerTest: START ***");
 	}
 
 	@AfterAll
 	static void tearDownAfterClass() throws Exception {
-		System.out.println("*** NetworkTest: END ***");
+		System.out.println("*** NetworkLayerTest: END   ***");
 	}
 
 	@BeforeEach

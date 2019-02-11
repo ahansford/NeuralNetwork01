@@ -15,10 +15,12 @@ class Neuron2Test {
 
 	@BeforeAll
 	static void setUpBeforeClass() throws Exception {
+		System.out.println("*** Neuron2Test: START ***");
 	}
 
 	@AfterAll
 	static void tearDownAfterClass() throws Exception {
+		System.out.println("*** Neuron2Test: END   ***");
 	}
 
 	@BeforeEach
@@ -410,6 +412,7 @@ class Neuron2Test {
 		}
 		
 		//assertEquals(0,  neuron.getOutput());
+		assertTrue(holdingIndex > -1);  // clears complier warning
 	}
 	
 

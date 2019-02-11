@@ -101,10 +101,10 @@ public class Driver {
 			sB.append(String.format("%.0f", trainingSet[index][1][i]) + "  |  ");
 		}
 		for (int i = 0; i < outputCount; i++) {
-			neuralNetwork.runNetwork(TRAINING_SET[index][0]);
+			neuralNetwork.runNetwork(trainingSet[index][0]);
 			sB.append(String.format("%.9f", neuralNetwork.getNetworkOutputs()[i]) + "  |  ");
 		}
-		sB.append(String.format("%.5f", neuralNetwork.calculateRMSerror(TRAINING_SET)) + "  |  ");
+		sB.append(String.format("%.5f", neuralNetwork.calculateRMSerror(trainingSet)) + "  |  ");
 		System.out.println(sB);
 	}
 
