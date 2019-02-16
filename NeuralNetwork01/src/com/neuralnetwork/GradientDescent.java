@@ -2,7 +2,7 @@ package com.neuralnetwork;
 
 public class GradientDescent extends NeuralNetwork {
 
-	public static int MAX_ITERATIONS = 50;
+	public static int MAX_ITERATIONS = 25;
 	
 	private int gradientLayerIndex  = 0;
 	private int gradientNeuronIndex = 0;
@@ -52,6 +52,8 @@ public class GradientDescent extends NeuralNetwork {
 	        	// Copy the original Network on each pass through
 	        	adjustedNetwork.setNeuralNetworkTo(this);
 	        	// Inject a random setting based on the Neuron2 learning rate
+	        	adjustedNetwork.adjustNeuralNetwork();
+	        	adjustedNetwork.adjustNeuralNetwork();
 	        	adjustedNetwork.adjustNeuralNetwork();
 	        	
 	        	// loop through network layers, neurons and weights to find the largest gradient that reduces the error

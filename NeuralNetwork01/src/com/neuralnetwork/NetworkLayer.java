@@ -3,11 +3,9 @@ package com.neuralnetwork;
 //import com.neuralnetwork.NetworkLayer.LayerType;
 
 /**
- * Implements a complete layer of perceptrons
- * 
- * Each layer holds an array of Neurons, as well as a LayerType indicator.
- * 
- * The copyNetworkLayer() generates an entirely new layer copy
+ * Implements a complete layer of perceptrons.  Each layer holds an array of Neurons, 
+ * as well as a LayerType indicator.  The copyNetworkLayer() generates an entirely 
+ * new layer copy.
  * 
  */ 
 public class NetworkLayer {
@@ -18,8 +16,8 @@ public class NetworkLayer {
 	// *** Members  ***
 	
 	/**
-	 * LayerType includes 'I'nput, 'H'idden, 'O'utput, and "UNKNOWN"
-	 * A layer listed with an UNKNOWN LayerType should be considered an error
+	 * LayerType includes 'I'nput, 'H'idden, 'O'utput, and "UNKNOWN".
+	 * A layer listed with an UNKNOWN LayerType should be considered an error.
 	 */ 
 	LayerType layerType;
 	
@@ -36,38 +34,46 @@ public class NetworkLayer {
 	
 	public void setLayerType(LayerType layerType) {
 		// Trap error assigning multi-weight neurons layer as an input layer
-		if ( layerType == LayerType.I )
-			if ( this.getNeurons() != null ) 
-				if (1 != this.getNeurons()[0].getWeightsCount() ) 
-					System.err.println("UNTRAPPED ERROR: NetworkLayer.setLayerType(): 42 ERROR assigning layer with multi-weight neurons as an input layer");
-			
+		if ( layerType == LayerType.I ) {
+			if ( this.getNeurons() != null ) {
+				if (1 != this.getNeurons()[0].getWeightsCount() ) {
+					System.err.println("UNTRAPPED ERROR: NetworkLayer.setLayerType(): 40 ERROR assigning layer with multi-weight neurons as an input layer");
+				}}}
 		this.layerType = layerType;
 		}
 	
 	public Neuron2[] getNeurons() {return this.neurons;}
 	
 	public void setNeurons(Neuron2[] neurons) {
-		// Trap error assigning multi-weight neurons to an input layer
-		if ( this.layerType == LayerType.I ) {
+		
+		if (null == neurons) return;  // Trap ERROR
+		
+		if ( this.layerType == LayerType.I ) {  // Trap ERROR assigning multi-weight neurons to an input layer
 			if ( this.getNeurons() != null ) {
 				if ( 1 != neurons[0].getWeightsCount() ) {
-					System.err.println("UNTRAPPED ERROR: NetworkLayer.setNeurons(): 54 ERROR assigning multi-weight neurons to an input layer");
+					System.err.println("UNTRAPPED ERROR: NetworkLayer.setNeurons(): 52 ERROR assigning multi-weight neurons to an input layer");
 				}}}
 		this.neurons = neurons;
 	}
 	
 	public void   setNeuronAtIndex(Neuron2 neuron, int index) {
-		// Trap error assigning multi-weight neuron to an input layer
-		if ( this.layerType == LayerType.I ) {
+		if (null == neuron) return;  // Trap ERROR
+		if ( this.layerType == LayerType.I ) {  // Trap ERROR assigning multi-weight neuron to an input layer
 			if ( this.getNeurons() != null ) {
 				if ( 1 != neuron.getWeightsCount() ) {
-					System.err.println("UNTRAPPED ERROR: NetworkLayer.setNeurons(): 64 ERROR assigning multi-weight neurons to an input layer");
+					System.err.println("UNTRAPPED ERROR: NetworkLayer.setNeurons(): 62 ERROR assigning multi-weight neurons to an input layer");
 				}}}
-		this.neurons[index] = neuron;}
+		if ( neuronIndexRangeFailureFor(index) ) { return; } // ERROR trap
+		this.neurons[index] = neuron;
+		}
 	
-	public Neuron2 getNeuronAtIndex(int index) {return this.neurons[index];}
+	public Neuron2 getNeuronAtIndex(int index) {
+		if ( neuronIndexRangeFailureFor(index) ) { return  null; }  // ERROR trap
+		return this.neurons[index];
+		}
 	
 	public int getInputCountIntoLayer() { 
+		if (null == this.neurons) { return 0; }
 		if (this.getLayerType() == LayerType.I) { return this.getNeuronCountInLayer(); } 
 		else { return this.getNeuronAtIndex(0).getWeightsCount(); }
 	}
@@ -121,8 +127,8 @@ public class NetworkLayer {
 	public NetworkLayer(LayerType layerType, 
 						int       numberInputs,
 			            int       numberNeurons) {
-		int inputCount = numberInputs;
-		int neuronCount = numberNeurons;
+	   int       inputCount = numberInputs;
+	   int neuronCount = numberNeurons;
 		
 		this.setLayerType( layerType );
 		if (layerType == LayerType.I) {
@@ -134,7 +140,7 @@ public class NetworkLayer {
 		this.setNeurons( new Neuron2[neuronCount] );
 			double[] weights = new double[inputCount];
 			for (int n = 0; n < neuronCount; n++) {
-				for (int i = 0; i < inputCount; i++) weights[i] = 1.0;
+				for (int i = 0; i < inputCount; i++) { weights[i] = 1.0; }
 				double threshold = 0.0;
 				double output = 0.0;
 				this.setNeuronAtIndex( new Neuron2(weights, threshold, output), n );
@@ -148,13 +154,12 @@ public class NetworkLayer {
 		Neuron2[] neurons = this.getNeurons();
 		Neuron2[] otherNeurons = networkLayer.getNeurons();
 		
-		if (this.getLayerType() != networkLayer.getLayerType()) {return false; }  // layers
-		else if (neurons.length != otherNeurons.length)         {return false; }  // neuron count
-		else { for (int i=0; i < neurons.length; i++) {
-					if (!neurons[i].equals(otherNeurons[i]))    {return false; }  // neuron weights
-				}
+		if ( this.getLayerType() != networkLayer.getLayerType() ) { return false; }  // layers
+		if (neurons.length != otherNeurons.length)   { return false; }  // neuron count
+		for (int i=0; i < neurons.length; i++) {
+			if (!neurons[i].equals(otherNeurons[i])) { return false; }  // neuron weights
 		}
-		return true;   // SUCCESS no issues found 
+		return true; // SUCCESS no issues found 
 	}
 	
 	public NetworkLayer copyNetworkLayer() {
@@ -169,19 +174,22 @@ public class NetworkLayer {
 		return copiedLayer;
 	}
 	
-	public void runLayer(double[] inputs) {
+	public void runLayer(double[] inputs) { 
+		if (inputs == null) { // TODO: UNHANDLED ERROR
+			System.err.println("ERROR: NetworkLayer.runNetwork() ERROR 180 empty input array"); 
+			return; }  
 		int inputCount = inputs.length;
 		int numberNeurons = this.getNeuronCountInLayer();
 		int inputCountIntoLayer = this.getInputCountIntoLayer();
 		double[] singleInput = new double[1];
 		
 		if (this.getLayerType() == LayerType.UNKNOWN) { // TODO: UNHANDLED ERROR
-			System.err.println("ERROR: NetworkLayer.runNetwork() 179 trying to run UNKNOWN layer type"); 
+			System.err.println("ERROR: NetworkLayer.runNetwork() ERROR 187 trying to run UNKNOWN layer type"); 
 			return; 
 		}
 		
 		if (inputCount != inputCountIntoLayer) {  // TODO: UNHANDLED ERROR
-			System.err.println("ERROR NetworkLayer.runLayer(): 184 inputs.length not matched to this.getInputCountIntoLayer: "+ inputCountIntoLayer + ", inputs: " + inputCount);
+			System.err.println("ERROR NetworkLayer.runLayer(): ERROR 192 inputs.length not matched to this.getInputCountIntoLayer: "+ inputCountIntoLayer + ", inputs: " + inputCount);
 			System.err.println(this.toString());
 			return;
 		}  
@@ -191,7 +199,7 @@ public class NetworkLayer {
 				singleInput[0] = inputs[n];
 				this.getNeurons()[n].runNeuron(singleInput);}
 			}
-		else {  // This is a hidden or output neuron
+		else {  								   // This is a hidden or output layer
 			for (int n = 0; n < numberNeurons; n++) {
 				this.getNeurons()[n].runNeuron(inputs);
 			}
@@ -218,6 +226,17 @@ public class NetworkLayer {
         return String.format("%s", sB); 
     }
 	
+    public boolean neuronIndexRangeFailureFor(int index) {
+    	if ( index >= this.getNeuronCountInLayer() ) {
+    		System.err.println("UNTRAPPED ERROR: NetworkLayer.neuronIndexRangeFailureFor(): ERROR 231 assigning neuron at index greater than range: " + index);
+    		return true; 
+    		}
+    	if ( index < 0 ) {
+    		System.err.println("UNTRAPPED ERROR: NetworkLayer.neuronIndexRangeFailureFor(): ERROR 235 assigning neuron at index less than range: " + index);
+    		return true; 
+    		}
+    	return false;
+    }
     
 	//////////////////////////////////////
 	//*** Hill Climb Support Methods ***//
@@ -244,7 +263,11 @@ public class NetworkLayer {
 	 * Returns a new NetworkLayer with the the specified neuron 
 	 * weight/threshold adjusted by the step amount.  There is no need
 	 * to make a separate call to adjust the threshold.  The threshold 
-	 * is managed within the index range as well as the weights.
+	 * is managed within the index range as well as the weights.  Call
+	 * NetworkLayer.getNetworkLayerThresholdAndWeightsCountForLayer() 
+	 * to find the range of weights and the threshold.  
+	 * Call NetworkLayer.getNeuronCountInLayer() to determine the number 
+	 * of Neurons in the layer itself.
 	 */
     public NetworkLayer adjustLayerNeuronThresholdAndWeights(int neuronIndex, int thresholdAndWeightsIndex, double step) {
     	NetworkLayer adjustedLayer = this.copyNetworkLayer();

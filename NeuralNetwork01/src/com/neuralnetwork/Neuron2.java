@@ -26,18 +26,20 @@ public class Neuron2 {
 	private double  LEARNING_RATE = 3;
 	
 	private double[] thresholdAndWeights = new double[] {0.0};
-	private double output = 0.0;
-	private int    index  = -1;  // resolves to index of 0 on first call
+	private double   output = 0.0;
+	private int      index  = -1;  // becomes to index of 0 on first get call
 
 	
 	///////////////////////////////////////////////////////////////////////
     // *** True accessors to the combined threshold and weights array ***//
-	public int getThresholdAndWeightsCount() { return this.thresholdAndWeights.length; }
 	
-	public double[] getThresholdAndWeights() { return this.thresholdAndWeights; }
+	private double[] getThresholdAndWeights() { return this.thresholdAndWeights; }
 	
-	public void setThresholdAndWeights(double[] thresholdAndWeights) 
+	private void setThresholdAndWeights(double[] thresholdAndWeights) 
 		{ this.thresholdAndWeights = thresholdAndWeights; }
+	
+	
+	public int getThresholdAndWeightsCount() { return this.thresholdAndWeights.length; }
 	
 	public int getThresholdAndWeightsIndex() {
 		if (this.index >= this.getThresholdAndWeightsCount() - 1) { 
@@ -112,7 +114,7 @@ public class Neuron2 {
 	 * and threshold values are assigned a random value between -0.5 and +0.5.
 	 */
 	public Neuron2() { 
-		double[] weights = { 1.0 };
+		double[] weights = new double[] { 1.0 };
 		this.setWeights( weights );
 		this.setThreshold( 0.0 );
 		this.setOutput( 0.0 );
@@ -126,12 +128,8 @@ public class Neuron2 {
 	 * of 0 is acceptable.
 	 */
 	public Neuron2( double[] weights, double threshold, double output) {
-		double[] thresholdAndWeights = new double[ weights.length +1 ];
-		thresholdAndWeights[0] = threshold;  // w0 is the threshold position
-		// TODO System.out.println("thresholdAndWeights.length: " +thresholdAndWeights.length + ", weights.length: " +weights.length);
-		
-		for (int i = 0; i < weights.length; i++) { thresholdAndWeights[i+1] = weights[i]; } // weights are added after the threshold
-		this.setThresholdAndWeights( thresholdAndWeights );
+		this.setWeights( weights );
+		this.setThreshold( threshold );
 		this.setOutput( output );
 		}
 	
@@ -149,11 +147,14 @@ public class Neuron2 {
 	 */
 	public void runNeuron(double[] inputs) {
 		// GOAL:  Sum all neuron inputs[i]*weights[i], then subtract the threshold
-		// OUTPUT a positive number if weightedSum is less than the threshold
+		// OUTPUT is a positive number if weightedSum is more than the threshold
 		// ... if weightedSum-threshold is negative, the neuron did not fire
+		// Call activation function separately to convert the natural output to the final output
+		// CAUTION:  The threshold value is contained in the '0' index of the T&Ws
 		int weightCount = this.getWeightsCount();
-		if (inputs.length != weightCount) {  // input mismatch ERROR
-			System.err.println("Neuron2.runNeuron(): ERROR mismatched input count of " +inputs.length + "for " + weightCount + " weights");
+		int inputsCount = inputs.length;
+		if (inputsCount != weightCount) {  // input mismatch length ERROR
+			System.err.println("Neuron2.runNeuron(): ERROR 157 mismatched input count of " + inputsCount + " for " + weightCount + " weights");
 			return;
 		}
 		double[] weights = this.getWeights();
@@ -161,7 +162,6 @@ public class Neuron2 {
 		for (int i = 0; i < weightCount; i++) {
 			weightedSum += inputs[i] * weights[i];
 		}
-		//weightedSum = applyActivationFunction2(weightedSum);
 		this.setOutput(weightedSum);
 	}
 	
@@ -173,13 +173,20 @@ public class Neuron2 {
 		return 1.0 / (1 + Math.exp(-1.0 * weightedSum));
 	}
 	
+	/**
+	 * Returns a new neuron with matching weights and threshold, with a
+	 * matching output value.
+	 */
 	public Neuron2 copyNeuron () {
-		double[] weights = new double[this.getWeightsCount()];
-		for (int w = 0; w < this.getWeightsCount(); w++) { weights[w] = this.getWeights()[w]; }
-		Neuron2 copiedNeuron = new Neuron2(weights, this.getThreshold(), this.getOutput());
+		Neuron2 copiedNeuron = new Neuron2(this.getWeights(), this.getThreshold(), this.getOutput());
 		return copiedNeuron;
 	}
 	
+	/**
+	 * Returns true if the weights and threshold are equal, otherwise returns false.  
+	 * Does not consider the output value or other parameters.
+	 * Returns false if null neuron is compared or if weight counts are mismatched
+	 */
 	public boolean equals(Neuron2 neuron) {
 		if (neuron == null)                                                             {return false;} // FAIL missing neuron
 		if (neuron.getThresholdAndWeightsCount() != this.getThresholdAndWeightsCount()) {return false;} // FAIL mismatched weight count	
@@ -211,18 +218,19 @@ public class Neuron2 {
 	/**
 	 * Returns a new Neuron2 with modifications to all weights and the threshold.
 	 * This method is typically used at the core of the Hill Climb training algorithm
-	 * to search out improved configurations.  The LEARNING_RATE is roughly a step size 
+	 * to search out improved configurations.  The LEARNING_RATE is maximum step size 
 	 * that can be used to tune the efficiency of the Hill Climb algorithm.
 	 */
 	public Neuron2 getThresholdAndWeightsAdjustedNeuron() {
-		int weightsCount = this.getWeightsCount();
-		double[] originalWeights = this.getWeights();
-		double[] adjustedWeights = new double[weightsCount];
+		Neuron2 adjustedNeuron = this.copyNeuron();
+		int weightsCount = adjustedNeuron.getWeightsCount();
+		double[] adjustedWeights = adjustedNeuron.getWeights();
 		for (int i = 0; i < weightsCount; i++) {
-			adjustedWeights[i] = originalWeights[i] + (Math.random() - 0.5) * LEARNING_RATE; 
+			adjustedWeights[i] += (Math.random() - 0.5) * LEARNING_RATE; 
 		}
-		double adjustedThreshold = this.getThreshold() + (Math.random() - 0.5) * LEARNING_RATE;  
-		return new Neuron2(adjustedWeights, adjustedThreshold, 0);
+		adjustedNeuron.setWeights(adjustedWeights);
+		adjustedNeuron.setThreshold( adjustedNeuron.getThreshold() + (Math.random() - 0.5) * LEARNING_RATE);  
+		return adjustedNeuron;
 	}
 	
 	
@@ -233,7 +241,7 @@ public class Neuron2 {
 	// TODO is this truly needed once the code shifts to provide the 
 	// largest gradient descent option.
 	public Neuron2 getNeuronWithAdjustedWeightAtIndex(int weightIndex, double step) {
-		// NOTE:  The index ranges from 0..x while the count ranges from 1..x+1
+		// NOTE:  The index ranges from 0..x while count ranges from 1..x+1
 		if ((weightIndex) > this.getWeightsCount() - 1 ) return this; // ERROR weight index
 		if ((weightIndex) < 0 ) return this;                          // ERROR weight index
 		Neuron2  adjustedNeuron= this.copyNeuron();
@@ -244,10 +252,10 @@ public class Neuron2 {
 	}
 	
 	public Neuron2 getNeuronWithAdjustedThresholdAndWeightsAtIndex(int weightIndex, double step) {
-		// NOTE:  The index ranges from 0..x while the count ranges from 1..x+1
+		// NOTE:  The index ranges from 0..x while count ranges from 1..x+1
 		if ((weightIndex) > this.getWeightsCount() - 1 ) return this; // ERROR weight index
 		if ((weightIndex) < 0 ) return this;                          // ERROR weight index
-		Neuron2  adjustedNeuron= this.copyNeuron();
+		Neuron2  adjustedNeuron = this.copyNeuron();
 		double[] adjustedThresholdAndWeights = adjustedNeuron.getThresholdAndWeights();
 		adjustedThresholdAndWeights[weightIndex] += step; 
 		adjustedNeuron.setThresholdAndWeights(adjustedThresholdAndWeights);

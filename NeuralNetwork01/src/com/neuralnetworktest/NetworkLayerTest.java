@@ -101,13 +101,25 @@ class NetworkLayerTest {
 		if (printErrorMessages) System.out.println("testAssigningInputLayerTypeToMultiWeightNeuronsLayerTriggeresError: END \n");
 	}
 	
+	@Test
+	void testCannotSetNullNeurons() {
+		NetworkLayer  networkLayer = new NetworkLayer();
+		double[] weights = new double[] {1.1, 2.2, 3.3};
+		Neuron2 neuron = new Neuron2(weights, 0, 0);
+		Neuron2[] neurons = new Neuron2[] {neuron};
+		networkLayer.setNeurons(neurons);
+		assertEquals(neurons, networkLayer.getNeurons());
+		networkLayer.setNeurons(null);
+		assertEquals(neurons, networkLayer.getNeurons());
+	}
+	
 	
 	
 	// *** Neuron accessor functions at the NetworkLayer level work as expected *** //
 	
 	@Test
 	void testSetAndGetNeuronAtIndexPassesCorrectValues() {
-		NetworkLayer  networkLayer = new NetworkLayer(LayerType.H, 2,3);
+		NetworkLayer  networkLayer = new NetworkLayer(LayerType.H, 2, 3);
 		double[] weights = new double[] {1, 2};
 		Neuron2 neuronA = new Neuron2(weights, 3, 4);
 		weights = new double[] {1, 2};
@@ -117,6 +129,70 @@ class NetworkLayerTest {
 		networkLayer.setNeuronAtIndex(neuronB, 0);
 		assertFalse(neuronA.equals(networkLayer.getNeuronAtIndex(0)));
 		assertTrue(neuronB.equals(networkLayer.getNeuronAtIndex(0)));
+	}
+	
+	@Test
+	void testNeuronIndexRangeFailureForOutOfRangeReturnsFalse() {
+		if (printErrorMessages) System.out.println("testNeuronIndexRangeFailureForOutOfRangeReturnsFalse: START");
+		NetworkLayer  networkLayer = new NetworkLayer(LayerType.H, 2, 3);
+		if (printErrorMessages) System.out.print("testNeuronIndexRangeFailureForOutOfRangeReturnsFalse(): triggering error -> ");
+		assertTrue( networkLayer.neuronIndexRangeFailureFor(-1) );
+		assertFalse( networkLayer.neuronIndexRangeFailureFor(0) );
+		assertFalse( networkLayer.neuronIndexRangeFailureFor(1) );
+		assertFalse( networkLayer.neuronIndexRangeFailureFor(2) );
+		if (printErrorMessages) System.out.print("testNeuronIndexRangeFailureForOutOfRangeReturnsFalse(): triggering error -> ");
+		assertTrue( networkLayer.neuronIndexRangeFailureFor(3) );
+		if (printErrorMessages) System.out.println("testNeuronIndexRangeFailureForOutOfRangeReturnsFalse: END \n");
+	}
+	
+	@Test
+	void testCannotSetNeuronAtoutOfRangeIndex() {
+		if (printErrorMessages) System.out.println("testCannotSetNeuronAtoutOfRangeIndex: START");
+		NetworkLayer  networkLayer = new NetworkLayer(LayerType.H, 2, 2);
+		double[] weights = new double[] {1, 2};
+		Neuron2 neuronA = new Neuron2(weights, 3, 4);
+		weights = new double[] {1, 2};
+		Neuron2 neuronB = new Neuron2(weights, 5, 6);
+		networkLayer.setNeuronAtIndex(neuronA, 0);
+		networkLayer.setNeuronAtIndex(neuronB, 1);
+		if (printErrorMessages) System.out.print("testCannotSetNeuronAtoutOfRangeIndex(): triggering error -> ");
+		networkLayer.setNeuronAtIndex(neuronA, -1) ;
+		assertEquals(3-2, 6-5);  // code delay
+		assertEquals(3-2, 6-5);  // code delay
+		if (printErrorMessages) System.out.print("testCannotSetNeuronAtoutOfRangeIndex(): triggering error -> ");
+		networkLayer.setNeuronAtIndex(neuronB, 5) ;
+		assertEquals(3-2, 6-5);  // code delay
+		assertEquals(3-2, 6-5);  // code delay
+		if (printErrorMessages) System.out.println("testCannotSetNeuronAtoutOfRangeIndex: END \n");
+	}
+	
+	@Test
+	void testCannotGetNeuronAtoutOfRangeIndex() {
+		if (printErrorMessages) System.out.println("testSetAndGetNeuronAtIndexPassesCorrectValues: START");
+		NetworkLayer  networkLayer = new NetworkLayer(LayerType.H, 2, 2);
+		double[] weights = new double[] {1, 2};
+		Neuron2 neuronA = new Neuron2(weights, 3, 4);
+		weights = new double[] {1, 2};
+		Neuron2 neuronB = new Neuron2(weights, 5, 6);
+		networkLayer.setNeuronAtIndex(neuronA, 0);
+		networkLayer.setNeuronAtIndex(neuronB, 1);
+		if (printErrorMessages) System.out.print("testSetAndGetNeuronAtIndexPassesCorrectValues(): triggering error -> ");
+		assertEquals(null, networkLayer.getNeuronAtIndex(5));
+		if (printErrorMessages) System.out.print("testSetAndGetNeuronAtIndexPassesCorrectValues(): triggering error -> ");
+		assertEquals(null, networkLayer.getNeuronAtIndex(-1));
+		if (printErrorMessages) System.out.println("testSetAndGetNeuronAtIndexPassesCorrectValues: END \n");
+	}
+	
+	@Test
+	void testCannotSetNullNeuron() {
+		if (printErrorMessages) System.out.println("testSetAndGetNeuronAtIndexPassesCorrectValues: START");
+		NetworkLayer  networkLayer = new NetworkLayer(LayerType.H, 2, 2);
+		double[] weights = new double[] {1, 2};
+		Neuron2 neuronA = new Neuron2(weights, 3, 4);
+		networkLayer.setNeuronAtIndex(neuronA, 0);
+		assertEquals(neuronA, networkLayer.getNeuronAtIndex(0));
+		networkLayer.setNeuronAtIndex(null, 0);
+		assertEquals(neuronA, networkLayer.getNeuronAtIndex(0));
 	}
 	
 	@Test
